@@ -2,18 +2,7 @@
 
 #! /usr/bin/env python
 import httplib2
-from pprint import pformat  # These aren't needed, just for this example
-
-
-def post_elexon(url):
-    http_obj = httplib2.Http()
-    resp, content = http_obj.request(uri=url, method='GET', headers={'Content-Type': 'application/xml; charset=UTF-8'}, )
-
-    print('===Response===')
-    print(pformat(resp))
-    print('===Content===')
-    print(pformat(content))
-    print('===Finished===')
+import pyodbc
 
 
 def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us8nfodbrypm', serviceType='csv'):
@@ -35,17 +24,78 @@ def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us
     post_elexon(url=url,)
 
 
-if __name__ == "__main__":
-    get_data_by_restful(settlementDate='2022-01-01', period='1')
+def post_elexon(url):
+    http_obj = httplib2.Http()
+    # the request will return a tuple including the response header and the content, where content is a binary string
+    resp, content = http_obj.request(uri=url, method='GET', headers={'Content-Type': 'application/xml; charset=UTF-8'}, )
 
-    # for year in range(2010, 2023, 1):
-    #     for month in range(1, 13, 1):
-    #         for day in range(1, 32, 1):
-    #             if month in [4, 6, 9, 11] and day == 31:
-    #                 break
-    #             elif year in [2012, 2016, 2020] and month == 2 and day == 30:
-    #                 break
-    #             elif month == 2 and day == 29:
-    #                 break
-    #
-    #             get_data_by_restful(settlementDate= str(year) + '-' + str(month) + '-' + str(day), period='1')
+    # convert the binary string to string
+    content_str = content.decode("ascii")
+    content_str_list = content_str.split("\n")
+
+    # Create a cursor from the connection
+    cursor = cnxn.cursor()
+    # insert the data into the MySQL Database
+    insert_sql = "INSERT INTO windpower(time_series_id, registered_resource_eic_code, bm_unit_id, ngc_bm_unit_id, psr_type, " \
+                 "market_generation_unit_eic_code, market_generation_bm_unit_id, market_generation_ngc_bm_unit_id, " \
+                 "settlement_date, settlement_period, quantity) "
+
+    for idx in range(11, len(content_str_list)):
+        value_str = content_str_list[idx]
+        value_str_list = value_str.split(",")
+        value_str_list_new = ['"' + value_str_list[i] + '"' for i in range(len(value_str_list))]
+        value_str_list_new[9] = eval(value_str_list_new[9])
+        cursor.execute(insert_sql + "values (" + ','.join(value_str_list_new) + ");")
+        cnxn.commit()
+
+
+def get_data_from_local_database():
+    cursor = cnxn.cursor()
+    cursor.execute("select * from windpower;")
+    rows = cursor.fetchall()
+    for row in rows:
+        print(row)
+
+
+if __name__ == "__main__":
+    # tartup example
+    # get_data_by_restful(settlementDate='2022-01-01', period='1')
+
+    # 1. connect to database with the following setting
+    # 1.1 Specifying the ODBC driver, server name, database, etc. directly
+    connection_string = (
+        'DRIVER=MySQL ODBC 8.0 ANSI Driver;'
+        'SERVER=localhost;'
+        'DATABASE=sh33;'
+        'UID=root;'
+        'PWD=123456;'
+        'charset=utf8mb4;'
+    )
+    # 1.2 connect to the localhost MySQL Database with the above connection setting
+    cnxn = pyodbc.connect(connection_string)
+
+    # 1.3 set the encoding or decoding settings needed for your database
+    cnxn.setdecoding(pyodbc.SQL_WCHAR, encoding='utf-8')
+    cnxn.setencoding(encoding='utf-8')
+
+    # get_data_by_restful(settlementDate='2022-01-01', period='1')
+
+    # 2. read from restful api and store the data into database. You should config the date when using it.
+    start_date = "2022-01-02"
+    end_date = "2022-01-05"
+
+    start_date_list = start_date.split("-")
+    end_date_list = end_date.split("-")
+    for year in range(int(start_date_list[0]), int(end_date_list[0])+1, 1):
+        for month in range(int(start_date_list[1]), int(end_date_list[1])+1, 1):
+            for day in range(int(start_date_list[2]), int(end_date_list[2])+1, 1):
+                if month in [4, 6, 9, 11] and day == 31:
+                    break
+                elif year in [2012, 2016, 2020] and month == 2 and day == 30:
+                    break
+                elif month == 2 and day == 29:
+                    break
+
+                print(f"Inserting Data to Database for Current Date: {str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2)}")
+                for period in range(1, 51, 1):
+                    get_data_by_restful(settlementDate=str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2), period=str(period))

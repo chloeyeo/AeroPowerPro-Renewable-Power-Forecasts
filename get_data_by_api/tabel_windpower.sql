@@ -1,10 +1,10 @@
 SHOW DATABASES;
-CREATE database sh33;
+CREATE DATABASE IF NOT EXISTS sh33;
 SHOW DATABASES;
 
 USE sh33;
 -- The following tabel is created based the returned fields getting from the Wind Power Restful API.
-CREATE TABLE windpower(
+CREATE TABLE IF NOT EXISTS windpower(
 	time_series_id TEXT,
     registered_resource_eic_code TEXT,
 	bm_unit_id TEXT,
