@@ -19,8 +19,8 @@ function NavBar() {
               <Nav.Link href="/" style={{ color: "white" }}>
                 Home
               </Nav.Link>
-              <Nav.Link href="/signup" style={{ color: "white" }}>
-                Signup/Login
+              <Nav.Link href="/login" style={{ color: "white" }}>
+                Login
               </Nav.Link>
               <Nav.Link href="/about" style={{ color: "white" }}>
                 About
