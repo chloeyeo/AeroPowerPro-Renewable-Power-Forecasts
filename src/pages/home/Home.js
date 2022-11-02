@@ -1,10 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import NavBar from "./NavBar";
 
 const Home = () => (
   <div>
-    <NavBar />
     Hello
     <p>hiasidasi</p>
     <Link to="/signup">
