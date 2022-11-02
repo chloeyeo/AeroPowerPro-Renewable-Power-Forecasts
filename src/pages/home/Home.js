@@ -1,10 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { NavBar } from "../../components";
+import { SearchBar } from "./components";
 
 const Home = () => (
   <div>
     <NavBar />
+    <SearchBar />
     Hello
     <p>hiasidasi</p>
     <Link to="/signup">
