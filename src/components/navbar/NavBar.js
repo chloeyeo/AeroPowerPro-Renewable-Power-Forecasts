@@ -39,7 +39,7 @@ function NavBar() {
                 </NavDropdown.Item>
               </NavDropdown>
               <Nav.Link href="/signup" style={{ color: "white" }}>
-                Signup/Login
+                Login
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
