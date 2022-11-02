@@ -3,8 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
-function SearchBar() {
-  return (
+const SearchBar = () => (
     <>
       <InputGroup className="mb-3">
         <Form.Control
@@ -18,6 +17,6 @@ function SearchBar() {
       </InputGroup>
     </>
   );
-}
+
 
 export default SearchBar;
