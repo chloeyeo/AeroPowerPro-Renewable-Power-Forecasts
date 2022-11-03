@@ -15,6 +15,26 @@ const SearchBar = () => (
         Search
       </Button>
     </InputGroup>
+    <InputGroup className="mb-3">
+      <Form.Control
+        placeholder="Longitude"
+        aria-label="Longitude"
+        aria-describedby="basic-addon2"
+      />
+      <Button variant="outline-secondary" id="button-addon2">
+        Search
+      </Button>
+    </InputGroup>
+    <InputGroup className="mb-3">
+      <Form.Control
+        placeholder="Latitude"
+        aria-label="Latitude"
+        aria-describedby="basic-addon2"
+      />
+      <Button variant="outline-secondary" id="button-addon2">
+        Search
+      </Button>
+    </InputGroup>
   </>
 );
 
