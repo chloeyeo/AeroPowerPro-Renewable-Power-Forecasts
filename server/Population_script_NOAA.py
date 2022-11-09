@@ -5,11 +5,13 @@ import django
 django.setup()
 from backend_db.models import HistoricWind
 import datetime
-
+import pytz
 import requests
 import netCDF4 as nc
 from dateutil.relativedelta import relativedelta
 import numpy as np
+from django.db import transaction
+
 
 def split_date(dat):
     year = dat.strftime("%Y")
@@ -37,7 +39,7 @@ def historic_wind_pull(dat):
     url = f"https://www.ncei.noaa.gov/thredds/ncss/grid/model-gfs-004-files/{year}{month}/{year}{month}{day}/gfs_3_{year}{month}{day}_{hour}{minutes}_000.grb2?var=u-component_of_wind_height_above_ground&var=v-component_of_wind_height_above_ground&north=59&west=-3&east=4&south=50&horizStride=1&time_start={year}-{month}-{day}T{hour}:{minutes}:00Z&time_end={year}-{month}-{day}T{hour}:{minutes}:00Z&timeStride=1&&accept=netcdf3"
     return requests.get(url=url)
 
-
+@transaction.atomic
 def historic_wind_insert(link, dat):
     u_comp, time, heights, lats, longs, v_comp = split_net(link)
 
@@ -54,7 +56,7 @@ def historic_wind_insert(link, dat):
                                                                             longitude = longs[lon], 
                                                                             u_comp = insert_u, 
                                                                             v_comp = insert_v)[0]
-                    new_historic_wind.save()
+                    # new_historic_wind.save()
 
 
 def historic_wind_pull_insert(dat):
@@ -70,14 +72,18 @@ def historic_wind_pull_insert(dat):
 
 def get_historic_wind_all():
     today = datetime.datetime.now()
+    today = today.replace(tzinfo=pytz.UTC)
     dat = today - relativedelta(years=2)
-    dat = dat.replace(hour = 00, minute = 00, second = 0, microsecond= 0)
-
+    dat = dat.replace(hour = 00, minute = 00, second = 0, microsecond= 0, tzinfo=pytz.UTC)
+    test_date = dat + relativedelta(hours = 6)
+    # test_dat
     # Starting from 2 years ago, iterate and pull data every 6 hours
-    while (dat < today):
+    while (dat < test_date):
         historic_wind_pull_insert(dat)
         print(dat, "finished")
         dat = dat + relativedelta(hours = 6) # skip 6 hours ahead
     print("Done!") 
 
 get_historic_wind_all()
+# HistoricWind.objects.all().delete()
+
