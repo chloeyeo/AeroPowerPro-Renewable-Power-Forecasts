@@ -1,6 +1,6 @@
 from django.db import models
 
-class HistoricWind(models.Model):
+class ActualProduceElectricity(models.Model):
     time_series_id = models.CharField(primary_key = True, unique = True, max_length=255)
     registed_resource_eic_code = models.CharField(max_length=255)
     bm_unit_id = models.CharField(max_length=255)

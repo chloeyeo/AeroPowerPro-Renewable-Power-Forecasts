@@ -1,5 +1,5 @@
 from django.db import models
-from . import ELEXON_models
+from ELEXON_models import ActualProduceElectricity
 # Create your models here.
 
 class HistoricWind(models.Model):
