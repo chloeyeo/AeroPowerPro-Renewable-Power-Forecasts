@@ -1,3 +1,4 @@
 import SearchBar from "./search-bar";
+import Map from "./map";
 
-export { SearchBar };
+export { SearchBar, Map };
