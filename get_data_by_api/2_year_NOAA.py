@@ -66,6 +66,6 @@ def get_historic_wind_all():
         historic_wind_pull_insert(dat)
         print(dat, "finished")
         dat = dat + relativedelta(hours = 6) # skip 6 hours ahead
-    print("Done!")
+    print("Done!") 
 
 get_historic_wind_all()
