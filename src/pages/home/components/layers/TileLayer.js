@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
-import MapContext from "../Map/MapContext";
+import { MapContext } from "../map";
 import OLTileLayer from "ol/layer/Tile";
 
-export const TileLayer = ({ source, zIndex = 0 }) => {
+const TileLayer = ({ source, zIndex = 0 }) => {
   const { map } = useContext(MapContext);
 
   useEffect(() => {
@@ -25,3 +25,5 @@ export const TileLayer = ({ source, zIndex = 0 }) => {
 
   return null;
 };
+
+export default TileLayer;

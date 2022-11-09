@@ -1,4 +1,21 @@
-import SearchBar from "./search-bar";
-import HomeMap from "./map";
+import { SearchBar } from "./search-bar";
+import { Map, MapContext } from "./map";
+import { Layers, TileLayer, VectorLayer } from "./layers";
+import { Controls, FullScreenControl } from "./controls";
+import { Styles } from "./features";
+import { osm, vector, xyz } from "./source";
 
-export { SearchBar, HomeMap };
+export {
+  SearchBar,
+  Map,
+  MapContext,
+  Layers,
+  TileLayer,
+  VectorLayer,
+  Controls,
+  FullScreenControl,
+  Styles,
+  osm,
+  vector,
+  xyz,
+};

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { NavBar } from "components";
-import { SearchBar } from "./components";
+import { SearchBar, Layers, TileLayer, VectorLayer, Map } from "./components";
 
 // //
 // import React, { useState } from "react";
-import Map from "./components/map/Map";
-import { Layers, TileLayer, VectorLayer } from "./components/layers/Layers";
+// import Map from "./components/map/Map";
+// import { Layers, TileLayer, VectorLayer } from "./components/layers/Layers";
 import { Style, Icon } from "ol/style";
 import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
