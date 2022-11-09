@@ -11,4 +11,4 @@ class HistoricWind(models.Model):
     market_generation_ngc_bmu_id = models.CharField(max_length=255)
     settlement_date = models.DateField()
     period = models.IntegerField()
-    quantity = models.FloatField(16)
+    quantity = models.FloatField()
