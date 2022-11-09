@@ -1,9 +1,16 @@
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'server.settings')
+import django
+django.setup()
+from backend_db.models import HistoricWind
+from django.utils.timezone import now
+
 import requests
 import netCDF4 as nc
 import datetime
 from dateutil.relativedelta import relativedelta
 import numpy as np
-from insert_to_historic_wind import insert_historic_wind
 
 def split_date(dat):
     year = dat.strftime("%Y")
@@ -36,13 +43,14 @@ def historic_wind_insert(link, dat):
     u_comp, time, alt_msl, lats, longs, v_comp = split_net(link)
 
     for h in range(len(time)):
+        insert_h = dat + relativedelta(hours = time[h])
         for msl in range(len(alt_msl)):
             for lat in range(len(lats)):
                 for lon in range(len(longs)):
-                    insert_h = dat + relativedelta(hours = time[h])
                     insert_u = u_comp[h][msl][lat][lon]
                     insert_v = v_comp[h][msl][lat][lon]
-                    insert_historic_wind(time = insert_h, msl = alt_msl[msl], lat = lats[lat], long = longs[lon], u_comp = insert_u, v_comp = insert_v)
+                    # insert_historic_wind(time = insert_h, msl = alt_msl[msl], lat = lats[lat], long = longs[lon], u_comp = insert_u, v_comp = insert_v)
+                    new_historic_wind = HistoricWind.objects.get_or_create(date_val = insert_h, msl = alt_msl[msl], lat = lats[lat], long = longs[lon], u_comp = insert_u, v_comp = insert_v)
 
 
 def historic_wind_pull_insert(dat):
@@ -57,12 +65,15 @@ def historic_wind_pull_insert(dat):
 
 
 def get_historic_wind_all():
-    today = datetime.datetime.today() 
+    today = now().date()
     dat = today - relativedelta(years=2)
     dat = dat.replace(hour = 00, minute = 00, second = 0, microsecond = 0)
+    test_dat = today - relativedelta(years = 1)
+    test_dat = test_dat - relativedelta(months = 11)
+
 
     # Starting from 2 years ago, iterate and pull data every 6 hours
-    while (dat < today):
+    while (dat < test_dat):
         historic_wind_pull_insert(dat)
         print(dat, "finished")
         dat = dat + relativedelta(hours = 6) # skip 6 hours ahead
