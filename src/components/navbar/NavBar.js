@@ -38,7 +38,7 @@ function NavBar() {
                   Separated link
                 </NavDropdown.Item>
               </NavDropdown>
-              <Nav.Link href="/signup" style={{ color: "white" }}>
+              <Nav.Link href="/login" style={{ color: "white" }}>
                 Login
               </Nav.Link>
             </Nav>
