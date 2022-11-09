@@ -1,0 +1,10 @@
+How to create your database:
+
+From console:
+
+python manage.py makemigrations backend_db
+python manage.py migrate
+
+
+To Create an admin acccount(superuser)
+python manage.py createsuperuser
