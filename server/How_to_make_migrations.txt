@@ -18,5 +18,12 @@ To query the database:
     OR 
     <Model name>.objects.filter() // list of multiple responses -> preferred
 
+Example:
+    from backend_db.models import HistoricWind
+
+    HistoricWind.objects.get_or_create(height_above_ground = 10, longitude = 5 ,...) -> a tuple with the object and a boolean (created = True)
+
+    HistoricWind.objects.filter(longitude <= 5) -> list of all query responses, can be empty
+
 
 
