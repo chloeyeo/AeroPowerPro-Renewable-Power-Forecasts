@@ -1,9 +1,9 @@
-# import os
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE',
-#                       'server.settings')
-# import django
-# django.setup()
-# from backend_db.models import HistoricWind
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'server.settings')
+import django
+django.setup()
+from backend_db.models import HistoricWind
 import datetime
 import pytz
 import requests
@@ -22,6 +22,7 @@ def split_date(dat):
 
 def split_net(link):
     vals = list(link.variables.values())
+    # print(vals)
     lats = np.array(vals[1])
     heights = np.array(vals[2])
     time = np.array(vals[3])
@@ -29,17 +30,19 @@ def split_net(link):
     u_comp = np.array(vals[5])
     v_comp = np.array(vals[6])
 
+    print(vals[4], longs)
     return u_comp, time, heights, lats, longs, v_comp
 
 
 def historic_wind_pull(dat):
     year, month, day, hour, minutes = split_date(dat)
-    url = f"https://www.ncei.noaa.gov/thredds/ncss/grid/model-gfs-004-files/{year}{month}/{year}{month}{day}/gfs_3_{year}{month}{day}_{hour}{minutes}_000.grb2?var=u-component_of_wind_height_above_ground&var=v-component_of_wind_height_above_ground&north=59&west=-3&east=4&south=50&horizStride=1&time_start={year}-{month}-{day}T{hour}:{minutes}:00Z&time_end={year}-{month}-{day}T{hour}:{minutes}:00Z&timeStride=1&&accept=netcdf3"
+    url = f"https://www.ncei.noaa.gov/thredds/ncss/grid/model-gfs-004-files/{year}{month}/{year}{month}{day}/gfs_3_{year}{month}{day}_{hour}{minutes}_000.grb2?var=u-component_of_wind_height_above_ground&var=v-component_of_wind_height_above_ground&north=59&west=-7&east=3&south=50&horizStride=1&time_start={year}-{month}-{day}T{hour}:{minutes}:00Z&time_end={year}-{month}-{day}T{hour}:{minutes}:00Z&timeStride=1&&accept=netcdf3"
     return requests.get(url=url)
 
 
 def historic_wind_insert(link, dat):
     u_comp, time, heights, lats, longs, v_comp = split_net(link)
+    return
 
     for h in range(len(time)):
         insert_h = dat + relativedelta(hours = time[h])
@@ -73,14 +76,17 @@ def get_historic_wind_all():
     today = today.replace(tzinfo=pytz.UTC)
     dat = today - relativedelta(years=2)
     dat = dat.replace(hour = 00, minute = 00, second = 0, microsecond= 0, tzinfo=pytz.UTC)
-
+    temp_dat = dat.replace(year = 2021, month = 1, day = 1)
+    d = HistoricWind.objects.filter(date_val = temp_dat)
+    print(d)
     # Starting from 2 years ago, iterate and pull data every 6 hours
-    while (dat < today):
-        historic_wind_pull_insert(dat)
-        print(dat, "finished")
-        dat = dat + relativedelta(hours = 6) # skip 6 hours ahead
-    print("Done!") 
+    # historic_wind_pull_insert(dat)
+    # while (dat < today):
+    #     historic_wind_pull_insert(dat)
+    #     print(dat, "finished")
+    #     dat = dat + relativedelta(hours = 6) # skip 6 hours ahead
+    # print("Done!") 
 
-# get_historic_wind_all()
-a = HistoricWind.objects.all().delete()
+get_historic_wind_all()
+# a = HistoricWind.objects.all().delete()
 

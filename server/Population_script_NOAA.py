@@ -16,13 +16,14 @@ from django.db import transaction
 def split_date(dat):
     year = dat.strftime("%Y")
     month = dat.strftime("%m")
-    day = dat.strftime('%d')
+    day = dat.strftime("%d")
     hour = dat.strftime("%H")
     minutes = dat.strftime("%M")
 
     return year, month, day, hour, minutes
 
 def split_net(link):
+    # Response is formatted in a specific way
     vals = list(link.variables.values())
     lats = np.array(vals[1])
     heights = np.array(vals[2])
@@ -34,9 +35,9 @@ def split_net(link):
     return u_comp, time, heights, lats, longs, v_comp
 
 
-def historic_wind_pull(dat):
+def pull_from_api(dat):
     year, month, day, hour, minutes = split_date(dat)
-    url = f"https://www.ncei.noaa.gov/thredds/ncss/grid/model-gfs-004-files/{year}{month}/{year}{month}{day}/gfs_3_{year}{month}{day}_{hour}{minutes}_000.grb2?var=u-component_of_wind_height_above_ground&var=v-component_of_wind_height_above_ground&north=59&west=-3&east=4&south=50&horizStride=1&time_start={year}-{month}-{day}T{hour}:{minutes}:00Z&time_end={year}-{month}-{day}T{hour}:{minutes}:00Z&timeStride=1&&accept=netcdf3"
+    url = f"https://www.ncei.noaa.gov/thredds/ncss/grid/model-gfs-004-files/{year}{month}/{year}{month}{day}/gfs_3_{year}{month}{day}_{hour}{minutes}_000.grb2?var=u-component_of_wind_height_above_ground&var=v-component_of_wind_height_above_ground&north=59&west=-7&east=3&south=50&horizStride=1&time_start={year}-{month}-{day}T{hour}:{minutes}:00Z&time_end={year}-{month}-{day}T{hour}:{minutes}:00Z&timeStride=1&&accept=netcdf3"
     return requests.get(url=url)
 
 @transaction.atomic
@@ -50,17 +51,18 @@ def historic_wind_insert(link, dat):
                 for lon in range(len(longs)):
                     insert_u = u_comp[h][height][lat][lon]
                     insert_v = v_comp[h][height][lat][lon]
-                    new_historic_wind = HistoricWind.objects.get_or_create(date_val = insert_h, 
-                                                                            height_above_ground = heights[height], 
-                                                                            latitute = lats[lat], 
-                                                                            longitude = longs[lon], 
-                                                                            u_comp = insert_u, 
-                                                                            v_comp = insert_v)[0]
-                    # new_historic_wind.save()
+                    HistoricWind.objects.create(date_val = insert_h, 
+                                                height_above_ground = heights[height], 
+                                                latitute = lats[lat], 
+                                                longitude = longs[lon], 
+                                                u_comp = insert_u, 
+                                                v_comp = insert_v)
 
+                    #saving without making any changes will cause a new object to be created (duplicating objects)
+                    # new_historic_wind.save() 
 
 def historic_wind_pull_insert(dat):
-    req = historic_wind_pull(dat)
+    req = pull_from_api(dat)
 
     if (req.status_code == 200):
         data = req.content
@@ -72,13 +74,12 @@ def historic_wind_pull_insert(dat):
 
 def get_historic_wind_all():
     today = datetime.datetime.now()
-    today = today.replace(tzinfo=pytz.UTC)
-    dat = today - relativedelta(years=2)
+    today = today.replace(tzinfo=pytz.UTC) # set datetime format to non-ambiguous, standard UTC
+    dat = today - relativedelta(years=2) # Start getting data from 2 years ago
     dat = dat.replace(hour = 00, minute = 00, second = 0, microsecond= 0, tzinfo=pytz.UTC)
-    test_date = dat + relativedelta(hours = 6)
-    # test_dat
+    dat = dat.replace(year = 2021, month = 2, day = 8)
     # Starting from 2 years ago, iterate and pull data every 6 hours
-    while (dat < test_date):
+    while (dat < today):
         historic_wind_pull_insert(dat)
         print(dat, "finished")
         dat = dat + relativedelta(hours = 6) # skip 6 hours ahead
