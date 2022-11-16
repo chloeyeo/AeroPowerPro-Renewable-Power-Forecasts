@@ -9,10 +9,9 @@ import pytz
 import requests
 import netCDF4 as nc
 from dateutil.relativedelta import relativedelta
-import numpy as np
 from django.db import transaction
 
-
+#Split date into its components used by the NOAA Call
 def split_date(dat):
     year = dat.strftime("%Y")
     month = dat.strftime("%m")
@@ -22,15 +21,14 @@ def split_date(dat):
 
     return year, month, day, hour, minutes
 
+#Split NOAA request into the data needed
 def split_net(link):
-    # Response is formatted in a specific way
-    vals = list(link.variables.values())
-    lats = np.array(vals[1])
-    heights = np.array(vals[2])
-    time = np.array(vals[3])
-    longs = np.array(vals[4])
-    u_comp = np.array(vals[5])
-    v_comp = np.array(vals[6])
+    lats = link.variables['latitude']
+    heights = link.variables['height_above_ground1']
+    time = link.variables['time'][:]
+    longs = link.variables['longitude']
+    u_comp = link.variables['u-component_of_wind_height_above_ground']
+    v_comp = link.variables['v-component_of_wind_height_above_ground']
 
     return u_comp, time, heights, lats, longs, v_comp
 
@@ -53,13 +51,10 @@ def historic_wind_insert(link, dat):
                     insert_v = v_comp[h][height][lat][lon]
                     HistoricWind.objects.create(date_val = insert_h, 
                                                 height_above_ground = heights[height], 
-                                                latitute = lats[lat], 
+                                                latitude = lats[lat], 
                                                 longitude = longs[lon], 
                                                 u_comp = insert_u, 
                                                 v_comp = insert_v)
-
-                    #saving without making any changes will cause a new object to be created (duplicating objects)
-                    # new_historic_wind.save() 
 
 def historic_wind_pull_insert(dat):
     req = pull_from_api(dat)
@@ -68,15 +63,20 @@ def historic_wind_pull_insert(dat):
         data = req.content
         link = nc.Dataset('anynamehere', memory = data)
         historic_wind_insert(link, dat)
+        return (1,req.status_code)
     else:
-        print("Request Failed: ", req)
+        return (0,req)
 
 
-def get_historic_wind_all(start, end):
-    # Starting from 2 years ago, iterate and pull data every 6 hours
+def NOAA_get_historic(start, end):
+    # Replace with 0s so that request url can be formated correctly
+    start = start.replace(hour = 00, minute = 00, second = 0, microsecond= 0, tzinfo=pytz.UTC)
     while (start < end):
-        historic_wind_pull_insert(start)
-        print(start, "finished")
+        success = historic_wind_pull_insert(start)
+        if (success[0] == 1):
+            print(start, "finished")
+        else:
+            print(start, " failed: ", success[1])
         start = start + relativedelta(hours = 6) # skip 6 hours ahead
     print("Done!")
 
@@ -85,8 +85,8 @@ if __name__ == '__main__':
     today = datetime.datetime.now()
     today = today.replace(tzinfo=pytz.UTC) # set datetime format to non-ambiguous, standard UTC
     dat = today - relativedelta(years=2) # Start getting data from 2 years ago
-    dat = dat.replace(hour = 00, minute = 00, second = 0, microsecond= 0, tzinfo=pytz.UTC)
-    dat = dat.replace(year = 2021, month = 2, day = 8)
-    get_historic_wind_all(dat, today)
-    
+
+    # Starting from 2 years ago, iterate and pull data every 6 hours
+    NOAA_get_historic(dat, today )
+
 
