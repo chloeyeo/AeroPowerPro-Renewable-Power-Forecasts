@@ -1,15 +1,26 @@
-stages:          
-  - install
-  - build
+image: node:8.9.4
 
-install-job:     
-  stage: install
+stages:
+  - npm
+  - test
+
+npm:
+  stage: npm
   script:
-    - apt-get update && apt-get upgrade -y && \
-    - apt-get install -y nodejs \
+    - npm config set registry ${CI_NPM_REGISTRY}
     - npm install
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    expire_in: 1 days
+    when: on_success
+    paths:
+      - node_modules/
 
-build-job:     
+build:
   stage: build
+  dependencies:
+    - npm
   script:
     - npm run build
