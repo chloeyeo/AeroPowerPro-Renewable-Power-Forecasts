@@ -10,7 +10,12 @@ const Map = ({ children, zoom, center }) => {
   // on component mount
   useEffect(() => {
     let options = {
-      view: new ol.View({ zoom, center }),
+      view: new ol.View({
+        zoom,
+        center,
+        extent: [-1500000, 6200000, 600000, 8800000],
+      }),
+
       layers: [],
       controls: [],
       overlays: [],
@@ -34,7 +39,7 @@ const Map = ({ children, zoom, center }) => {
   useEffect(() => {
     if (!map) return;
 
-    map.getView().setCenter(center);
+    map.getView().setCenter();
   }, [center]);
 
   return (
