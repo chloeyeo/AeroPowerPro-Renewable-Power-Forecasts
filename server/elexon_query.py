@@ -2,18 +2,19 @@
 
 #! /usr/bin/env python
 
+# setup Django
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE',
                       'server.settings')
 import django
 django.setup()
+
 import time
 import datetime
 import httplib2
-import pyodbc
 import pandas as pd
 import schedule
-from backend_db.ELEXON_models import ActualProduceElectricity
+from backend_db.models import ActualProduceElectricity
 from django.db import transaction
 
 def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us8nfodbrypm', serviceType='csv'):
@@ -34,6 +35,30 @@ def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us
 
     post_elexon(url=url,)
 
+def schedule_job():
+    '''
+    This is job will be done once every 6 hours
+    :return:
+    '''
+    global last_period
+    latest_period = last_period + time.gmtime().tm_hour*2      # the restful api updates 2 times every hour
+
+    if latest_period > 48:
+        latest_period %= 48
+        # get the data for the yesterday
+        yesterday = datetime.date.today() - datetime.timedelta(-1)
+        yes_year, yes_cur_month, yes_cur_day = str(yesterday).split("-")
+        for cur_period in range(last_period, 49):
+            get_data_by_restful(settlementDate=yes_year + '-' + yes_cur_month.zfill(2) + '-' + yes_cur_day.zfill(2), period=str(cur_period))
+
+        # get the data for the current day
+        for cur_period in range(1, latest_period):
+            get_data_by_restful(settlementDate=str(time.gmtime().tm_year) + '-' + str(time.gmtime().tm_mon).zfill(2) + '-' + str(time.gmtime().tm_mday).zfill(2), period=str(cur_period))
+    else:
+        for cur_period in range(last_period, latest_period+1):
+            get_data_by_restful(settlementDate=str(time.gmtime().tm_year) + '-' + str(time.gmtime().tm_mon).zfill(2) + '-' + str(time.gmtime().tm_mday).zfill(2), period=str(cur_period))
+    last_period = latest_period
+
 @transaction.atomic
 def post_elexon(url):
     http_obj = httplib2.Http()
@@ -45,9 +70,12 @@ def post_elexon(url):
     content_str_list = content_str.split("\n")
 
     for idx in range(11, len(content_str_list)):
+        # create list of data from the API
         value_str = content_str_list[idx]
         value_str_list = value_str.split(",")
         value_str_list_new = [value_str_list[i] for i in range(len(value_str_list))]
+
+        # insert data into the database (SQLite) 
         ActualProduceElectricity.objects.create(time_series_id = value_str_list_new[0],
             registed_resource_eic_code = value_str_list_new[1],
             bm_unit_id = value_str_list_new[2],
@@ -73,12 +101,12 @@ if __name__ == "__main__":
         print(f"Inserting Data to Database for Current Date: {str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2)}")
         get_data_by_restful(settlementDate=year + '-' + month.zfill(2) + '-' + day.zfill(2), period="*")
 
-    # # set the period for getting data from restful api next period
-    # last_period = time.gmtime().tm_hour*2           # the restful api updates 2 times every hour
+    # set the period for getting data from restful api next period
+    last_period = time.gmtime().tm_hour*2           # the restful api updates 2 times every hour
 
-    # # create periodic task and do it every 6 hours starting from this script started running
-    # schedule.every(6).hours.do(schedule_job)
-    # while True:
-    #     schedule.run_pending()
-    #     # sleep for 5 hours and 55 minutes before next retrieval
-    #     time.sleep(21300)
+    # create periodic task and do it every 6 hours starting from this script started running
+    schedule.every(6).hours.do(schedule_job)
+    while True:
+        schedule.run_pending()
+        # sleep for 5 hours and 55 minutes before next retrieval
+        time.sleep(21300)
