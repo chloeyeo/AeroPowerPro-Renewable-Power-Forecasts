@@ -10,7 +10,6 @@ if __name__ == '__main__':
     if (delete_flag.lower() in ['yes','y']):
         delete_flag = input("THIS IS NOT REVERSIBLE, ARE YOU SURE? [YES/NO]: ")
         if (delete_flag.lower() in ['yes','y']):
-            
             ActualProduceElectricity.objects.all().delete()
             print("All data has been deleted :(")
         else:
