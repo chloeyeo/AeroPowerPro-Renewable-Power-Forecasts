@@ -1,9 +1,5 @@
 import React from "react";
-<<<<<<< src/pages/about/About.js
 import { NavBar } from "components";
-=======
-import { NavBar } from "components";
->>>>>>> src/pages/about/About.js
 
 const About = () => (
   <>
