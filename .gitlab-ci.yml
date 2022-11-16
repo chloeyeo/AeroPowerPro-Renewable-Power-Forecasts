@@ -2,7 +2,7 @@ image: node:8.9.4
 
 stages:
   - npm
-  - build
+  - test
 
 npm:
   stage: npm
@@ -18,9 +18,9 @@ npm:
     paths:
       - node_modules/
 
-build:
-  stage: build
+test:
+  stage: test
   dependencies:
     - npm
   script:
-    - npm run build
+    - npm test
