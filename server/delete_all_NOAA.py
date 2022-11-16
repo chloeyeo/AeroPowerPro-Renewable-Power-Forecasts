@@ -8,7 +8,6 @@ if __name__ == '__main__':
                                 'server.settings')
             import django
             django.setup()
-            settings.configure()
             from backend_db.models import HistoricWind
             HistoricWind.objects.all().delete()
             print("All data has been deleted :(")
