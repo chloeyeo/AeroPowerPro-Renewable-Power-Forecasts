@@ -1,11 +1,16 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home, About, Login, ErrorPage, Contactus } from "./pages";
+import { ProSidebarProvider } from "react-pro-sidebar";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: (
+      <ProSidebarProvider>
+        <Home />
+      </ProSidebarProvider>
+    ),
     errorElement: <ErrorPage />,
   },
   {

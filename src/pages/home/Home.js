@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { NavBar } from "components";
-import { SearchBar, Layers, TileLayer, VectorLayer, Map } from "./components";
+import { NavBar } from "../../components";
+import {
+  SideBar,
+  SearchBar,
+  Layers,
+  TileLayer,
+  VectorLayer,
+  Map,
+} from "./components";
 
-// //
-// import React, { useState } from "react";
-// import Map from "./components/map/Map";
-// import { Layers, TileLayer, VectorLayer } from "./components/layers/Layers";
 import { Style, Icon } from "ol/style";
 import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
@@ -53,6 +56,7 @@ const Home = () => {
     <div>
       <NavBar />
       <SearchBar />
+      <SideBar />
       <Map center={fromLonLat(center)} zoom={zoom}>
         <Layers>
           <TileLayer source={osm()} zIndex={0} />

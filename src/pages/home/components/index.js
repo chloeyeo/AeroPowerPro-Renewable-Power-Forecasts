@@ -1,4 +1,5 @@
 import { SearchBar } from "./search-bar";
+import { SideBar } from "./side-bar";
 import { Map, MapContext } from "./map";
 import { Layers, TileLayer, VectorLayer } from "./layers";
 import { Controls, FullScreenControl } from "./controls";
@@ -7,6 +8,7 @@ import { osm, vector, xyz } from "./source";
 
 export {
   SearchBar,
+  SideBar,
   Map,
   MapContext,
   Layers,
