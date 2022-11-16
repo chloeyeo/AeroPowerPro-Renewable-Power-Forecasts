@@ -2,7 +2,7 @@ image: node:8.9.4
 
 stages:
   - npm
-  - test
+  - build
 
 npm:
   stage: npm
