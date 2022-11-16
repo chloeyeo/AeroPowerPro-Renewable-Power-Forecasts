@@ -1,3 +1,0 @@
-If your database isn't running.
-
-From windows search->Services->MySQL80->Right click->Start
