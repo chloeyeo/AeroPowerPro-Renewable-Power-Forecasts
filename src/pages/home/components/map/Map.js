@@ -26,7 +26,7 @@ const Map = ({ children, zoom, center }) => {
     setMap(mapObject);
 
     return () => mapObject.setTarget(undefined);
-  }, []);
+  }, [center]);
 
   // zoom change handler
   useEffect(() => {
@@ -44,7 +44,11 @@ const Map = ({ children, zoom, center }) => {
 
   return (
     <MapContext.Provider value={{ map }}>
-      <div ref={mapRef} className="ol-map">
+      <div
+        ref={mapRef}
+        style={{ display: "block", height: "100%" }}
+        className="ol-map"
+      >
         {children}
       </div>
     </MapContext.Provider>
