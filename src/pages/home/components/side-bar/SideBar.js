@@ -24,7 +24,15 @@ const SideBar = () => {
     rtl,
   } = useProSidebar();
   return (
-    <div style={{ display: "flex", height: "100%", position: "absolute" }}>
+    <div
+      style={{
+        display: "flex",
+        height: "100%",
+        position: "absolute",
+        zIndex: 3,
+      }}
+      className="mt-3 "
+    >
       <Sidebar>
         <Menu>
           <SubMenu label="Wind" icon={<FiWind />}>
