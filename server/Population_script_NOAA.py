@@ -72,19 +72,21 @@ def historic_wind_pull_insert(dat):
         print("Request Failed: ", req)
 
 
-def get_historic_wind_all():
+def get_historic_wind_all(start, end):
+    # Starting from 2 years ago, iterate and pull data every 6 hours
+    while (start < end):
+        historic_wind_pull_insert(start)
+        print(start, "finished")
+        start = start + relativedelta(hours = 6) # skip 6 hours ahead
+    print("Done!")
+
+
+if __name__ == '__main__':
     today = datetime.datetime.now()
     today = today.replace(tzinfo=pytz.UTC) # set datetime format to non-ambiguous, standard UTC
     dat = today - relativedelta(years=2) # Start getting data from 2 years ago
     dat = dat.replace(hour = 00, minute = 00, second = 0, microsecond= 0, tzinfo=pytz.UTC)
     dat = dat.replace(year = 2021, month = 2, day = 8)
-    # Starting from 2 years ago, iterate and pull data every 6 hours
-    while (dat < today):
-        historic_wind_pull_insert(dat)
-        print(dat, "finished")
-        dat = dat + relativedelta(hours = 6) # skip 6 hours ahead
-    print("Done!") 
-
-get_historic_wind_all()
-# HistoricWind.objects.all().delete()
+    get_historic_wind_all(dat, today)
+    
 
