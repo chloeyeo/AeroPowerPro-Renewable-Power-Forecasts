@@ -57,8 +57,7 @@ const Home = () => {
   return (
     <>
       <NavBar />
-      <SideBar />
-      <SearchBar center={center} setCenter={setCenter} />
+      <SideBar center={center} setCenter={setCenter} />
       <div style={{ display: "block", height: "700px" }}>
         <Map styles={{}} center={fromLonLat(center)} zoom={zoom}>
           <Layers>
