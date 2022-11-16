@@ -69,7 +69,7 @@ def historic_wind_pull_insert(dat):
 
 
 def NOAA_get_historic(start, end):
-    # Starting from 2 years ago, iterate and pull data every 6 hours
+    # Replace with 0s so that request url can be formated correctly
     start = start.replace(hour = 00, minute = 00, second = 0, microsecond= 0, tzinfo=pytz.UTC)
     while (start < end):
         success = historic_wind_pull_insert(start)
@@ -85,7 +85,8 @@ if __name__ == '__main__':
     today = datetime.datetime.now()
     today = today.replace(tzinfo=pytz.UTC) # set datetime format to non-ambiguous, standard UTC
     dat = today - relativedelta(years=2) # Start getting data from 2 years ago
-    
+
+    # Starting from 2 years ago, iterate and pull data every 6 hours
     NOAA_get_historic(dat, today )
 
 
