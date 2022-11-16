@@ -3,7 +3,8 @@
 #! /usr/bin/env python
 import httplib2
 import pyodbc
-
+import pandas as pd
+from datetime import datetime
 
 def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us8nfodbrypm', serviceType='csv'):
     '''
@@ -68,7 +69,7 @@ if __name__ == "__main__":
         'SERVER=localhost;'
         'DATABASE=sh33;'
         'UID=root;'
-        'PWD=123456;'
+        'PWD=Mark131545;'
         'charset=utf8mb4;'
     )
     # 1.2 connect to the localhost MySQL Database with the above connection setting
@@ -84,18 +85,36 @@ if __name__ == "__main__":
     start_date = "2022-01-02"
     end_date = "2022-01-05"
 
+    frame = pd.date_range(start=start_date,end=end_date)
+    for i in range(len(frame)):
+        date = str(frame[i]).split(" ")[0]
+        year, month, day = date.split("-")
+        print(f"Inserting Data to Database for Current Date: {str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2)}")
+        get_data_by_restful(settlementDate=year + '-' + month.zfill(2) + '-' + day.zfill(2), period="*")
+
+    #this code is wrong for query the date
     start_date_list = start_date.split("-")
     end_date_list = end_date.split("-")
-    for year in range(int(start_date_list[0]), int(end_date_list[0])+1, 1):
-        for month in range(int(start_date_list[1]), int(end_date_list[1])+1, 1):
-            for day in range(int(start_date_list[2]), int(end_date_list[2])+1, 1):
-                if month in [4, 6, 9, 11] and day == 31:
-                    break
-                elif year in [2012, 2016, 2020] and month == 2 and day == 30:
-                    break
-                elif month == 2 and day == 29:
-                    break
 
-                print(f"Inserting Data to Database for Current Date: {str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2)}")
-                for period in range(1, 51, 1):
-                    get_data_by_restful(settlementDate=str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2), period=str(period))
+    start_year = int(start_date_list[0])
+    end_year = int(end_date_list[0])
+
+    start_month = int(start_date_list[1])
+    end_month = int(end_date_list[1])
+
+    start_day = int(start_date_list[2])
+    end_day = int(end_date_list[2])
+
+    # for year in range(start_year, end_year + 1):
+    #     for month in range(start_month, end_month + 1):
+    #         for day in range(start_day, end_day + 1):
+    #             if month in [4, 6, 9, 11] and day == 31:
+    #                 break
+    #             elif year in [2012, 2016, 2020] and month == 2 and day == 30:
+    #                 break
+    #             elif month == 2 and day == 29:
+    #                 break
+
+    #             print(f"Inserting Data to Database for Current Date: {str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2)}")
+    #             for period in range(1, 51, 1):
+    #                 get_data_by_restful(settlementDate=str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2), period=str(period))
