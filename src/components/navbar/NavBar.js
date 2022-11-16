@@ -10,7 +10,7 @@ function NavBar() {
     <Navbar style={{ backgroundColor: "#373b44" }} expand="lg">
       <Container>
         <Navbar.Brand href="/" style={{ color: "white" }}>
-          Jehtro's Power Forecast
+          Jethro's Power Forecast
         </Navbar.Brand>
         <div>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -21,6 +21,9 @@ function NavBar() {
               </Nav.Link>
               <Nav.Link href="/about" style={{ color: "white" }}>
                 About
+              </Nav.Link>
+              <Nav.Link href="/contactus" style={{ color: "white" }}>
+                Contact Us
               </Nav.Link>
               <NavDropdown
                 title={<span style={{ color: "white" }}>Dropdown</span>}
