@@ -1,13 +1,21 @@
 # 1. Firstly, we will download the data by the RESTFul API of Elexon website
 
 #! /usr/bin/env python
+
+# setup Django
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'server.settings')
+import django
+django.setup()
+
 import time
 import datetime
 import httplib2
-import pyodbc
 import pandas as pd
 import schedule
-
+from backend_db.models import ActualProduceElectricity
+from django.db import transaction
 
 def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us8nfodbrypm', serviceType='csv'):
     '''
@@ -26,40 +34,6 @@ def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us
           '&Period=' + period + '&ServiceType=' + serviceType
 
     post_elexon(url=url,)
-
-
-def post_elexon(url):
-    http_obj = httplib2.Http()
-    # the request will return a tuple including the response header and the content, where content is a binary string
-    resp, content = http_obj.request(uri=url, method='GET', headers={'Content-Type': 'application/xml; charset=UTF-8'}, )
-
-    # convert the binary string to string
-    content_str = content.decode("ascii")
-    content_str_list = content_str.split("\n")
-
-    # Create a cursor from the connection
-    cursor = cnxn.cursor()
-    # insert the data into the MySQL Database
-    insert_sql = "INSERT INTO windpower(time_series_id, registered_resource_eic_code, bm_unit_id, ngc_bm_unit_id, psr_type, " \
-                 "market_generation_unit_eic_code, market_generation_bm_unit_id, market_generation_ngc_bm_unit_id, " \
-                 "settlement_date, settlement_period, quantity) "
-
-    for idx in range(11, len(content_str_list)):
-        value_str = content_str_list[idx]
-        value_str_list = value_str.split(",")
-        value_str_list_new = ['"' + value_str_list[i] + '"' for i in range(len(value_str_list))]
-        value_str_list_new[9] = eval(value_str_list_new[9])
-        cursor.execute(insert_sql + "values (" + ','.join(value_str_list_new) + ");")
-        cnxn.commit()
-
-
-def get_data_from_local_database():
-    cursor = cnxn.cursor()
-    cursor.execute("select * from windpower;")
-    rows = cursor.fetchall()
-    for row in rows:
-        print(row)
-
 
 def schedule_job():
     '''
@@ -85,32 +59,39 @@ def schedule_job():
             get_data_by_restful(settlementDate=str(time.gmtime().tm_year) + '-' + str(time.gmtime().tm_mon).zfill(2) + '-' + str(time.gmtime().tm_mday).zfill(2), period=str(cur_period))
     last_period = latest_period
 
+@transaction.atomic
+def post_elexon(url):
+    http_obj = httplib2.Http()
+    # the request will return a tuple including the response header and the content, where content is a binary string
+    resp, content = http_obj.request(uri=url, method='GET', headers={'Content-Type': 'application/xml; charset=UTF-8'}, )
+
+    # convert the binary string to string
+    content_str = content.decode("ascii")
+    content_str_list = content_str.split("\n")
+
+    for idx in range(11, len(content_str_list)):
+        # create list of data from the API
+        value_str = content_str_list[idx]
+        value_str_list = value_str.split(",")
+        value_str_list_new = [value_str_list[i] for i in range(len(value_str_list))]
+
+        # insert data into the database (SQLite) 
+        ActualProduceElectricity.objects.create(time_series_id = value_str_list_new[0],
+            registed_resource_eic_code = value_str_list_new[1],
+            bm_unit_id = value_str_list_new[2],
+            ngc_bm_unit_id = value_str_list_new[3],
+            psr_type = value_str_list_new[4],
+            market_generation_unit_eic_code = value_str_list_new[5],
+            market_generation_bmu_id = value_str_list_new[6],
+            market_generation_ngc_bmu_id = value_str_list_new[7],
+            settlement_date = value_str_list_new[8],
+            period = int(value_str_list_new[9]),
+            quantity = float(value_str_list_new[10]))
+
 
 if __name__ == "__main__":
-    # tartup example
-    # get_data_by_restful(settlementDate='2022-01-01', period='1')
 
-    # 1. connect to database with the following setting
-    # 1.1 Specifying the ODBC driver, server name, database, etc. directly
-    connection_string = (
-        'DRIVER=MySQL ODBC 8.0 ANSI Driver;'
-        'SERVER=localhost;'
-        'DATABASE=sh33;'
-        'UID=root;'
-        'PWD=Mark131545;'
-        'charset=utf8mb4;'
-    )
-    # 1.2 connect to the localhost MySQL Database with the above connection setting
-    cnxn = pyodbc.connect(connection_string)
-
-    # 1.3 set the encoding or decoding settings needed for your database
-    cnxn.setdecoding(pyodbc.SQL_WCHAR, encoding='utf-8')
-    cnxn.setencoding(encoding='utf-8')
-
-    # get_data_by_restful(settlementDate='2022-01-01', period='1')
-
-    # 2. read from restful api and store the data into database. You should config the date when using it.
-    start_date = "2022-01-02"
+    start_date = "2022-11-1"
     end_date = "2022-11-16"
 
     frame = pd.date_range(start=start_date, end=end_date)
