@@ -91,7 +91,7 @@ def post_elexon(url):
 
 if __name__ == "__main__":
 
-    start_date = "2022-01-02"
+    start_date = "2022-11-1"
     end_date = "2022-11-16"
 
     frame = pd.date_range(start=start_date, end=end_date)
