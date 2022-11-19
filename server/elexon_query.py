@@ -4,8 +4,7 @@
 
 # setup Django
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE',
-                      'server.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
 import django
 django.setup()
 
@@ -16,6 +15,7 @@ import pandas as pd
 import schedule
 from backend_db.models import ActualProduceElectricity
 from django.db import transaction
+
 
 def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us8nfodbrypm', serviceType='csv'):
     '''
@@ -34,6 +34,7 @@ def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us
           '&Period=' + period + '&ServiceType=' + serviceType
 
     post_elexon(url=url,)
+
 
 def schedule_job():
     '''
@@ -59,6 +60,7 @@ def schedule_job():
             get_data_by_restful(settlementDate=str(time.gmtime().tm_year) + '-' + str(time.gmtime().tm_mon).zfill(2) + '-' + str(time.gmtime().tm_mday).zfill(2), period=str(cur_period))
     last_period = latest_period
 
+
 @transaction.atomic
 def post_elexon(url):
     http_obj = httplib2.Http()
@@ -75,22 +77,21 @@ def post_elexon(url):
         value_str_list = value_str.split(",")
         value_str_list_new = [value_str_list[i] for i in range(len(value_str_list))]
 
-        # insert data into the database (SQLite) 
-        ActualProduceElectricity.objects.create(time_series_id = value_str_list_new[0],
-            registed_resource_eic_code = value_str_list_new[1],
-            bm_unit_id = value_str_list_new[2],
-            ngc_bm_unit_id = value_str_list_new[3],
-            psr_type = value_str_list_new[4],
-            market_generation_unit_eic_code = value_str_list_new[5],
-            market_generation_bmu_id = value_str_list_new[6],
-            market_generation_ngc_bmu_id = value_str_list_new[7],
-            settlement_date = value_str_list_new[8],
-            period = int(value_str_list_new[9]),
-            quantity = float(value_str_list_new[10]))
+        # insert data into the database (SQLite)
+        ActualProduceElectricity.objects.create(time_series_id=value_str_list_new[0],
+                                                registed_resource_eic_code=value_str_list_new[1],
+                                                bm_unit_id=value_str_list_new[2],
+                                                ngc_bm_unit_id=value_str_list_new[3],
+                                                psr_type=value_str_list_new[4],
+                                                market_generation_unit_eic_code=value_str_list_new[5],
+                                                market_generation_bmu_id=value_str_list_new[6],
+                                                market_generation_ngc_bmu_id=value_str_list_new[7],
+                                                settlement_date=value_str_list_new[8],
+                                                period=int(value_str_list_new[9]),
+                                                quantity=float(value_str_list_new[10]))
 
 
 if __name__ == "__main__":
-
     start_date = "2022-11-1"
     end_date = "2022-11-16"
 
