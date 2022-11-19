@@ -9,7 +9,9 @@ import django
 django.setup()
 
 import time
+import pytz
 import datetime
+from dateutil.relativedelta import relativedelta
 import httplib2
 import pandas as pd
 import schedule
@@ -36,36 +38,40 @@ def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us
     post_elexon(url=url,)
 
 
-def schedule_job():
+def elexon_schedule_job():
     '''
     This is job will be done once every 6 hours
     :return:
     '''
-    global last_period
-    latest_period = last_period + time.gmtime().tm_hour*2      # the restful api updates 2 times every hour
+    # 12 periods
 
-    if latest_period > 48:
-        latest_period %= 48
+    # if all the 12 periods in two different days
+    if time.gmtime().tm_hour - 6 < 0:
+        start_period = 48 - abs(time.gmtime().tm_hour - 6) * 2 + 1      # the restful api updates twice every hour
+
         # get the data for the yesterday
         yesterday = datetime.date.today() - datetime.timedelta(-1)
         yes_year, yes_cur_month, yes_cur_day = str(yesterday).split("-")
-        for cur_period in range(last_period, 49):
+        for cur_period in range(start_period, 49):
             get_data_by_restful(settlementDate=yes_year + '-' + yes_cur_month.zfill(2) + '-' + yes_cur_day.zfill(2), period=str(cur_period))
 
+        end_period = 12 - time.gmtime().tm_hour * 2 + 1
         # get the data for the current day
-        for cur_period in range(1, latest_period):
+        for cur_period in range(1, end_period):
             get_data_by_restful(settlementDate=str(time.gmtime().tm_year) + '-' + str(time.gmtime().tm_mon).zfill(2) + '-' + str(time.gmtime().tm_mday).zfill(2), period=str(cur_period))
+    # if all the 12 periods in the same day
     else:
-        for cur_period in range(last_period, latest_period+1):
+        start_period = abs(time.gmtime().tm_hour - 6) * 2
+        end_period = abs(time.gmtime().tm_hour - 6) * 2 + 12 + 1
+        for cur_period in range(start_period, end_period):
             get_data_by_restful(settlementDate=str(time.gmtime().tm_year) + '-' + str(time.gmtime().tm_mon).zfill(2) + '-' + str(time.gmtime().tm_mday).zfill(2), period=str(cur_period))
-    last_period = latest_period
 
 
 @transaction.atomic
 def post_elexon(url):
     http_obj = httplib2.Http()
     # the request will return a tuple including the response header and the content, where content is a binary string
-    resp, content = http_obj.request(uri=url, method='GET', headers={'Content-Type': 'application/xml; charset=UTF-8'}, )
+    resp, content = http_obj.request(uri=url, method='GET', headers={'Content-Type': 'application/xml; charset=UTF-8'},)
 
     # convert the binary string to string
     content_str = content.decode("ascii")
@@ -92,22 +98,19 @@ def post_elexon(url):
 
 
 if __name__ == "__main__":
-    start_date = "2022-11-1"
-    end_date = "2022-11-16"
+    today = datetime.datetime.now()
+    start_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
+    end_time = start_time - relativedelta(years=2)        # Start getting data from 2 years ago
 
-    frame = pd.date_range(start=start_date, end=end_date)
+    frame = pd.date_range(start=str(start_time.date()), end=str(end_time.date()))
     for i in range(len(frame)):
         date = str(frame[i]).split(" ")[0]
         year, month, day = date.split("-")
         print(f"Inserting Data to Database for Current Date: {str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2)}")
         get_data_by_restful(settlementDate=year + '-' + month.zfill(2) + '-' + day.zfill(2), period="*")
 
-    # set the period for getting data from restful api next period
-    last_period = time.gmtime().tm_hour*2           # the restful api updates 2 times every hour
-
     # create periodic task and do it every 6 hours starting from this script started running
-    schedule.every(6).hours.do(schedule_job)
+    schedule.every(6).hours.do(elexon_schedule_job)
     while True:
         schedule.run_pending()
-        # sleep for 5 hours and 55 minutes before next retrieval
-        time.sleep(21300)
+        time.sleep(21300)           # sleep for 5 hours and 55 minutes before next retrieval

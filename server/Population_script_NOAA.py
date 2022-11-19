@@ -1,4 +1,8 @@
 import os
+import time
+
+import schedule
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
 
 import django
@@ -46,18 +50,18 @@ def historic_wind_insert(link, dat):
     u_comp, time, heights, lats, longs, v_comp = split_net(link)
 
     for h in range(len(time)):
-        insert_h = dat + relativedelta(hours = time[h])
+        insert_h = dat + relativedelta(hours=time[h])
         for height in range(len(heights)):
             for lat in range(len(lats)):
                 for lon in range(len(longs)):
                     insert_u = u_comp[h][height][lat][lon]
                     insert_v = v_comp[h][height][lat][lon]
-                    HistoricWind.objects.create(date_val = insert_h, 
-                                                height_above_ground = heights[height], 
-                                                latitude = lats[lat], 
-                                                longitude = longs[lon], 
-                                                u_comp = insert_u, 
-                                                v_comp = insert_v)
+                    HistoricWind.objects.create(date_val=insert_h,
+                                                height_above_ground=heights[height],
+                                                latitude=lats[lat],
+                                                longitude=longs[lon],
+                                                u_comp=insert_u,
+                                                v_comp=insert_v)
 
 
 def historic_wind_pull_insert(dat):
@@ -81,16 +85,27 @@ def NOAA_get_historic(start, end):
             print(start, "finished")
         else:
             print(start, " failed: ", success[1])
-        start = start + relativedelta(hours = 6) # skip 6 hours ahead
+        start = start + relativedelta(hours=6)      # skip 6 hours ahead
     print("Done!")
+
+
+def NOAA_schedule_job():
+    today = datetime.datetime.now()
+    end_time = today.replace(tzinfo=pytz.UTC)  # set datetime format to non-ambiguous, standard UTC
+    start_time = end_time - relativedelta(hours=6)  # Start getting data from 2 years ago
+    NOAA_get_historic(start_time, end_time)
 
 
 if __name__ == '__main__':
     today = datetime.datetime.now()
-    today = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
-    dat = today - relativedelta(years=2)        # Start getting data from 2 years ago
+    start_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
+    end_time = start_time - relativedelta(years=2)        # Start getting data from 2 years ago
 
-    # Starting from 2 years ago, iterate and pull data every 6 hours
-    NOAA_get_historic(dat, today )
+    # Retrieve data starting from 2 years ago
+    NOAA_get_historic(start_time, end_time)
 
-
+    # iterate and pull data every 6 hours with schedule job
+    schedule.every(6).hours.do(NOAA_schedule_job)
+    while True:
+        schedule.run_pending()
+        time.sleep(21300)       # sleep for 5 hours and 55 minutes before next retrieval
