@@ -56,7 +56,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
           <MenuItem icon={<WiSolarEclipse />}> Solar </MenuItem>
           <MenuItem icon={<ImStatsDots />}> Weather Forecast </MenuItem>
           <SubMenu label="Search" icon={<AiOutlineSearch />}>
-            <p>Latitude</p>
+            <p>Latitude(from 50 to 59)</p>
             <InputGroup className="mb-3">
               <Form.Control
                 placeholder="Latitude"
@@ -68,7 +68,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 }
               />
             </InputGroup>
-            <p>Longitude</p>
+            <p>Longitude(from -7 to 4)</p>
             <InputGroup className="mb-3">
               <Form.Control
                 placeholder="Longitude"
@@ -80,7 +80,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 }
               />
             </InputGroup>
-            <p>Highlighted Area Size</p>
+            <p>Highlighted Area Size(from 0.25 to 5)</p>
             <InputGroup className="mb-3">
               <Form.Control
                 placeholder="Area Size"
@@ -94,11 +94,24 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
               variant="outline-secondary"
               id="button-addon2"
               onClick={() => {
-                setCenter([
-                  parseFloat(inputCoords[0]),
-                  parseFloat(inputCoords[1]),
-                ]);
-                setAreaSize(parseFloat(inputSize));
+                if (
+                  inputCoords[1] < 50 ||
+                  inputCoords[1] > 59 ||
+                  inputCoords[0] < -7 ||
+                  inputCoords[0] > 4 ||
+                  inputSize < 0.25 ||
+                  inputSize > 5
+                ) {
+                  alert(
+                    "Invalid input, the correct ranges are:\nLatitude: 50 to 59\nLongitude: -7 to 4\nArea Size: 0.25 to 5"
+                  );
+                } else {
+                  setCenter([
+                    parseFloat(inputCoords[0]),
+                    parseFloat(inputCoords[1]),
+                  ]);
+                  setAreaSize(parseFloat(inputSize));
+                }
               }}
             >
               Search
