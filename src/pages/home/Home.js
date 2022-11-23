@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavBar } from "components";
 import { SearchBar, Layers, TileLayer, VectorLayer, Map } from "./components";
 import { osm, vector } from "./components/source";
@@ -38,6 +38,7 @@ function addMarkers(lonLatArray) {
 
 const Home = () => {
   const [center, setCenter] = useState(mapConfig.center);
+  const [inputCoords, setInputCoords] = useState(center || "");
   const [zoom, setZoom] = useState(9);
 
   const [showLayer1, setShowLayer1] = useState(true);
@@ -45,15 +46,41 @@ const Home = () => {
   const [showMarker, setShowMarker] = useState(false);
 
   const [features, setFeatures] = useState(addMarkers(markersLonLat));
-
+  let geoObject = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [[[[inputCoords[0], inputCoords[1]]]]],
+        },
+      },
+    ],
+  };
   return (
     <>
       <NavBar />
-      <SearchBar center={center} setCenter={setCenter} />
+      <SearchBar
+        center={center}
+        setCenter={setCenter}
+        inputCoords={inputCoords}
+        setInputCoords={setInputCoords}
+      />
       <div style={{ display: "block", height: "700px" }}>
         <Map styles={{}} center={fromLonLat(center)} zoom={zoom}>
           <Layers>
             <TileLayer source={osm()} zIndex={0} />
+            {showLayer1 && (
+              <VectorLayer
+                source={vector({
+                  features: new GeoJSON().readFeatures(geoObject, {
+                    featureProjection: get("EPSG:3857"),
+                  }),
+                })}
+                style={FeatureStyles.Point}
+              />
+            )}
             {showMarker && <VectorLayer source={vector({ features })} />}
           </Layers>
           <Controls>

@@ -3,8 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
-const SearchBar = ({ center, setCenter }) => {
-  const [inputCoords, setInputCoords] = useState(center || "");
+const SearchBar = ({ center, setCenter, inputCoords, setInputCoords }) => {
   return (
     <>
       <InputGroup className="mb-3">

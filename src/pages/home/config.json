@@ -15,16 +15,10 @@
           "coordinates": [
             [
               [
-                [-94.8627, 39.202],
-                [-94.901, 39.202],
-                [-94.9065, 38.9884],
-                [-94.8682, 39.0596],
-                [-94.6053, 39.0432],
-                [-94.6053, 39.1144],
-                [-94.5998, 39.1582],
-                [-94.7422, 39.1691],
-                [-94.7751, 39.202],
-                [-94.8627, 39.202]
+                [-4.2508, 55.8652],
+                [-4.2528, 55.8652],
+                [-4.2528, 55.8632],
+                [-4.2508, 55.8632]
               ]
             ]
           ]
@@ -63,8 +57,8 @@
       }
     ]
   },
-  "kansasCityLonLat": [-94.579228, 39.135386],
-  "blueSpringsLonLat": [-94.279851, 39.03412],
+  "kansasCityLonLat": [-3.8642, 55.7518],
+  "blueSpringsLonLat": [-3.8642, 55.7518],
   "markerImage24": "https://cdn2.iconfinder.com/data/icons/social-media-and-payment/64/-47-24.png",
   "markerImage32": "https://cdn2.iconfinder.com/data/icons/social-media-and-payment/64/-47-32.png",
   "markerImage64": "https://cdn2.iconfinder.com/data/icons/social-media-and-payment/64/-47-64.png"
