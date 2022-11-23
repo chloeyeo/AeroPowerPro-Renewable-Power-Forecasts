@@ -18,5 +18,6 @@ class UserProfile(models.Model):
     # The additional attributes we wish to include.
     website = models.URLField(blank=True)
     picture = models.ImageField(upload_to='profile_images', blank=True)
+    email = models.EmailField(max_length=254)
     def __str__(self):
         return self.user.username

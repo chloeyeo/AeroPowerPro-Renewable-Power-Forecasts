@@ -1,0 +1,22 @@
+{% extends 'backend_db/base.html' %} {% load staticfiles %} {% block title_block
+%} Register {% endblock %} {% block body_block %}
+<script>
+  import {Login} from '../../src/pages/login'
+  function register() {
+    $.ajax({
+      url: '/login',
+      data = {'registered': True, 'password': document.getElementById("exampleInputPassword1").value,
+        'email': document.getElementById("exampleInputPassword1").value}
+      datatype: "json",
+      success: function(data) {
+        if (data.registered) {
+          alert("User registered");
+        } else {
+          alert("Something went wrong, user was not registered");
+        }
+      },
+    });
+    location.reload();
+  }
+</script>
+{% endblock %}
