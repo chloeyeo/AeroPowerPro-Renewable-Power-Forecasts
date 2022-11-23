@@ -1,5 +1,6 @@
 from django.db import models
 from backend_db.elexon_model import ActualProduceElectricity
+from backend_db.open_meteo_model import WeatherForecast
 # Create your models here.
 
 class HistoricWind(models.Model):
