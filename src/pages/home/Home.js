@@ -46,12 +46,12 @@ function addMarkers(lonLatArray) {
 
 const Home = () => {
   const [center, setCenter] = useState(mapConfig.center);
-  const [zoom, setZoom] = useState(9);
+  const [zoom, setZoom] = useState(8);
 
   const [showLayer1, setShowLayer1] = useState(true);
   const [showLayer2, setShowLayer2] = useState(true);
   const [showMarker, setShowMarker] = useState(false);
-  const [areaSize, setAreaSize] = useState(0.1);
+  const [areaSize, setAreaSize] = useState(0.25);
 
   const [features, setFeatures] = useState(addMarkers(markersLonLat));
   let geoObject = {
@@ -64,10 +64,10 @@ const Home = () => {
           coordinates: [
             [
               [
-                [center[0] - areaSize, center[1] + areaSize * 0.6],
-                [center[0] + areaSize, center[1] + areaSize * 0.6],
-                [center[0] + areaSize, center[1] - areaSize * 0.6],
-                [center[0] - areaSize, center[1] - areaSize * 0.6],
+                [center[0] - areaSize, center[1] + areaSize],
+                [center[0] + areaSize, center[1] + areaSize],
+                [center[0] + areaSize, center[1] - areaSize],
+                [center[0] - areaSize, center[1] - areaSize],
               ],
             ],
           ],
@@ -75,6 +75,8 @@ const Home = () => {
       },
     ],
   };
+
+  console.log("testing", window.innerHeight);
 
   return (
     <>
@@ -85,7 +87,7 @@ const Home = () => {
         areaSize={areaSize}
         setAreaSize={setAreaSize}
       />
-      <div style={{ display: "block", height: "700px" }}>
+      <div style={{ display: "block", height: `750px` }}>
         <Map styles={{}} center={fromLonLat(center)} zoom={zoom}>
           <Layers>
             <TileLayer source={osm()} zIndex={0} />
