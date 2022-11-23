@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Sidebar,
   SubMenu,
@@ -12,7 +12,7 @@ import { FiWind } from "react-icons/fi";
 import { WiSolarEclipse } from "react-icons/wi";
 import { ImStatsDots } from "react-icons/im";
 import { GiWindTurbine } from "react-icons/gi";
-import { AiOutlineColumnHeight, AiOutlineColumnWidth } from "react-icons/ai";
+import { AiOutlineColumnHeight } from "react-icons/ai";
 import { TfiLayoutWidthDefaultAlt } from "react-icons/tfi";
 
 import Button from "react-bootstrap/Button";
@@ -22,11 +22,11 @@ import InputGroup from "react-bootstrap/InputGroup";
 const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
   const {
     collapseSidebar,
-    toggleSidebar,
+    // toggleSidebar,
     collapsed,
-    toggled,
-    broken,
-    rtl,
+    // toggled,
+    // broken,
+    // rtl,
   } = useProSidebar();
   const [inputCoords, setInputCoords] = useState(center || "");
   const [inputSize, setInputSize] = useState(areaSize || 0.1);
