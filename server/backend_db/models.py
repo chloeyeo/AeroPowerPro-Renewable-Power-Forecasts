@@ -13,11 +13,7 @@ class HistoricWind(models.Model):
     v_comp = models.FloatField(blank = False)
 
 class UserProfile(models.Model):
-    # This line is links UserProfile to a User model instance.
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # The additional attributes we wish to include.
-    website = models.URLField(blank=True)
-    picture = models.ImageField(upload_to='profile_images', blank=True)
-    email = models.EmailField(max_length=254)
-    def __str__(self):
-        return self.user.username
+    # user = models.OneToOneField(User, on_delete=models.CASCADE) we don't have this yet
+
+    email = models.CharField(max_length=100, null=True, unique=True)
+    password = models.CharField(max_length=64, null=True)

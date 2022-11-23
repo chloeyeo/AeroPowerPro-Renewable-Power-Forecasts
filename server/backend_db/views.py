@@ -1,18 +1,57 @@
 from django.shortcuts import render
-from backend_db.forms import UserForm, UserProfileForm
-import {Login} from '../../src/pages/login'
+from rest_framework.views import APIView
+from rest_framework.request import Request
+from rest_framework.response import Response
+# import {Login} from '../../src/pages/login'
 
+class RegisterView(APIView):
+    def post(self, request):
+        password = request.data.get("password")
+        email = request.data.get("email")
+
+
+
+        # validate password and email
+# import urllib library
+from urllib.request import urlopen
+  
+# import json
+import json
+
+# store the URL in url as 
+# parameter for urlopen
+url = "http://localhost:8000/postrequest"
+  
+# store the response of URL
+response = urlopen(url)
+  
+# storing the JSON response 
+# from url in data
+data_json = json.loads(response.read())
 # Create your views here.
-@login_required
-def register(request):
+def register_user(request):
     try:
-        # tells whether registration was successful
         registered = False
-        
-        data = {'registered': True, 'password': document.getElementById("exampleInputPassword1").value,
-        'email': document.getElementById("exampleInputPassword1").value}
+        # store the URL in url as 
+        # parameter for urlopen
+        url = "http://localhost:8000/postrequest"
 
-        return JsonResponse(data)
+        # store the response of URL
+        response = urlopen(url)
+    
+        # storing the JSON response 
+        # from url in data
+        data_json = json.loads(response.read())
+        return data_json
+    
+    # try:
+    #     # tells whether registration was successful
+    #     registered = False
+    #     # get data = request from login.js using fetch post
+    #     # password = request.GET.get("password")
+    #     # request is json object
+
+    #     return JsonResponse(data)
     except:
         data = {'registered': False, 'password':'', 'email': ''}
         return JsonResponse(data)
