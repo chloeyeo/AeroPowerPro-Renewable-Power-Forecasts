@@ -46,7 +46,6 @@ function addMarkers(lonLatArray) {
 
 const Home = () => {
   const [center, setCenter] = useState(mapConfig.center);
-  const [inputCoords, setInputCoords] = useState(center || "");
   const [zoom, setZoom] = useState(9);
 
   const [showLayer1, setShowLayer1] = useState(true);
@@ -60,12 +59,22 @@ const Home = () => {
       {
         type: "Feature",
         geometry: {
-          type: "Point",
-          coordinates: [[[[inputCoords[0], inputCoords[1]]]]],
+          type: "MultiPolygon",
+          coordinates: [
+            [
+              [
+                [center[0] - 0.1, center[1] + 0.06],
+                [center[0] + 0.1, center[1] + 0.06],
+                [center[0] + 0.1, center[1] - 0.06],
+                [center[0] - 0.1, center[1] - 0.06],
+              ],
+            ],
+          ],
         },
       },
     ],
   };
+
   return (
     <>
       <NavBar />
@@ -81,7 +90,7 @@ const Home = () => {
                     featureProjection: get("EPSG:3857"),
                   }),
                 })}
-                style={FeatureStyles.Point}
+                style={FeatureStyles.MultiPolygon}
               />
             )}
             {showMarker && <VectorLayer source={vector({ features })} />}
