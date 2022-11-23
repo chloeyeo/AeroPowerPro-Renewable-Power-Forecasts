@@ -19,7 +19,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
-const SideBar = ({ center, setCenter }) => {
+const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
   const {
     collapseSidebar,
     toggleSidebar,
@@ -29,6 +29,7 @@ const SideBar = ({ center, setCenter }) => {
     rtl,
   } = useProSidebar();
   const [inputCoords, setInputCoords] = useState(center || "");
+  const [inputSize, setInputSize] = useState(areaSize || 0.1);
   return (
     <div
       style={{
@@ -55,17 +56,7 @@ const SideBar = ({ center, setCenter }) => {
           <MenuItem icon={<WiSolarEclipse />}> Solar </MenuItem>
           <MenuItem icon={<ImStatsDots />}> Weather Forecast </MenuItem>
           <SubMenu label="Search" icon={<AiOutlineSearch />}>
-            <InputGroup className="mb-3">
-              <Form.Control
-                placeholder="Longitude"
-                aria-label="Longitude"
-                aria-describedby="basic-addon2"
-                value={inputCoords[0]}
-                onChange={(event) =>
-                  setInputCoords([event.target.value, inputCoords[1]])
-                }
-              />
-            </InputGroup>
+            <p>Latitude</p>
             <InputGroup className="mb-3">
               <Form.Control
                 placeholder="Latitude"
@@ -77,15 +68,38 @@ const SideBar = ({ center, setCenter }) => {
                 }
               />
             </InputGroup>
+            <p>Longitude</p>
+            <InputGroup className="mb-3">
+              <Form.Control
+                placeholder="Longitude"
+                aria-label="Longitude"
+                aria-describedby="basic-addon2"
+                value={inputCoords[0]}
+                onChange={(event) =>
+                  setInputCoords([event.target.value, inputCoords[1]])
+                }
+              />
+            </InputGroup>
+            <p>Highlighted Area Size</p>
+            <InputGroup className="mb-3">
+              <Form.Control
+                placeholder="Area Size"
+                aria-label="Area Size"
+                aria-describedby="basic-addon2"
+                value={inputSize}
+                onChange={(event) => setInputSize(event.target.value)}
+              />
+            </InputGroup>
             <Button
               variant="outline-secondary"
               id="button-addon2"
-              onClick={() =>
+              onClick={() => {
                 setCenter([
                   parseFloat(inputCoords[0]),
                   parseFloat(inputCoords[1]),
-                ])
-              }
+                ]);
+                setAreaSize(parseFloat(inputSize));
+              }}
             >
               Search
             </Button>

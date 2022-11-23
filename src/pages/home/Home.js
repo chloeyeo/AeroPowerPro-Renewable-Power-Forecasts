@@ -51,6 +51,7 @@ const Home = () => {
   const [showLayer1, setShowLayer1] = useState(true);
   const [showLayer2, setShowLayer2] = useState(true);
   const [showMarker, setShowMarker] = useState(false);
+  const [areaSize, setAreaSize] = useState(0.1);
 
   const [features, setFeatures] = useState(addMarkers(markersLonLat));
   let geoObject = {
@@ -78,7 +79,12 @@ const Home = () => {
   return (
     <>
       <NavBar />
-      <SideBar center={center} setCenter={setCenter} />
+      <SideBar
+        center={center}
+        setCenter={setCenter}
+        areaSize={areaSize}
+        setAreaSize={setAreaSize}
+      />
       <div style={{ display: "block", height: "700px" }}>
         <Map styles={{}} center={fromLonLat(center)} zoom={zoom}>
           <Layers>

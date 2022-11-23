@@ -6,25 +6,27 @@ import InputGroup from "react-bootstrap/InputGroup";
 const SearchBar = ({ center, setCenter, inputCoords, setInputCoords }) => {
   return (
     <>
-      <InputGroup className="mb-3">
-        <Form.Control
-          placeholder="Longitude"
-          aria-label="Longitude"
-          aria-describedby="basic-addon2"
-          value={inputCoords[0]}
-          onChange={(event) =>
-            setInputCoords([event.target.value, inputCoords[1]])
-          }
-        />
-      </InputGroup>
+      <p>Latitude</p>
       <InputGroup className="mb-3">
         <Form.Control
           placeholder="Latitude"
           aria-label="Latitude"
           aria-describedby="basic-addon2"
+          value={inputCoords[0]}
+          onChange={(event) =>
+            setInputCoords([event.target.value, inputCoords[0]])
+          }
+        />
+      </InputGroup>
+      <p>Longitude</p>
+      <InputGroup className="mb-3">
+        <Form.Control
+          placeholder="Longitude"
+          aria-label="Longitude"
+          aria-describedby="basic-addon2"
           value={inputCoords[1]}
           onChange={(event) =>
-            setInputCoords([inputCoords[0], event.target.value])
+            setInputCoords([inputCoords[1], event.target.value])
           }
         />
       </InputGroup>
