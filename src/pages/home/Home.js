@@ -64,10 +64,10 @@ const Home = () => {
           coordinates: [
             [
               [
-                [center[0] - 0.1, center[1] + 0.06],
-                [center[0] + 0.1, center[1] + 0.06],
-                [center[0] + 0.1, center[1] - 0.06],
-                [center[0] - 0.1, center[1] - 0.06],
+                [center[0] - areaSize, center[1] + areaSize * 0.6],
+                [center[0] + areaSize, center[1] + areaSize * 0.6],
+                [center[0] + areaSize, center[1] - areaSize * 0.6],
+                [center[0] - areaSize, center[1] - areaSize * 0.6],
               ],
             ],
           ],
