@@ -53,6 +53,27 @@ const Home = () => {
   const [showMarker, setShowMarker] = useState(false);
 
   const [features, setFeatures] = useState(addMarkers(markersLonLat));
+  let geoObject = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: {
+          type: "MultiPolygon",
+          coordinates: [
+            [
+              [
+                [center[0] - 0.1, center[1] + 0.06],
+                [center[0] + 0.1, center[1] + 0.06],
+                [center[0] + 0.1, center[1] - 0.06],
+                [center[0] - 0.1, center[1] - 0.06],
+              ],
+            ],
+          ],
+        },
+      },
+    ],
+  };
 
   return (
     <>
@@ -62,6 +83,16 @@ const Home = () => {
         <Map styles={{}} center={fromLonLat(center)} zoom={zoom}>
           <Layers>
             <TileLayer source={osm()} zIndex={0} />
+            {showLayer1 && (
+              <VectorLayer
+                source={vector({
+                  features: new GeoJSON().readFeatures(geoObject, {
+                    featureProjection: get("EPSG:3857"),
+                  }),
+                })}
+                style={FeatureStyles.MultiPolygon}
+              />
+            )}
             {showMarker && <VectorLayer source={vector({ features })} />}
           </Layers>
           <Controls>
