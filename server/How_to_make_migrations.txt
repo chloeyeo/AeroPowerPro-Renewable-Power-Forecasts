@@ -1,0 +1,29 @@
+How to create your database:
+
+From console:
+    python manage.py makemigrations backend_db:
+    python manage.py migrate
+
+
+To Create an admin acccount(superuser):
+    python manage.py createsuperuser
+
+
+To add a new entry to the table:
+    from backend_db.models import <Model names>
+    <Model name>.objects.get_or_create()
+
+To query the database:
+    <Model name>.objects.get() // 1 response
+    OR 
+    <Model name>.objects.filter() // list of multiple responses -> preferred
+
+Example:
+    from backend_db.models import HistoricWind
+
+    HistoricWind.objects.get_or_create(height_above_ground = 10, longitude = 5 ,...) -> a tuple with the object and a boolean (created = True)
+
+    HistoricWind.objects.filter(longitude <= 5) -> list of all query responses, can be empty
+
+
+

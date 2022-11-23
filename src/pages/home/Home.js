@@ -1,6 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { NavBar } from "components";
-import { SearchBar, Layers, TileLayer, VectorLayer, Map } from "./components";
+import React, { useState } from "react";
+import { NavBar } from "../../components";
+import {
+  SideBar,
+  SearchBar,
+  Layers,
+  TileLayer,
+  VectorLayer,
+  Map,
+} from "./components";
+
 import { osm, vector } from "./components/source";
 import { Controls, FullScreenControl } from "./components/controls";
 import FeatureStyles from "./components/features/Styles";
@@ -61,12 +69,7 @@ const Home = () => {
   return (
     <>
       <NavBar />
-      <SearchBar
-        center={center}
-        setCenter={setCenter}
-        inputCoords={inputCoords}
-        setInputCoords={setInputCoords}
-      />
+      <SideBar center={center} setCenter={setCenter} />
       <div style={{ display: "block", height: "700px" }}>
         <Map styles={{}} center={fromLonLat(center)} zoom={zoom}>
           <Layers>
