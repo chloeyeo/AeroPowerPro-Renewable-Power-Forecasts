@@ -25,10 +25,6 @@ const router = createBrowserRouter([
     path: "/contactus",
     element: <Contactus />,
   },
-  {
-    path: "/postrequest",
-    element: <PostRequest />,
-  },
 ]);
 
 const App = () => <RouterProvider router={router} />;

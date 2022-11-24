@@ -1,7 +1,38 @@
 import React from "react";
 import { NavBar } from "../../components";
+import axios from "axios";
+
+// replace html form with bootstrap
 
 const Login = () => {
+  const handleOnSubmit = (event) => {
+    console.log("inside handleOnSubmit in login.js");
+    // const requestOptions = {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     password: document.getElementById("exampleInputPassword1").value,
+    //     email: document.getElementById("exampleInputPassword1").value,
+    //   }),
+    // };
+
+    // send POST request
+    axios
+      .post("http://localhost:8000/register_users/", {
+        password: document.getElementById("exampleInputPassword1").value,
+        email: document.getElementById("exampleInputEmail1").value,
+      })
+      .then(function(response) {
+        console.log(response);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    //event.preventDefault(); // to prevent reloading/refreshing page
+    //   fetch("localhost:8000/register_users/", requestOptions)
+    //     .then((res) => res.json())
+    //     .then((res) => console.log(res));
+  };
   return (
     <>
       <div>
@@ -41,7 +72,11 @@ const Login = () => {
               placeholder="Password"
             />
           </div>
-          <button type="submit" class="w-100 mt-4 btn btn-light">
+          <button
+            onClick={handleOnSubmit}
+            type="submit"
+            class="w-100 mt-4 btn btn-light"
+          >
             Submit
           </button>
         </form>

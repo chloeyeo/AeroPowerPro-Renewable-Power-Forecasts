@@ -1,4 +1,3 @@
 import Login from "./Login";
-import PostRequest from "./PostRequest";
 
-export { Login, PostRequest };
+export default Login;
