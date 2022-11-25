@@ -1,4 +1,7 @@
 from django.db import models
+
+from model import ActualProduceElectricity
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -25,3 +28,10 @@ class ActualProduceElectricity(models.Model):
     settlement_date = models.DateField()
     period = models.IntegerField()
     quantity = models.FloatField()
+
+
+class UserProfile(models.Model):
+    # user = models.OneToOneField(User, on_delete=models.CASCADE) we don't have this yet
+
+    email = models.CharField(max_length=100, null=True, unique=True)
+    password = models.CharField(max_length=64, null=True)
