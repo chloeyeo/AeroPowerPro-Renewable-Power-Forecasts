@@ -1,25 +1,59 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.request import Request
-from rest_framework.response import Response
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.urls import reverse
+from django.contrib.auth import authenticate, login, logout
+from models import ActualProduceElectricity
+
+
+# from rest_framework.views import APIView
+# from rest_framework.request import Request
+# from rest_framework.response import Response
 # import {Login} from '../../src/pages/login'
 
-class RegisterView(APIView):
-    def post(self, request):
-        password = request.data.get("password")
+
+# I checked how to solve the problem the for login page. The problem is in both front end and back end.
+# 1. First, the server is running in port 3000, so you should send request to http://127.0.0.1:3000 but not 8000.
+# 2. Second, the backend of RegisterView should be a function but not a Class.
+
+def register_view(request):
+    if request.method == "POST":
         email = request.data.get("email")
+        password = request.data.get("password")
+        user = authenticate(email=email, password=password)
+        if user:
+            login(request, user)
+            return redirect(reverse('index'))
+        else:
+            print(f"Invalid email or password: email: {email}, password: {password}")
+    else:
+        return render(request, 'login/')
 
-        print("received password from client:", password)
-        print("received email from client:", email)
 
-        json = {
-        "password": "exampleInputPassword1",
-        "email": "exampleInputEmail1"
-      }
-        return Response(json)
+def get_elexon(request):
+    context_dic = {}
+    try:
+        elexon_data = ActualProduceElectricity.objects.all()
+        context_dic = {'elexon_data': elexon_data}
+        return render(request, 'show_elexon/', context=context_dic)
+    except ActualProduceElectricity.DoesNotExist:
+        print(f"The ActualProduceElectricity is not exist")
+        return render(request, 'get_elexon/', context=context_dic)
 
 
-        # validate password and email
+def get_elexon_by_date(request, date):
+    context_dic = {}
+    try:
+        elexon_data = ActualProduceElectricity.objects.get(settlement_date=date)
+        context_dic = {'elexon_data': elexon_data}
+        return render(request, 'show_elexon/', context=context_dic)
+    except ActualProduceElectricity.DoesNotExist:
+        print(f"The ActualProduceElectricity is not exist")
+        return render(request, 'get_elexon/', context=context_dic)
+
+
+
+
+# validate password and email
 # import urllib library
 # from urllib.request import urlopen
   
