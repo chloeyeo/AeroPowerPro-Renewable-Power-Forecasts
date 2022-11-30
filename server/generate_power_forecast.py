@@ -28,6 +28,6 @@ for turbine in turbines:
     new_tb = WindTurbine(**new_tb)
     # print(turbine)
     mc_new_tb = ModelChain(new_tb).run_model(weather_df)
-    print(mc_new_tb.head)
+    print(mc_new_tb.power_output)
     break
     

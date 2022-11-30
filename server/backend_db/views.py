@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from models import ActualProduceElectricity
+from backend_db.models import ActualProduceElectricity
 
 
 # from rest_framework.views import APIView
