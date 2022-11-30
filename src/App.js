@@ -1,19 +1,35 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, About, Signup } from "./pages";
+import {
+  Home,
+  About,
+  Login,
+  ErrorPage,
+  Contactus /*, PostRequest */,
+} from "./pages";
+import { ProSidebarProvider } from "react-pro-sidebar";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: (
+      <ProSidebarProvider>
+        <Home />
+      </ProSidebarProvider>
+    ),
+    errorElement: <ErrorPage />,
   },
   {
-    path: "/signup",
-    element: <Signup />,
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "/about",
     element: <About />,
+  },
+  {
+    path: "/contactus",
+    element: <Contactus />,
   },
 ]);
 
