@@ -41,8 +41,10 @@ def insert_to_weather_forecast(data, lat, long):
                     "windspeed_10m" : forecast[2],
                     "windspeed_80m" : forecast[3],
                     }
-        WeatherForecast.objects.create(date_val = forecast[-1], latitude = lat, longitude = long, temperature_2m = forecast[0],
-        surface_pressure = forecast[1], windspeed_10m = forecast[2], windspeed_80m = forecast[3])
+        # WeatherForecast.objects.create(date_val = forecast[-1], latitude = lat, longitude = long, temperature_2m = forecast[0],
+        #                                 surface_pressure = forecast[1], windspeed_10m = forecast[2], windspeed_80m = forecast[3])
+        WeatherForecast.objects.update_or_create(date_val = forecast[-1], latitude = lat, longitude = long, defaults = defaults)
+        
 
 
 def get_forecasts(lat, long, start_date = datetime.now(), days = 5, ):
@@ -57,10 +59,14 @@ def get_forecasts(lat, long, start_date = datetime.now(), days = 5, ):
         insert_to_weather_forecast(data, lat, long)
     
 
-def get_forecasts_coord_step(start_date = datetime.now(), days = 5):
-    for lat in np.arange(50.0, 59.01, 0.25):
-        for long in np.arange(-7.0, 4.01, 0.25):
-            print(lat,long)
+def get_forecasts_coord_step(start_date = datetime.now(), days = 5, step = 0.25):
+    print(f"Getting forecasts for the next {days} days")
+    for lat in np.arange(50.0, 59.01, step):
+        for long in np.arange(-7.0, 3.01, step):
             get_forecasts(lat, long, start_date, days)
+            print(f"Power forecasts for ({lat},{long})")
+    print("Done")
 
 get_forecasts_coord_step()
+
+

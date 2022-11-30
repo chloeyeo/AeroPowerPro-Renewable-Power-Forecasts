@@ -52,7 +52,7 @@ def historic_wind_insert(link, dat):
                     HistoricWind.objects.create(date_val = insert_h, 
                                                 height_above_ground = heights[height], 
                                                 latitude = lats[lat], 
-                                                longitude = longs[lon], 
+                                                longitude = 360 - longs[lon], 
                                                 u_comp = insert_u, 
                                                 v_comp = insert_v)
 

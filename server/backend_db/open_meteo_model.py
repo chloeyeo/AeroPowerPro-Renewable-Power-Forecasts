@@ -9,3 +9,6 @@ class WeatherForecast(models.Model):
     surface_pressure = models.FloatField()
     windspeed_10m = models.FloatField()
     windspeed_80m = models.FloatField()
+
+    def __str__(self):
+        return "{} at ({},{})".format(self.date_val.strftime("%Y-%m-%d"), self.latitude, self.longitude)

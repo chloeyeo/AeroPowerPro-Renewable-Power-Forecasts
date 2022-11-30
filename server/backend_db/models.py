@@ -1,6 +1,7 @@
 from django.db import models
 from backend_db.elexon_model import ActualProduceElectricity
 from backend_db.open_meteo_model import WeatherForecast
+from backend_db.power_forecast import PowerForecast
 # Create your models here.
 
 class HistoricWind(models.Model):
@@ -11,3 +12,6 @@ class HistoricWind(models.Model):
     latitude = models.FloatField(blank = False)
     u_comp = models.FloatField(blank = False)
     v_comp = models.FloatField(blank = False)
+
+    def __str__(self):
+        return "{} : ({},{}) : u_comp = {}, v_comp = {}".format(self.date_val.strftime("%Y-%m-%d"), self.latitude, self.longitude, self.u_comp, self.v_comp)
