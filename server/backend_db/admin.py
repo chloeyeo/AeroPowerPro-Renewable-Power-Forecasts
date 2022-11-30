@@ -1,11 +1,12 @@
 from django.contrib import admin
-
-from models import HistoricWind, ActualProduceElectricity, UserProfile
-
-# Register models with the admin interface here
+from backend_db.models import HistoricWind, ActualProduceElectricity, WeatherForecast, PowerForecast, UserProfile
+# Register your models here.
 
 admin.site.register(HistoricWind)
 
 admin.site.register(ActualProduceElectricity)
 
+admin.site.register(WeatherForecast)
+
+admin.site.register(PowerForecast)
 admin.site.register(UserProfile)

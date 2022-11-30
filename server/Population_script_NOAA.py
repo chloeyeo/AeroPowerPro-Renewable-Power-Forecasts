@@ -56,13 +56,12 @@ def historic_wind_insert(link, dat):
                 for lon in range(len(longs)):
                     insert_u = u_comp[h][height][lat][lon]
                     insert_v = v_comp[h][height][lat][lon]
-                    HistoricWind.objects.create(date_val=insert_h,
-                                                height_above_ground=heights[height],
-                                                latitude=lats[lat],
-                                                longitude=longs[lon],
-                                                u_comp=insert_u,
-                                                v_comp=insert_v)
-
+                    HistoricWind.objects.create(date_val = insert_h, 
+                                                height_above_ground = heights[height], 
+                                                latitude = lats[lat], 
+                                                longitude = 360 - longs[lon], 
+                                                u_comp = insert_u, 
+                                                v_comp = insert_v)
 
 def historic_wind_pull_insert(dat):
     req = pull_from_api(dat)
@@ -98,8 +97,8 @@ def NOAA_schedule_job():
 
 if __name__ == '__main__':
     today = datetime.datetime.now()
-    start_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
-    end_time = start_time - relativedelta(years=2)        # Start getting data from 2 years ago
+    end_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
+    start_time = end_time - relativedelta(years=2)        # Start getting data from 2 years ago
 
     # Retrieve data starting from 2 years ago
     NOAA_get_historic(start_time, end_time)
