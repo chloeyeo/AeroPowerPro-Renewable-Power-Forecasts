@@ -1,6 +1,6 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, About, Login, ErrorPage, Contactus } from "./pages";
+import { Home, About, Login, ErrorPage, Contactus, PostRequest } from "./pages";
 import { ProSidebarProvider } from "react-pro-sidebar";
 
 const router = createBrowserRouter([
