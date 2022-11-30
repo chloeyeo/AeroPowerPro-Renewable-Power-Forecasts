@@ -79,7 +79,12 @@ const Home = () => {
         setAreaSize={setAreaSize}
       />
       <div style={{ display: "block", height: `750px` }}>
-        <Map styles={{}} center={fromLonLat(center)} zoom={zoom}>
+        <Map
+          styles={{}}
+          center={fromLonLat(center)}
+          zoom={zoom}
+          setCenter={setCenter}
+        >
           <Layers>
             <TileLayer source={osm()} zIndex={0} />
             {showLayer1 && (
