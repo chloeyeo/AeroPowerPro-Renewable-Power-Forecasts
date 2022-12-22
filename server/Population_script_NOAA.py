@@ -105,7 +105,7 @@ if __name__ == '__main__':
     NOAA_get_historic(start_time, end_time)
 
     # iterate and pull data every 6 hours with schedule job
-    schedule.every(6).hours.do(NOAA_schedule_job)
-    while True:
-        schedule.run_pending()
-        time.sleep(21300)       # sleep for 5 hours and 55 minutes before next retrieval
+    # schedule.every(6).hours.do(NOAA_schedule_job)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(21300)       # sleep for 5 hours and 55 minutes before next retrieval
