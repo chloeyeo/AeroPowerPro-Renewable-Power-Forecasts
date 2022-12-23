@@ -100,9 +100,10 @@ def post_elexon(url):
 if __name__ == "__main__":
     today = datetime.datetime.now()
     start_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
-    end_time = start_time - relativedelta(years=2)        # Start getting data from 2 years ago
+    end_time = start_time - relativedelta(days=5)        # Start getting data from 2 years ago
 
-    frame = pd.date_range(start=str(start_time.date()), end=str(end_time.date()))
+    frame = pd.date_range(end=str(start_time.date()), start=str(end_time.date()))
+
     for i in range(len(frame)):
         date = str(frame[i]).split(" ")[0]
         year, month, day = date.split("-")
