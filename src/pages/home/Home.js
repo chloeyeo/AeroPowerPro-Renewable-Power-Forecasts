@@ -6,13 +6,11 @@ import { NavBar } from "../../components";
 
 import {
   SideBar,
-  Layers,
   TileLayer,
   VectorLayer,
   Map,
   osm,
   vector,
-  Controls,
   FullScreenControl,
   Styles as FeatureStyles,
 } from "./components";
@@ -55,21 +53,17 @@ const Home = () => {
       />
       <div style={{ display: "block", height: `750px` }}>
         <Map center={fromLonLat(center)} zoom={8} setCenter={setCenter}>
-          <Layers>
-            <TileLayer source={osm()} zIndex={0} />
+          <TileLayer source={osm()} zIndex={0} />
 
-            <VectorLayer
-              source={vector({
-                features: new GeoJSON().readFeatures(geoObject, {
-                  featureProjection: get("EPSG:3857"),
-                }),
-              })}
-              style={FeatureStyles.MultiPolygon}
-            />
-          </Layers>
-          <Controls>
-            <FullScreenControl />
-          </Controls>
+          <VectorLayer
+            source={vector({
+              features: new GeoJSON().readFeatures(geoObject, {
+                featureProjection: get("EPSG:3857"),
+              }),
+            })}
+            style={FeatureStyles.MultiPolygon}
+          />
+          <FullScreenControl />
         </Map>
       </div>
     </>
