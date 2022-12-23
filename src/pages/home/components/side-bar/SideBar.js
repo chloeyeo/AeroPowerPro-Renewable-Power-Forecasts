@@ -96,7 +96,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                     }
                   />
                 </InputGroup>
-                <p>Area Size (0.25 to 5)</p>
+                <p>Scale of Selected Area(In degrees) (0.25 to 5)</p>
                 <InputGroup className="mb-3">
                   <Form.Control
                     placeholder="Area Size"
@@ -145,7 +145,15 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 backgroundColor: "white",
               }}
             >
-              <h1> info</h1>
+              <Button
+                variant="outline-secondary"
+                id="button-addon2"
+                onClick={() => {
+                  setIsShown((current) => false);
+                }}
+              >
+                X
+              </Button>
             </div>
             <div
               style={{
