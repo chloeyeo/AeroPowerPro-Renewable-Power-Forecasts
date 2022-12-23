@@ -35,20 +35,6 @@ const Map = ({ children, zoom, center, setCenter }) => {
     return () => mapObject.setTarget(undefined);
   }, [center]);
 
-  // zoom change handler
-  useEffect(() => {
-    if (!map) return;
-
-    map.getView().setZoom(zoom);
-  }, [zoom]);
-
-  // center change handler
-  useEffect(() => {
-    if (!map) return;
-
-    map.getView().setCenter();
-  }, [center]);
-
   return (
     <MapContext.Provider value={{ map }}>
       <div

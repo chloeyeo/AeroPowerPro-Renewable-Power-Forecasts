@@ -7,12 +7,11 @@ import {
   useProSidebar,
 } from "react-pro-sidebar";
 
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineSearch, AiOutlineColumnHeight } from "react-icons/ai";
 import { FiWind } from "react-icons/fi";
 import { WiSolarEclipse } from "react-icons/wi";
 import { ImStatsDots } from "react-icons/im";
 import { GiWindTurbine } from "react-icons/gi";
-import { AiOutlineColumnHeight } from "react-icons/ai";
 import { TfiLayoutWidthDefaultAlt } from "react-icons/tfi";
 
 import Button from "react-bootstrap/Button";
@@ -20,16 +19,27 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
 const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
-  const {
-    collapseSidebar,
-    // toggleSidebar,
-    collapsed,
-    // toggled,
-    // broken,
-    // rtl,
-  } = useProSidebar();
+  const { collapseSidebar, collapsed } = useProSidebar();
   const [inputCoords, setInputCoords] = useState(center || "");
   const [inputSize, setInputSize] = useState(areaSize || 0.1);
+
+  const updateCoords = () => {
+    if (
+      inputCoords[1] < 50 ||
+      inputCoords[1] > 59 ||
+      inputCoords[0] < -7 ||
+      inputCoords[0] > 4 ||
+      inputSize < 0.25 ||
+      inputSize > 5
+    ) {
+      alert(
+        "Invalid input, the correct ranges are:\nLatitude: 50 to 59\nLongitude: -7 to 4\nArea Size: 0.25 to 5"
+      );
+    } else {
+      setCenter([parseFloat(inputCoords[0]), parseFloat(inputCoords[1])]);
+      setAreaSize(parseFloat(inputSize));
+    }
+  };
 
   return (
     <div
@@ -101,26 +111,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
               <Button
                 variant="outline-secondary"
                 id="button-addon2"
-                onClick={() => {
-                  if (
-                    inputCoords[1] < 50 ||
-                    inputCoords[1] > 59 ||
-                    inputCoords[0] < -7 ||
-                    inputCoords[0] > 4 ||
-                    inputSize < 0.25 ||
-                    inputSize > 5
-                  ) {
-                    alert(
-                      "Invalid input, the correct ranges are:\nLatitude: 50 to 59\nLongitude: -7 to 4\nArea Size: 0.25 to 5"
-                    );
-                  } else {
-                    setCenter([
-                      parseFloat(inputCoords[0]),
-                      parseFloat(inputCoords[1]),
-                    ]);
-                    setAreaSize(parseFloat(inputSize));
-                  }
-                }}
+                onClick={updateCoords}
               >
                 Search
               </Button>
