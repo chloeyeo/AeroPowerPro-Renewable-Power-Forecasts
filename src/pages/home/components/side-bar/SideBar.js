@@ -46,6 +46,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
     } else {
       setCenter([parseFloat(inputCoords[0]), parseFloat(inputCoords[1])]);
       setAreaSize(parseFloat(inputSize));
+      setIsShown(true);
     }
   };
 
@@ -119,27 +120,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 <Button
                   variant="outline-secondary"
                   id="button-addon2"
-                  onClick={() => {
-                    if (
-                      inputCoords[1] < 50 ||
-                      inputCoords[1] > 59 ||
-                      inputCoords[0] < -7 ||
-                      inputCoords[0] > 4 ||
-                      inputSize < 0.25 ||
-                      inputSize > 5
-                    ) {
-                      alert(
-                        "Invalid input, the correct ranges are:\nLatitude: 50 to 59\nLongitude: -7 to 4\nArea Size: 0.25 to 5"
-                      );
-                    } else {
-                      setCenter([
-                        parseFloat(inputCoords[0]),
-                        parseFloat(inputCoords[1]),
-                      ]);
-                      setAreaSize(parseFloat(inputSize));
-                      setIsShown((current) => true);
-                    }
-                  }}
+                  onClick={updateCoords}
                 >
                   Search
                 </Button>
@@ -158,13 +139,9 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
               <Button
                 variant="outline-secondary"
                 id="button-addon2"
-<<<<<<< HEAD
-                onClick={updateCoords}
-=======
                 onClick={() => {
                   setIsShown((current) => false);
                 }}
->>>>>>> dev-branch
               >
                 X
               </Button>
