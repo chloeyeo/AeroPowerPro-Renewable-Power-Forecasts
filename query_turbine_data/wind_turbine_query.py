@@ -12,7 +12,10 @@ class QueryWindTurbineData(QueryGeneratorData):
         return False
 
     def get_data_from_id(self, id):
-        return self.data[self.data[:, 6] == id]
+        if(self.data[:, 6] == id):
+            return self.data[self.data[:, 6] == id]
+        print("No ", id, "in the database")
+        return
 
     def create_dict(self):
         bm = self.data[self.data[:,2] == "WIND"][:, 1]
