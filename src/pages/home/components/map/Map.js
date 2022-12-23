@@ -2,8 +2,9 @@ import React, { useRef, useState, useEffect } from "react";
 import "./Map.css";
 import MapContext from "./MapContext";
 import * as ol from "ol";
+import * as olProj from "ol/proj";
 
-const Map = ({ children, zoom, center }) => {
+const Map = ({ children, zoom, center, setCenter }) => {
   const mapRef = useRef();
   const [map, setMap] = useState(null);
 
@@ -24,6 +25,12 @@ const Map = ({ children, zoom, center }) => {
     let mapObject = new ol.Map(options);
     mapObject.setTarget(mapRef.current);
     setMap(mapObject);
+    mapObject.on("click", function (evt) {
+      setCenter([
+        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
+        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[1],
+      ]);
+    });
 
     return () => mapObject.setTarget(undefined);
   }, [center]);

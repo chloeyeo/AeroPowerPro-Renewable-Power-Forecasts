@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { NavBar } from "../../components";
-import {
-  SideBar,
-  SearchBar,
-  Layers,
-  TileLayer,
-  VectorLayer,
-  Map,
-} from "./components";
+import { SideBar, Layers, TileLayer, VectorLayer, Map } from "./components";
 
 import { osm, vector } from "./components/source";
 import { Controls, FullScreenControl } from "./components/controls";
@@ -20,10 +13,10 @@ import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
 
 import mapConfig from "./config.json";
-import { set } from "ol/transform";
+// import { set } from "ol/transform";
 
-const geojsonObject = mapConfig.geojsonObject;
-const geojsonObject2 = mapConfig.geojsonObject2;
+// const geojsonObject = mapConfig.geojsonObject;
+// const geojsonObject2 = mapConfig.geojsonObject2;
 const markersLonLat = [mapConfig.kansasCityLonLat, mapConfig.blueSpringsLonLat];
 
 function addMarkers(lonLatArray) {
@@ -46,22 +39,64 @@ function addMarkers(lonLatArray) {
 
 const Home = () => {
   const [center, setCenter] = useState(mapConfig.center);
-  const [zoom, setZoom] = useState(9);
+  const [zoom] = useState(8);
 
-  const [showLayer1, setShowLayer1] = useState(true);
-  const [showLayer2, setShowLayer2] = useState(true);
-  const [showMarker, setShowMarker] = useState(false);
+  const [showLayer1] = useState(true);
+  // const [showLayer2, setShowLayer2] = useState(true);
+  const [showMarker] = useState(false);
+  const [areaSize, setAreaSize] = useState(0.25);
 
-  const [features, setFeatures] = useState(addMarkers(markersLonLat));
+  const [features] = useState(addMarkers(markersLonLat));
+  let geoObject = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: {
+          type: "MultiPolygon",
+          coordinates: [
+            [
+              [
+                [center[0] - areaSize, center[1] + areaSize],
+                [center[0] + areaSize, center[1] + areaSize],
+                [center[0] + areaSize, center[1] - areaSize],
+                [center[0] - areaSize, center[1] - areaSize],
+              ],
+            ],
+          ],
+        },
+      },
+    ],
+  };
 
   return (
     <>
       <NavBar />
-      <SideBar center={center} setCenter={setCenter} />
-      <div style={{ display: "block", height: "700px" }}>
-        <Map styles={{}} center={fromLonLat(center)} zoom={zoom}>
+      <SideBar
+        center={center}
+        setCenter={setCenter}
+        areaSize={areaSize}
+        setAreaSize={setAreaSize}
+      />
+      <div style={{ display: "block", height: `750px` }}>
+        <Map
+          styles={{}}
+          center={fromLonLat(center)}
+          zoom={zoom}
+          setCenter={setCenter}
+        >
           <Layers>
             <TileLayer source={osm()} zIndex={0} />
+            {showLayer1 && (
+              <VectorLayer
+                source={vector({
+                  features: new GeoJSON().readFeatures(geoObject, {
+                    featureProjection: get("EPSG:3857"),
+                  }),
+                })}
+                style={FeatureStyles.MultiPolygon}
+              />
+            )}
             {showMarker && <VectorLayer source={vector({ features })} />}
           </Layers>
           <Controls>
