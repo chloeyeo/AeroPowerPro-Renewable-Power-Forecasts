@@ -44,7 +44,6 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
       <div
         style={{
           display: "flex",
-          height: "800px",
           position: "absolute",
           zIndex: 3,
         }}
@@ -138,23 +137,33 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
             </SubMenu>
           </Menu>
         </Sidebar>
+        {isShown && (
+          <div display="flex">
+            <div
+              style={{
+                height: "300px",
+                backgroundColor: "white",
+              }}
+            >
+              <h1> info</h1>
+            </div>
+            <div
+              style={{
+                backgroundColor: "white",
+                width: "700px",
+                height: "300px",
+              }}
+            >
+              <LineChart width={600} height={300} data={data} background="#fff">
+                <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                <XAxis dataKey="name" />
+                <YAxis />
+              </LineChart>
+            </div>
+          </div>
+        )}
       </div>
-      {isShown && (
-        <div
-          style={{
-            backgroundColor: "white",
-            width: "700px",
-            height: "300px",
-          }}
-        >
-          <LineChart width={600} height={300} data={data} background="#fff">
-            <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-            <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-            <XAxis dataKey="name" />
-            <YAxis />
-          </LineChart>
-        </div>
-      )}
     </>
   );
 };
