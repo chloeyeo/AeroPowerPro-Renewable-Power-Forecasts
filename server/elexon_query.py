@@ -53,7 +53,7 @@ def elexon_schedule_job():
         yesterday = datetime.date.today() - datetime.timedelta(-1)
         yes_year, yes_cur_month, yes_cur_day = str(yesterday).split("-")
         for cur_period in range(start_period, 49):
-            get_data_by_restful(settlementDate=yes_year + '-' + yes_cur_month.zfill(2) + '-' + yes_cur_day.zfill(2), period=str(cur_period))
+            get_data_by_restful(settlementDate=yes_year + '-' + yes_cur_month.zfill(2) + '-' + yes_cur_day.zfill(2), period=str("*"))
 
         end_period = 12 - time.gmtime().tm_hour * 2 + 1
         # get the data for the current day
