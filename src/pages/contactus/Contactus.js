@@ -13,6 +13,7 @@ const Contactus = () => (
     <div className="maincontent">
       <form>
         <input
+          className="cutext"
           type="text"
           name="name"
           style={{ backgroundColor: "#d9d9d9" }}
@@ -20,6 +21,7 @@ const Contactus = () => (
           id="small"
         />
         <input
+          className="cutext"
           type="text"
           name="subject"
           style={{ backgroundColor: "#d9d9d9" }}
@@ -34,6 +36,7 @@ const Contactus = () => (
           id="large"
         />
         <input
+          className="submit"
           type="submit"
           value="Submit"
           style={{ backgroundColor: "#d9d9d9", color: "#373B44" }}

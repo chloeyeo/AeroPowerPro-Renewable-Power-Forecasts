@@ -1,39 +1,47 @@
-.maincontent {
-  top: 8000rem;
+.registercontent {
   display: flex;
   align-content: center;
   justify-content: center;
+  height: 25vh;
 }
-.cutext {
-  width: 100%;
+.formtitle {
+  font-size: 20px;
+  margin: 8px 15px;
+}
+.namefield {
+  width: 30%;
   padding: 12px 20px;
-  margin: 8px 0;
+  margin: 8px 15px;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
 }
-#large {
-  width: 100%;
+.registercontent input[type="password"] {
+  width: 40%;
   padding: 12px 20px;
-  margin: 8px 0;
+  margin: 8px 15px;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
 }
-.submit {
+.email {
   width: 100%;
+  padding: 12px 20px;
+  margin: 8px 15px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.register {
+  width: 20%;
   background-color: #04aa6d;
   color: white;
   padding: 14px 20px;
-  margin: 8px 0;
+  margin: 8px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-#email {
-  position: absolute;
-  bottom: 0;
-  left: 0;
 }
