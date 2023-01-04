@@ -5,6 +5,29 @@ import Nav from "react-bootstrap/Nav";
 import "react-bootstrap";
 
 function NavBar() {
+  const links = [
+    {
+      display: "Home",
+      link: "/",
+    },
+    {
+      display: "About",
+      link: "/about",
+    },
+    {
+      display: "Contact Us",
+      link: "/contactus",
+    },
+    {
+      display: "Login",
+      link: "/login",
+    },
+    {
+      display: "Register",
+      link: "/register",
+    },
+  ];
+
   return (
     <Navbar style={{ backgroundColor: "#373b44" }} expand="lg">
       <Container>
@@ -15,18 +38,11 @@ function NavBar() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="/" style={{ color: "white" }}>
-                Home
-              </Nav.Link>
-              <Nav.Link href="/about" style={{ color: "white" }}>
-                About
-              </Nav.Link>
-              <Nav.Link href="/contactus" style={{ color: "white" }}>
-                Contact Us
-              </Nav.Link>
-              <Nav.Link href="/login" style={{ color: "white" }}>
-                Login
-              </Nav.Link>
+              {links.map(({ display, link }) => (
+                <Nav.Link href={link} style={{ color: "white" }}>
+                  {display}
+                </Nav.Link>
+              ))}
             </Nav>
           </Navbar.Collapse>
         </div>
