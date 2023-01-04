@@ -1,4 +1,4 @@
-from ast import MatchAs
+# from ast import MatchAs
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
 import django
@@ -8,6 +8,8 @@ import pandas as pd
 from windpowerlib import ModelChain, WindTurbine, create_power_curve
 import numpy as np
 from pprint import pprint
+from query_turbine_data.open_csv_data import OpenCsvData
+from query_turbine_data.wind_turbine_query import QueryWindTurbineData
 
 turbines = ActualProduceElectricity.objects.values_list('market_generation_ngc_bmu_id', flat=True).distinct()
 weather = WeatherForecast.objects.filter(latitude = 50.00, longitude = -2.0).values_list('date_val', 'temperature_2m', 'surface_pressure', 'windspeed_10m', 'windspeed_80m')
@@ -47,5 +49,7 @@ my_turbine = {
 my_turbine = WindTurbine(**my_turbine)
     
 mc_new_tb = ModelChain(my_turbine).run_model(weather_df)
-print(mc_new_tb.power_output)
-print(my_turbine.power_curve)
+# print(mc_new_tb.power_output)
+# print(my_turbine.power_curve)
+
+
