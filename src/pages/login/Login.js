@@ -6,6 +6,7 @@ import axios from "axios";
 
 const Login = () => {
   const handleOnSubmit = (event) => {
+    event.preventDefault();
     console.log("inside handleOnSubmit in login.js");
     // const requestOptions = {
     //   method: "POST",
@@ -17,21 +18,50 @@ const Login = () => {
     // };
 
     // send POST request
-    axios
-      .post("http://localhost:8000/register_users/", {
-        password: document.getElementById("exampleInputPassword1").value,
-        email: document.getElementById("exampleInputEmail1").value,
-      })
-      .then(function(response) {
-        console.log(response);
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+    // axios
+    //   .post("http://127.0.0.1:8000/userProfile", {
+    //     password: document.getElementById("exampleInputPassword1").value,
+    //     email: document.getElementById("exampleInputEmail1").value,
+    //   })
+    //   .then((res) => alert("Form Submitted"))
+    //     // console.log(res.data)
+    //   // .then(function (response) {
+    //   //   console.log(response);
+    //   // })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
     //event.preventDefault(); // to prevent reloading/refreshing page
     //   fetch("localhost:8000/register_users/", requestOptions)
     //     .then((res) => res.json())
     //     .then((res) => console.log(res));
+      // $.post('CSRFTokenManager.do', function(data){
+      //   var send = XMLHttpRequest.prototype.send,
+      //   token = data;
+      //   document.cookie='X-CSRF-Token='+token;
+      //   XMLHttpRequest.prototype.send = function(data){
+      //     this.setRequestHeader('X-CSRF-Token',token);
+
+      //     return send.apply(this,arguements);
+      //   }
+      // })
+      
+    axios({
+      method: 'post',
+      url: 'http://127.0.0.1:8000/userProfile/',
+      data: {
+        password: 'password',
+        email: 'not an email', 
+      },
+      headers: {
+          'Content-Type': 'application/json',
+      },
+  }).then(function (response) {
+      console.log(response);
+  }).catch(function (error) {
+      console.log(error);
+  });
+
   };
   return (
     <>
