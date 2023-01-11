@@ -1,6 +1,5 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Users from "./components/users";
 import {
   Home,
   About,
@@ -43,7 +42,6 @@ function App() {
   return (
     <div className="App">
       <RouterProvider router={router} />
-      <Users></Users>
     </div>
   );
 }
