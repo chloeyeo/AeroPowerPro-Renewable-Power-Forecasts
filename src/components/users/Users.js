@@ -29,9 +29,9 @@ export default class Users extends Component {
         console.log(error);
       });
   }
-  componentDidMount() {
-    this.getUsersData();
-  }
+  // componentDidMount() {
+  //   this.getUsersData();
+  // }
 
   render() {
     return <div>{this.state.users}</div>;
