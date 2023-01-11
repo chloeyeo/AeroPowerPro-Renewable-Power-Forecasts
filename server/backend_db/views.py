@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from backend_db.models import ActualProduceElectricity
+from django.http import JsonResponse
 
 
 # from rest_framework.views import APIView
@@ -15,6 +16,7 @@ from backend_db.models import ActualProduceElectricity
 # 1. First, the server is running in port 3000, so you should send request to http://127.0.0.1:3000 but not 8000.
 # 2. Second, the backend of RegisterView should be a function but not a Class.
 
+
 def register_view(request):
     if request.method == "POST":
         email = request.data.get("email")
@@ -22,11 +24,24 @@ def register_view(request):
         user = authenticate(email=email, password=password)
         if user:
             login(request, user)
-            return redirect(reverse('index'))
+            return {'status': 0}
         else:
             print(f"Invalid email or password: email: {email}, password: {password}")
     else:
         return render(request, 'login/')
+
+# def login_view(request):
+#     if request.method == "POST":
+#         email = request.data.get("email")
+#         password = request.data.get("password")
+#         user = authenticate(email=email, password=password)
+#         if user:
+#             login(request, user)
+#             return {'status': 0}
+#         else:
+#             print(f"Invalid email or password: email: {email}, password: {password}")
+#     else:
+#         return render(request, 'login/')
 
 
 def get_elexon(request):

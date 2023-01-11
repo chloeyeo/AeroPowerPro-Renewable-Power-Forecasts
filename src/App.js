@@ -1,5 +1,6 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Users from "./components/users";
 import {
   Home,
   About,
@@ -33,6 +34,13 @@ const router = createBrowserRouter([
   },
 ]);
 
-const App = () => <RouterProvider router={router} />;
+function App() {
+  return (
+    <div className="App">
+      <RouterProvider router={router} />
+      <Users></Users>
+    </div>
+  );
+}
 
 export default App;

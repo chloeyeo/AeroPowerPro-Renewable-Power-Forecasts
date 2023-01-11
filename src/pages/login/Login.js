@@ -22,10 +22,11 @@ const Login = () => {
         password: document.getElementById("exampleInputPassword1").value,
         email: document.getElementById("exampleInputEmail1").value,
       })
-      .then(function(response) {
-        console.log(response);
-      })
-      .catch(function(error) {
+      .then((res) => alert("Form Submitted"))
+      // .then(function (response) {
+      //   console.log(response);
+      // })
+      .catch(function (error) {
         console.log(error);
       });
     //event.preventDefault(); // to prevent reloading/refreshing page
