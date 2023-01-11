@@ -1,6 +1,7 @@
 import React from "react";
 import { NavBar } from "../../components";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 // replace html form with bootstrap
 
@@ -22,10 +23,10 @@ const Login = () => {
         password: document.getElementById("exampleInputPassword1").value,
         email: document.getElementById("exampleInputEmail1").value,
       })
-      .then(function(response) {
+      .then(function (response) {
         console.log(response);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
     //event.preventDefault(); // to prevent reloading/refreshing page
@@ -83,9 +84,11 @@ const Login = () => {
         <h5 className="mt-4 text-center text-white">
           Don't have an account yet?
         </h5>
-        <button type="submit" class="w-100 btn text-white">
-          Register
-        </button>
+        <Link to="/register">
+          <button type="submit" class="w-100 btn text-white">
+            Register
+          </button>
+        </Link>
       </div>
     </>
   );
