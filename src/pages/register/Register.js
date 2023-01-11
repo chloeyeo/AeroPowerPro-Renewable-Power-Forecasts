@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavBar } from "../../components";
 import "./register.css";
 
 const Register = () => {
   const validateEmail = (value) =>
     /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value);
+
+  const [email, setEmail] = useState("");
+  const [passwords, setPasswords] = useState([]);
 
   return (
     <>
@@ -13,7 +16,22 @@ const Register = () => {
       </div>
       <div className="registercontent"></div>
       <div className="registercontent">
-        <form>
+        <form
+          onSubmit={(event) => {
+            const validEmail = validateEmail(email);
+            const matchingPasswords = passwords[0] === passwords[1];
+            if (validEmail && matchingPasswords) {
+              console.log("valid!");
+            } else {
+              event.preventDefault();
+              if (!validEmail) {
+                alert("Wrong email format");
+              } else {
+                alert("Passwords don't match");
+              }
+            }
+          }}
+        >
           <p className="formtitle">Create an account</p>
           <div>
             <input
@@ -53,6 +71,10 @@ const Register = () => {
               name="password"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Password"
+              value={passwords[0]}
+              onChange={(event) =>
+                setPasswords([event.target.value, passwords[1]])
+              }
               id="small"
               required
               minLength={8}
@@ -63,6 +85,10 @@ const Register = () => {
               type="password"
               name="cpassword"
               style={{ backgroundColor: "#d9d9d9" }}
+              value={passwords[1]}
+              onChange={(event) =>
+                setPasswords([passwords[0], event.target.value])
+              }
               placeholder="Confirm Password"
               id="small"
               required
@@ -74,12 +100,13 @@ const Register = () => {
           <input
             className="email"
             type="text"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
             name="email"
             style={{ backgroundColor: "#d9d9d9" }}
             placeholder="E-mail"
             id="small"
             required
-            onSubmit={validateEmail}
           />
           *
           <input
