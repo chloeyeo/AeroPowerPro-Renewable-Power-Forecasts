@@ -2,8 +2,26 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from backend_db.models import ActualProduceElectricity
+from backend_db.models import ActualProduceElectricity, UserProfile
+from django.http import JsonResponse
+from rest_framework.mixins import (
+    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+)
+from rest_framework.viewsets import GenericViewSet
+from .serializers import UserSerializer
+from rest_framework.decorators import api_view
+from rest_framework import permissions
+from rest_framework.views import APIView
 
+# @api_view(['GET', 'POST'])
+class UserViewSet(  GenericViewSet,  # generic view functionality
+                     CreateModelMixin,  # handles POSTs
+                     RetrieveModelMixin,  # handles GETs for 1 Company
+                     UpdateModelMixin,  # handles PUTs and PATCHes
+                     ListModelMixin): # handles GETs for many Companies
+    permission_classes = [permissions.AllowAny]
+    serializer_class = UserSerializer
+    queryset = UserProfile.objects.all()
 
 # from rest_framework.views import APIView
 # from rest_framework.request import Request
@@ -15,18 +33,34 @@ from backend_db.models import ActualProduceElectricity
 # 1. First, the server is running in port 3000, so you should send request to http://127.0.0.1:3000 but not 8000.
 # 2. Second, the backend of RegisterView should be a function but not a Class.
 
+# @api_view
 def register_view(request):
     if request.method == "POST":
-        email = request.data.get("email")
-        password = request.data.get("password")
-        user = authenticate(email=email, password=password)
-        if user:
-            login(request, user)
-            return redirect(reverse('index'))
-        else:
-            print(f"Invalid email or password: email: {email}, password: {password}")
-    else:
-        return render(request, 'login/')
+    #     email = request.data.get("email")
+    #     password = request.data.get("password")
+    #     user = authenticate(email=email, password=password)
+    #     print("asdsadasd")
+    #     if user:
+    #         login(request, user)
+    #         return {'status': 0}
+    #     else:
+    #         print(f"Invalid email or password: email: {email}, password: {password}")
+    # else:
+    #     return render(request, 'login/')
+        return JsonResponse({"status" : "ok I guess"})
+
+# def login_view(request):
+#     if request.method == "POST":
+#         email = request.data.get("email")
+#         password = request.data.get("password")
+#         user = authenticate(email=email, password=password)
+#         if user:
+#             login(request, user)
+#             return {'status': 0}
+#         else:
+#             print(f"Invalid email or password: email: {email}, password: {password}")
+#     else:
+#         return render(request, 'login/')
 
 
 def get_elexon(request):
