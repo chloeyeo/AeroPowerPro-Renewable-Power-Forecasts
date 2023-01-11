@@ -3,6 +3,7 @@ from backend_db.elexon_model import ActualProduceElectricity
 from backend_db.open_meteo_model import WeatherForecast
 from backend_db.power_forecast import PowerForecast
 from django.contrib.auth.models import User
+from backend_db.wind_farm_metadata import WindFarmData
 # Create your models here.
 
 

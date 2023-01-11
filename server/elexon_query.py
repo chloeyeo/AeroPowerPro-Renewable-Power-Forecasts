@@ -53,7 +53,7 @@ def elexon_schedule_job():
         yesterday = datetime.date.today() - datetime.timedelta(-1)
         yes_year, yes_cur_month, yes_cur_day = str(yesterday).split("-")
         for cur_period in range(start_period, 49):
-            get_data_by_restful(settlementDate=yes_year + '-' + yes_cur_month.zfill(2) + '-' + yes_cur_day.zfill(2), period=str(cur_period))
+            get_data_by_restful(settlementDate=yes_year + '-' + yes_cur_month.zfill(2) + '-' + yes_cur_day.zfill(2), period=str("*"))
 
         end_period = 12 - time.gmtime().tm_hour * 2 + 1
         # get the data for the current day
@@ -100,9 +100,10 @@ def post_elexon(url):
 if __name__ == "__main__":
     today = datetime.datetime.now()
     start_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
-    end_time = start_time - relativedelta(years=2)        # Start getting data from 2 years ago
+    end_time = start_time - relativedelta(days=5)        # Start getting data from 2 years ago
 
-    frame = pd.date_range(start=str(start_time.date()), end=str(end_time.date()))
+    frame = pd.date_range(end=str(start_time.date()), start=str(end_time.date()))
+
     for i in range(len(frame)):
         date = str(frame[i]).split(" ")[0]
         year, month, day = date.split("-")
