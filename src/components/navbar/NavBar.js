@@ -39,7 +39,7 @@ function NavBar() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               {links.map(({ display, link }) => (
-                <Nav.Link href={link} style={{ color: "white" }}>
+                <Nav.Link key={display} href={link} style={{ color: "white" }}>
                   {display}
                 </Nav.Link>
               ))}

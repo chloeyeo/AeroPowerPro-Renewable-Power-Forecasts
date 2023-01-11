@@ -3,7 +3,9 @@ import { NavBar } from "../../components";
 import "./register.css";
 
 const Register = () => {
-  const test = 5;
+  const validateEmail = (value) =>
+    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value);
+
   return (
     <>
       <div>
@@ -13,6 +15,20 @@ const Register = () => {
       <div className="registercontent">
         <form>
           <p className="formtitle">Create an account</p>
+          <div>
+            <input
+              className="username"
+              type="text"
+              name="username"
+              style={{ backgroundColor: "#d9d9d9" }}
+              placeholder="Username"
+              id="small"
+              required
+              minLength={5}
+              maxLength={10}
+            />
+            *
+          </div>
           <div>
             <input
               className="namefield"
@@ -38,14 +54,22 @@ const Register = () => {
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Password"
               id="small"
+              required
+              minLength={8}
+              maxLength={15}
             />
+            *
             <input
               type="password"
               name="cpassword"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Confirm Password"
               id="small"
+              required
+              minLength={8}
+              maxLength={15}
             />
+            *
           </div>
           <input
             className="email"
@@ -54,7 +78,10 @@ const Register = () => {
             style={{ backgroundColor: "#d9d9d9" }}
             placeholder="E-mail"
             id="small"
+            required
+            onSubmit={validateEmail}
           />
+          *
           <input
             className="register"
             type="submit"

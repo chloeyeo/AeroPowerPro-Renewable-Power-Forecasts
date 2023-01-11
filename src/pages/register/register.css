@@ -27,7 +27,16 @@
   box-sizing: border-box;
 }
 .email {
-  width: 100%;
+  width: 80%;
+  padding: 12px 20px;
+  margin: 8px 15px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.username {
+  width: 75%;
   padding: 12px 20px;
   margin: 8px 15px;
   display: inline-block;
