@@ -13,12 +13,12 @@ from rest_framework.decorators import api_view
 from rest_framework import permissions
 from rest_framework.views import APIView
 
-
+# @api_view(['GET', 'POST'])
 class UserViewSet(  GenericViewSet,  # generic view functionality
                      CreateModelMixin,  # handles POSTs
                      RetrieveModelMixin,  # handles GETs for 1 Company
                      UpdateModelMixin,  # handles PUTs and PATCHes
-                     ListModelMixin):
+                     ListModelMixin): # handles GETs for many Companies
     permission_classes = [permissions.AllowAny]
     serializer_class = UserSerializer
     queryset = UserProfile.objects.all()
@@ -33,7 +33,7 @@ class UserViewSet(  GenericViewSet,  # generic view functionality
 # 1. First, the server is running in port 3000, so you should send request to http://127.0.0.1:3000 but not 8000.
 # 2. Second, the backend of RegisterView should be a function but not a Class.
 
-@api_view
+# @api_view
 def register_view(request):
     if request.method == "POST":
     #     email = request.data.get("email")

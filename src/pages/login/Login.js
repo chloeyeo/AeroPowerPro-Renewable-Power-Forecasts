@@ -35,26 +35,26 @@ const Login = () => {
     //   fetch("localhost:8000/register_users/", requestOptions)
     //     .then((res) => res.json())
     //     .then((res) => console.log(res));
-    // $.post('CSRFTokenManager.do', function(data){
-    //   var send = XMLHttpRequest.prototype.send,
-    //   token = data;
-    //   document.cookie='X-CSRF-Token='+token;
-    //   XMLHttpRequest.prototype.send = function(data){
-    //     this.setRequestHeader('X-CSRF-Token',token);
+      // $.post('CSRFTokenManager.do', function(data){
+      //   var send = XMLHttpRequest.prototype.send,
+      //   token = data;
+      //   document.cookie='X-CSRF-Token='+token;
+      //   XMLHttpRequest.prototype.send = function(data){
+      //     this.setRequestHeader('X-CSRF-Token',token);
 
-    //     return send.apply(this,arguements);
-    //   }
-    // })
-    
+      //     return send.apply(this,arguements);
+      //   }
+      // })
+      
     axios({
       method: 'post',
       url: 'http://127.0.0.1:8000/userProfile/',
       data: {
-        password: document.getElementById("exampleInputPassword1").value,
-        email: document.getElementById("exampleInputEmail1").value, 
+        password: 'password',
+        email: 'not an email', 
       },
       headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
+          'Content-Type': 'application/json',
       },
   }).then(function (response) {
       console.log(response);

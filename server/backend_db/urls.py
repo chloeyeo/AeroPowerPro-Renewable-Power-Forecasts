@@ -11,8 +11,9 @@ router = DefaultRouter()
 router.register(r'userProfile', UserViewSet, basename = 'userProfile')
 
 urlpatterns = [
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    re_path('userProfile/', include(router.urls)),
+    # re_path('userProfile/', include(router.urls)),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    re_path('^', include(router.urls)),
     path('register_users/', register_view, name='register_users'),
     path('get_elexon/', get_elexon, name='get_elexon'),
     path('get_elexon/<str:date>', get_elexon_by_date, name='get_elexon_by_date'),
