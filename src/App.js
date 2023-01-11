@@ -1,12 +1,12 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Users from "./components/users";
 import {
   Home,
   About,
   Login,
   ErrorPage,
   Contactus /*, PostRequest */,
+  Register,
 } from "./pages";
 import { ProSidebarProvider } from "react-pro-sidebar";
 
@@ -32,13 +32,16 @@ const router = createBrowserRouter([
     path: "/contactus",
     element: <Contactus />,
   },
+  {
+    path: "/register",
+    element: <Register />,
+  },
 ]);
 
 function App() {
   return (
     <div className="App">
       <RouterProvider router={router} />
-      <Users></Users>
     </div>
   );
 }

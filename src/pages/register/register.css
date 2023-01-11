@@ -1,0 +1,56 @@
+.registercontent {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  height: 25vh;
+}
+.formtitle {
+  font-size: 20px;
+  margin: 8px 15px;
+}
+.namefield {
+  width: 30%;
+  padding: 12px 20px;
+  margin: 8px 15px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.registercontent input[type="password"] {
+  width: 40%;
+  padding: 12px 20px;
+  margin: 8px 15px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.email {
+  width: 80%;
+  padding: 12px 20px;
+  margin: 8px 15px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.username {
+  width: 75%;
+  padding: 12px 20px;
+  margin: 8px 15px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.register {
+  width: 20%;
+  background-color: #04aa6d;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
