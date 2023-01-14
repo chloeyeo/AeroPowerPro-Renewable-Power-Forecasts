@@ -7,30 +7,6 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
-    axios({
-      method: "get",
-      url: "http://127.0.0.1:8000/userProfile/",
-      data: {
-        email,
-        password,
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(function (response) {
-        event.preventDefault();
-
-        console.log(response);
-        // window.location.replace("http://127.0.0.1:3000");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-
   return (
     <>
       <div>
@@ -75,7 +51,7 @@ const Login = () => {
             />
           </div>
           <button
-            onClick={handleOnSubmit}
+            onClick={() => {}}
             type="submit"
             class="w-100 mt-4 btn btn-light"
           >

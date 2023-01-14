@@ -17,7 +17,7 @@ const Register = () => {
     const validEmail = validateEmail(email);
     const matchingPasswords = passwords[0] === passwords[1];
     if (validEmail && matchingPasswords) {
-      console.log("valid, will post now!");
+      console.log("will try posting now!");
       axios({
         method: "post",
         url: "http://127.0.0.1:8000/userProfile/",
@@ -35,6 +35,7 @@ const Register = () => {
           console.log(response);
         })
         .catch(function (error) {
+          alert("Credentials already exist.");
           console.log(error);
         });
     } else {
