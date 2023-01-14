@@ -34,11 +34,11 @@ const Register = () => {
       })
         .then(function (response) {
           event.preventDefault();
-          window.location.replace("http://127.0.0.1:3000")
+          window.location.replace("http://127.0.0.1:3000");
           console.log(response);
         })
         .catch(function (error) {
-          console.log(error.response.data);
+          console.log(error);
         });
     } else {
       console.log("invalid!");

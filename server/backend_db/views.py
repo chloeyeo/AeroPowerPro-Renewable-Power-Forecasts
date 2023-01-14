@@ -32,7 +32,7 @@ class HistoricWindViewSet(APIView):
     def get(self, request, format = None):
         historic_wind_data = HistoricWind.objects.all().values_list('latitude','longitude')
 
-        return JsonResponse(list(historic_wind_data, safe = False))
+        return JsonResponse(list(historic_wind_data), safe = False)
 
 
 
@@ -54,9 +54,10 @@ class GeolocationsView(APIView):
 
     def get(self, request, format = None):
         wind_farms = WindFarmData.objects.all().values_list('longitude', 'latitude')
-        print()
+        print("HELLO")
+        print(wind_farms)
         
-        return JsonResponse(list(wind_farms, safe = False))
+        return JsonResponse(list(wind_farms), safe = False)
 
 
 # from rest_framework.views import APIView

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import GeoJSON from "ol/format/GeoJSON";
+import axios from "axios";
 import { fromLonLat, get } from "ol/proj";
 
 import { NavBar } from "../../components";
@@ -19,6 +20,19 @@ import mapConfig from "./config.json";
 const Home = () => {
   const [center, setCenter] = useState(mapConfig.center);
   const [areaSize, setAreaSize] = useState(0.25);
+
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: "http://127.0.0.1:8000/Geolocations/",
+    })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error.response.data);
+      });
+  }, []);
 
   let geoObject = {
     type: "FeatureCollection",
