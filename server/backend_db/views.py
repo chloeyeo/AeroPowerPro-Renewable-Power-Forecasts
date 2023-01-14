@@ -25,19 +25,21 @@ from django.http import JsonResponse
 #     serializer_class = UserSerializer
 #     queryset = UserProfile.objects.all()
 
-# class HistoricWindViewSet(APIView):
+class HistoricWindViewSet(APIView):
 
-#     permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny]
 
-#     def get(self, request, format = None):
-#         historic_wind_data = HistoricWind.objects.all().values_list()
+    def get(self, request, format = None):
+        historic_wind_data = HistoricWind.objects.all().values_list('latitude','longitude')
+
+        return JsonResponse(list(historic_wind_data, safe = False))
+
 
 
 class UserView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, format = None):
-        print("\n\n\n\n\n\n\n\n", request.data)
         user = UserProfile( username = self.request.data['username'],
                             email = self.request.data['email'],
                             password = self.request.data['password'],
