@@ -34,34 +34,54 @@ const WindFarmsMap = () => {
       });
   }, []);
 
-  //   let geoObject = {
-  //     type: "FeatureCollection",
-  //     features: [
-  //       {
-  //         type: "Feature",
-  //         geometry: {
-  //           type: "MultiPolygon",
-  //           coordinates: [
-  //             [
-  //               [
-  //                 [center[0] - areaSize * 0.5, center[1] + areaSize * 0.5],
-  //                 [center[0] + areaSize * 0.5, center[1] + areaSize * 0.5],
-  //                 [center[0] + areaSize * 0.5, center[1] - areaSize * 0.5],
-  //                 [center[0] - areaSize * 0.5, center[1] - areaSize * 0.5],
-  //               ],
-  //             ],
-  //           ],
-  //         },
-  //       },
-  //     ],
-  //   };
+  function printMarker(i) {
+    let geoObject = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "MultiPolygon",
+            coordinates: [
+              [
+                [
+                  [geolocations[i][0] - 0.05, geolocations[i][1] + 0.05],
+                  [geolocations[i][0] + 0.05, geolocations[i][1] + 0.05],
+                  [geolocations[i][0] + 0.05, geolocations[i][1] - 0.05],
+                  [geolocations[i][0] - 0.05, geolocations[i][1] - 0.05],
+                ],
+              ],
+            ],
+          },
+        },
+      ],
+    };
+    return geoObject;
+  }
+
+  const windfarms = (geolocations) => {
+    let content = [];
+    for (let i = 0; i < geolocations.length; i++) {
+      content.push(
+        <VectorLayer
+          source={vector({
+            features: new GeoJSON().readFeatures(printMarker(i), {
+              featureProjection: get("EPSG:3857"),
+            }),
+          })}
+          style={FeatureStyles.MultiPolygon}
+        />
+      );
+    }
+    return content;
+  };
 
   return (
     <>
       <div style={{ display: "block", height: `750px` }}>
         <Map center={fromLonLat(center)} zoom={8} setCenter={setCenter}>
           <TileLayer source={osm()} zIndex={0} />
-
+          {windfarms(geolocations)}
           {/* <VectorLayer
             source={vector({
               features: new GeoJSON().readFeatures(geoObject, {
