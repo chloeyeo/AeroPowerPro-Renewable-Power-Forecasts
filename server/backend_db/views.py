@@ -30,7 +30,7 @@ class HistoricWindViewSet(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format = None):
-        historic_wind_data = HistoricWind.objects.all().values_list('latitude','longitude')
+        historic_wind_data = HistoricWind.objects.all().values_list('longitude', 'latitude')
 
         return JsonResponse(list(historic_wind_data), safe = False)
 
