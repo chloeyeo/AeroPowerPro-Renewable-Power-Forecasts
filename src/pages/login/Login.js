@@ -1,30 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavBar } from "../../components";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Login = () => {
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    axios({
-      method: "post",
-      url: "http://127.0.0.1:8000/userProfile/",
-      data: {
-        password: "password",
-        email: "not an email",
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
   return (
     <>
       <div>
@@ -48,7 +30,9 @@ const Login = () => {
             <input
               type="email"
               class="form-control"
-              id="exampleInputEmail1"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="exampleInputEmail1"
               aria-describedby="emailHelp"
               placeholder="Enter email"
             />
@@ -60,12 +44,14 @@ const Login = () => {
             <input
               type="password"
               class="form-control"
-              id="exampleInputPassword1"
+              className="exampleInputPassword1"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
               placeholder="Password"
             />
           </div>
           <button
-            onClick={handleOnSubmit}
+            onClick={() => {}}
             type="submit"
             class="w-100 mt-4 btn btn-light"
           >
