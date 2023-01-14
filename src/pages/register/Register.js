@@ -25,12 +25,15 @@ const Register = () => {
           username,
           password: passwords[0],
           email,
+          first_name: "",
+          last_name: "",
         },
         headers: {
           "Content-Type": "application/json",
         },
       })
         .then(function (response) {
+          event.preventDefault();
           window.location.replace("http://127.0.0.1:3000");
           console.log(response);
         })
