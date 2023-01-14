@@ -72,11 +72,10 @@ def post_elexon(url):
     http_obj = httplib2.Http()
     # the request will return a tuple including the response header and the content, where content is a binary string
     resp, content = http_obj.request(uri=url, method='GET', headers={'Content-Type': 'application/xml; charset=UTF-8'},)
-
     # convert the binary string to string
     content_str = content.decode("ascii")
     content_str_list = content_str.split("\n")
-
+    # print(len(content_str_list))
     for idx in range(11, len(content_str_list)):
         # create list of data from the API
         value_str = content_str_list[idx]
@@ -100,7 +99,7 @@ def post_elexon(url):
 if __name__ == "__main__":
     today = datetime.datetime.now()
     start_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
-    end_time = start_time - relativedelta(days=5)        # Start getting data from 2 years ago
+    end_time = start_time - relativedelta(days=60)        # Start getting data from 2 years ago
 
     frame = pd.date_range(end=str(start_time.date()), start=str(end_time.date()))
 
