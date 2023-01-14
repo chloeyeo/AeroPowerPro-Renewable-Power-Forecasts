@@ -25,7 +25,7 @@ const Home = () => {
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://127.0.0.1:8000/Geolocations/",
+      url: "http://127.0.0.1:8000/geolocations/",
     })
       .then(function (response) {
         console.log(response);
@@ -60,9 +60,6 @@ const Home = () => {
 
   return (
     <>
-      {geolocations.map((geolocation) => (
-        <div>{geolocation}</div>
-      ))}
       <NavBar />
       <SideBar
         center={center}
