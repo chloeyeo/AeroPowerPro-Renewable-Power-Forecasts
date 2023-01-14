@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { NavBar } from "../../components";
 import "./register.css";
 
@@ -6,8 +7,48 @@ const Register = () => {
   const validateEmail = (value) =>
     /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value);
 
+  const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [passwords, setPasswords] = useState([]);
+
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
+
+    const validEmail = validateEmail(email);
+    const matchingPasswords = passwords[0] === passwords[1];
+    if (validEmail && matchingPasswords) {
+      console.log("valid, will post now!");
+      axios({
+        method: "post",
+        url: "http://127.0.0.1:8000/userProfile/",
+        data: {
+          username,
+          password: passwords[0],
+          email,
+          first_name: "",
+          last_name: "",
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then(function (response) {
+          event.preventDefault();
+          window.location.replace("http://127.0.0.1:3000");
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      console.log("invalid!");
+      if (!validEmail) {
+        alert("Wrong email format");
+      } else {
+        alert("Passwords don't match");
+      }
+    }
+  };
 
   return (
     <>
@@ -16,22 +57,7 @@ const Register = () => {
       </div>
       <div className="registercontent"></div>
       <div className="registercontent">
-        <form
-          onSubmit={(event) => {
-            const validEmail = validateEmail(email);
-            const matchingPasswords = passwords[0] === passwords[1];
-            if (validEmail && matchingPasswords) {
-              console.log("valid!");
-            } else {
-              event.preventDefault();
-              if (!validEmail) {
-                alert("Wrong email format");
-              } else {
-                alert("Passwords don't match");
-              }
-            }
-          }}
-        >
+        <form onSubmit={handleOnSubmit}>
           <p className="formtitle">Create an account</p>
           <div>
             <input
@@ -40,10 +66,12 @@ const Register = () => {
               name="username"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Username"
+              value={username}
+              onChange={(event) => setUserName(event.target.value)}
               id="small"
               required
               minLength={5}
-              maxLength={10}
+              maxLength={16}
             />
             *
           </div>
