@@ -25,6 +25,8 @@ const Register = () => {
           username,
           password: passwords[0],
           email,
+          first_name: "",
+          last_name: "",
         },
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +38,7 @@ const Register = () => {
           console.log(response);
         })
         .catch(function (error) {
-          console.log(error);
+          console.log(error.response.data);
         });
     } else {
       console.log("invalid!");

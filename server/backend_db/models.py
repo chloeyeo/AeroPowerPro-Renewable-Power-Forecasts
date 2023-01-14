@@ -2,11 +2,7 @@ from django.db import models
 from backend_db.elexon_model import ActualProduceElectricity
 from backend_db.open_meteo_model import WeatherForecast
 from backend_db.power_forecast import PowerForecast
-from django.contrib.auth.models import User
-from backend_db.wind_farm_metadata import WindFarmData
-from django.conf import settings
-from django.contrib.auth import get_user_model
-User=get_user_model()
+from backend_db.wind_farm_data import WindFarmData
 # Create your models here.
 
 
@@ -24,7 +20,8 @@ class HistoricWind(models.Model):
 
 
 class UserProfile(models.Model):
-    # user = models.OneToOneField(User, on_delete=models.CASCADE) we don't have this yet
     email = models.CharField(max_length=100, primary_key=True)
     username = models.CharField(max_length=16, null=False)
     password = models.CharField(max_length=64, null=True)
+    first_name = models.CharField(null=True, max_length=50)
+    last_name = models.CharField(null=True, max_length=50)
