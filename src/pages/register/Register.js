@@ -31,6 +31,8 @@ const Register = () => {
         },
       })
         .then(function (response) {
+          event.preventDefault();
+          window.location.replace("http://127.0.0.1:3000")
           console.log(response);
         })
         .catch(function (error) {
@@ -66,7 +68,7 @@ const Register = () => {
               onChange={(event) => setUserName(event.target.value)}
               required
               minLength={5}
-              maxLength={10}
+              maxLength={16}
             />
             *
           </div>
