@@ -9,7 +9,6 @@ django.setup()
 
 from query_turbine_data.wind_turbine_refactor import QueryWindTurbineRefactor
 from backend_db.models import ActualProduceElectricity, WindFarmData
-from pprint import pprint
 import numpy as np
 
 LATITUDE = 'Latitude'
@@ -38,36 +37,36 @@ for bm_unit_id in farms:
         data_dict = {}
         # farm_id.append(farm_id)
         longitude = wind_query.get_data_from_bm(LONGITUDE, bm_unit_id)
-        if(longitude):
-            data_dict['longitude'] = float(longitude)
+        if(np.any(longitude)):
+            data_dict['longitude'] = longitude.astype(float)[0]
         else:
             print ('No longitude for ', bm_unit_id)
             continue
 
         latitide = wind_query.get_data_from_bm(LATITUDE, bm_unit_id)
-        if (latitide):
-            data_dict['latitude'] = float(latitide)
+        if (np.any(latitide)):
+            data_dict['latitude'] = latitide.astype(float)[0]
         else:
             print("No latitude for ", bm_unit_id)
             continue
 
         hub_height = wind_query.get_data_from_bm(HUB_HEIGHT, bm_unit_id)
-        if(hub_height):
-            data_dict['hub_height'] = float(hub_height)
+        if(np.any(hub_height)):
+            data_dict['hub_height'] = np.mean(hub_height.astype(float))
         else:   data_dict['hub_height'] = 100
 
         number_of_turbines = wind_query.get_data_from_bm(NUM_TURBINES, bm_unit_id)
-        if(number_of_turbines):
-            data_dict['number_of_turbines'] = int(float(number_of_turbines))
+        if(np.any(number_of_turbines)):
+            data_dict['number_of_turbines'] = np.mean(number_of_turbines.astype(float))
         else:
             data_dict['number_of_turbines'] = 50
 
         turbine_capacity = wind_query.get_data_from_bm(TURBINE_CAPACITY, bm_unit_id)
-        if(turbine_capacity):
-            data_dict['turbine_capacity'] = float(turbine_capacity)
+        if(np.any(turbine_capacity)):
+            data_dict['turbine_capacity'] = np.mean(turbine_capacity.astype(float))
         else:
             data_dict['turbine_capacity'] = 3
-        data_dict['turbine_capacity'] = float(data_dict['turbine_capacity']) * 1000000 #convert to W
+        data_dict['turbine_capacity'] = data_dict['turbine_capacity'] * 1000000 #convert to W
         
         data_dict['is_onshore'] = is_onshore(wind_query.get_data_from_bm(PLANT_TYPE, bm_unit_id))
 

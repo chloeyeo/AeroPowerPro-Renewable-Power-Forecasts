@@ -33,15 +33,15 @@ class QueryWindTurbineRefactor:
         df_id = self.df_attrs.query(f"dictionary_id == {id}")
         if df_id.query(f"attribute == '{data_type}'")[['id', 'value']].values.size > 0:
             # if it exist then return the values
-            return df_id.query(f"attribute == '{data_type}'")[['id', 'value']].values[0][1]
+            return df_id.query(f"attribute == '{data_type}'")[['id', 'value']].values[:,1]
         else:
             # if it does not exist then return None
             print(f"It is not exist {data_type} for {id} in the CSV")
             return 
 
-# attributes_fp = 'https://osuked.github.io/Power-Station-Dictionary/object_attrs/dictionary_attributes.csv'
-# test = QueryWindTurbineRefactor(attributes_fp)
-# print(test.get_data_from_bm(LATITUDE, 'BRBEO-1'))
-# print(test.get_data_from_bm(LONGITUDE, 'BRBEO-1'))
-# print(test.get_data_from_bm(PLANT_TYPE, 'BRBEO-1'))
-# print(test.get_data_from_bm(TURBINE_CAPACITY, 'BRBEO-1'))
+attributes_fp = 'https://osuked.github.io/Power-Station-Dictionary/object_attrs/dictionary_attributes.csv'
+test = QueryWindTurbineRefactor(attributes_fp)
+print(test.get_data_from_bm(LATITUDE, 'BRBEO-1'))
+print(test.get_data_from_bm(LONGITUDE, 'BRBEO-1'))
+print(test.get_data_from_bm(PLANT_TYPE, 'BRBEO-1'))
+print(test.get_data_from_bm(TURBINE_CAPACITY, 'BRBEO-1'))
