@@ -57,14 +57,13 @@ const Register = () => {
           <p className="formtitle">Create an account</p>
           <div>
             <input
-              className="username"
+              className="namefield small"
               type="text"
               name="username"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Username"
               value={username}
               onChange={(event) => setUserName(event.target.value)}
-              id="small"
               required
               minLength={5}
               maxLength={10}
@@ -73,33 +72,31 @@ const Register = () => {
           </div>
           <div>
             <input
-              className="namefield"
+              className="namefield small"
               type="text"
               name="fname"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="First Name"
-              id="small"
             />
             <input
-              className="namefield"
+              className="namefield small"
               type="text"
               name="lname"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Last Name"
-              id="small"
             />
           </div>
           <div>
             <input
               type="password"
               name="password"
+              className="small"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Password"
               value={passwords[0]}
               onChange={(event) =>
                 setPasswords([event.target.value, passwords[1]])
               }
-              id="small"
               required
               minLength={8}
               maxLength={15}
@@ -114,7 +111,7 @@ const Register = () => {
                 setPasswords([passwords[0], event.target.value])
               }
               placeholder="Confirm Password"
-              id="small"
+              className="small"
               required
               minLength={8}
               maxLength={15}
@@ -122,14 +119,13 @@ const Register = () => {
             *
           </div>
           <input
-            className="email"
+            className="email small"
             type="text"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             name="email"
             style={{ backgroundColor: "#d9d9d9" }}
             placeholder="E-mail"
-            id="small"
             required
           />
           *

@@ -119,7 +119,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 </InputGroup>
                 <Button
                   variant="outline-secondary"
-                  id="button-addon2"
+                  className="button-addon2"
                   onClick={updateCoords}
                 >
                   Search
@@ -138,7 +138,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
             >
               <Button
                 variant="outline-secondary"
-                id="button-addon2"
+                className="button-addon2"
                 onClick={() => {
                   setIsShown((current) => false);
                 }}

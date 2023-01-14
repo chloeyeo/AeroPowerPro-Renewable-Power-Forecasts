@@ -6,13 +6,13 @@ import { Link } from "react-router-dom";
 const Login = () => {
   const handleOnSubmit = (event) => {
     event.preventDefault();
-
     axios({
-      method: "post",
+      method: "get",
       url: "http://127.0.0.1:8000/userProfile/",
       data: {
-        password: "password",
-        email: "not an email",
+        username,
+        password: passwords[0],
+        email,
       },
       headers: {
         "Content-Type": "application/json",
@@ -25,6 +25,7 @@ const Login = () => {
         console.log(error);
       });
   };
+
   return (
     <>
       <div>
@@ -48,7 +49,7 @@ const Login = () => {
             <input
               type="email"
               class="form-control"
-              id="exampleInputEmail1"
+              className="exampleInputEmail1"
               aria-describedby="emailHelp"
               placeholder="Enter email"
             />
@@ -60,7 +61,7 @@ const Login = () => {
             <input
               type="password"
               class="form-control"
-              id="exampleInputPassword1"
+              className="exampleInputPassword1"
               placeholder="Password"
             />
           </div>
