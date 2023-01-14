@@ -1,25 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavBar } from "../../components";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleOnSubmit = (event) => {
     event.preventDefault();
     axios({
       method: "get",
       url: "http://127.0.0.1:8000/userProfile/",
       data: {
-        username,
-        password: passwords[0],
         email,
+        password,
       },
       headers: {
         "Content-Type": "application/json",
       },
     })
       .then(function (response) {
+        event.preventDefault();
+
         console.log(response);
+        // window.location.replace("http://127.0.0.1:3000");
       })
       .catch(function (error) {
         console.log(error);
@@ -49,6 +54,8 @@ const Login = () => {
             <input
               type="email"
               class="form-control"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               className="exampleInputEmail1"
               aria-describedby="emailHelp"
               placeholder="Enter email"
@@ -62,6 +69,8 @@ const Login = () => {
               type="password"
               class="form-control"
               className="exampleInputPassword1"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
               placeholder="Password"
             />
           </div>
