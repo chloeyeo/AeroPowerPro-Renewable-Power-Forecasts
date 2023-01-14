@@ -20,6 +20,7 @@ import mapConfig from "./config.json";
 const Home = () => {
   const [center, setCenter] = useState(mapConfig.center);
   const [areaSize, setAreaSize] = useState(0.25);
+  const [geolocations, setGeolocations] = useState([]);
 
   useEffect(() => {
     axios({
@@ -28,6 +29,7 @@ const Home = () => {
     })
       .then(function (response) {
         console.log(response);
+        setGeolocations(response.data);
       })
       .catch(function (error) {
         console.log(error.response.data);
@@ -58,6 +60,9 @@ const Home = () => {
 
   return (
     <>
+      {geolocations.map((geolocation) => (
+        <div>{geolocation}</div>
+      ))}
       <NavBar />
       <SideBar
         center={center}
