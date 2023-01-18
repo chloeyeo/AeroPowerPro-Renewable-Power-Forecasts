@@ -53,8 +53,7 @@ class GenericWindTurbineViewSet(APIView):
         generic_turbine = {}
         generic_turbine['E_28_2300'] = {
             'hub_height' : E_28_2300['hub_height'],
-            'power_curve' : list(E_28_2300['power_curve']['value']),
-            'wind_speed' : list(E_28_2300['power_curve']['wind_speed']),
+            'power_curve' : [list(pair) for pair in zip(list(E_28_2300['power_curve']['wind_speed']), list(E_28_2300['power_curve']['value']/1000))]
         }
 
         # generic_turbine['E_28_2300']['hub_height'] = E_28_2300['hub_height']

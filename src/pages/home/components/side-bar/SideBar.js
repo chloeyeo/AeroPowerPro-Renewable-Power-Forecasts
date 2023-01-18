@@ -86,7 +86,9 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                     })
                       .then(function (response) {
                         console.log("TEST", response.data);
-                        // setPowerCurveData(response.data["E_28_2300"]);
+                        setPowerCurveData(
+                          response.data["E_28_2300"].power_curve
+                        );
                       })
                       .catch(function (error) {
                         console.log(error);
