@@ -4,7 +4,6 @@ import axios from "axios";
 import { fromLonLat, get } from "ol/proj";
 
 import {
-  SideBar,
   TileLayer,
   VectorLayer,
   Map,
@@ -17,7 +16,6 @@ import mapConfig from "./config.json";
 
 const WindFarmsMap = () => {
   const [center, setCenter] = useState(mapConfig.center);
-  const [areaSize, setAreaSize] = useState(1);
   const [geolocations, setGeolocations] = useState([]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { NavBar } from "../../components";
 import { AreaSizeMap, WindFarmsMap } from "./components";
