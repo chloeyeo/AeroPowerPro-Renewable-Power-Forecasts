@@ -51,13 +51,19 @@ class GenericWindTurbineViewSet(APIView):
     def get(self, reqeust, format = None):
         # Convert to a dictionary of values to allow for Json response
         generic_turbine = {}
-        generic_turbine['E_28_2300'] = {}
+        generic_turbine['E_28_2300'] = {
+            'hub_height' : E_28_2300['hub_height'],
+            'power_curve' : list(E_28_2300['power_curve']['value']),
+            'wind_speed' : list(E_28_2300['power_curve']['wind_speed']),
+        }
 
-        generic_turbine['E_28_2300']['hub_height'] = E_28_2300['hub_height']
-        generic_turbine['E_28_2300']['power_curve'] = E_28_2300['power_curve']['value']
-        generic_turbine['E_28_2300']['wind_speed'] = E_28_2300['power_curve']['wind_speed']
+        # generic_turbine['E_28_2300']['hub_height'] = E_28_2300['hub_height']
+        # generic_turbine['E_28_2300']['power_curve'] = list(E_28_2300['power_curve']['value'])
+        # generic_turbine['E_28_2300']['wind_speed'] = E_28_2300['power_curve']['wind_speed']
 
-        return JsonResponse(list(generic_turbine), safe=False)
+        print(generic_turbine)
+        return JsonResponse(generic_turbine, safe = False)
+        # return JsonResponse(list(generic_turbine), safe=False)
 
 class HistoricWindViewSet(APIView):
 
