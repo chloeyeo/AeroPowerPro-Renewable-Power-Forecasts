@@ -44,7 +44,7 @@ def insert_to_weather_forecast(data, lat, long):
                     }
         # WeatherForecast.objects.create(date_val = forecast[-1], latitude = lat, longitude = long, temperature_2m = forecast[0],
         #                                 surface_pressure = forecast[1], windspeed_10m = forecast[2], windspeed_80m = forecast[3])
-        return WeatherForecast.objects.update_or_create(date_val = forecast[-1], latitude = lat, longitude = long, defaults = defaults)
+        WeatherForecast.objects.update_or_create(date_val = forecast[-1], latitude = lat, longitude = long, defaults = defaults)
         
 
 

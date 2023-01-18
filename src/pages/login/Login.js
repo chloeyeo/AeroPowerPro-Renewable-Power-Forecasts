@@ -1,38 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavBar } from "../../components";
 import axios from "axios";
-
-// replace html form with bootstrap
+import { Link } from "react-router-dom";
 
 const Login = () => {
-  const handleOnSubmit = (event) => {
-    console.log("inside handleOnSubmit in login.js");
-    // const requestOptions = {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     password: document.getElementById("exampleInputPassword1").value,
-    //     email: document.getElementById("exampleInputPassword1").value,
-    //   }),
-    // };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    // send POST request
-    axios
-      .post("http://localhost:8000/register_users/", {
-        password: document.getElementById("exampleInputPassword1").value,
-        email: document.getElementById("exampleInputEmail1").value,
-      })
-      .then(function(response) {
-        console.log(response);
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-    //event.preventDefault(); // to prevent reloading/refreshing page
-    //   fetch("localhost:8000/register_users/", requestOptions)
-    //     .then((res) => res.json())
-    //     .then((res) => console.log(res));
-  };
   return (
     <>
       <div>
@@ -56,7 +30,9 @@ const Login = () => {
             <input
               type="email"
               class="form-control"
-              id="exampleInputEmail1"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="exampleInputEmail1"
               aria-describedby="emailHelp"
               placeholder="Enter email"
             />
@@ -68,12 +44,14 @@ const Login = () => {
             <input
               type="password"
               class="form-control"
-              id="exampleInputPassword1"
+              className="exampleInputPassword1"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
               placeholder="Password"
             />
           </div>
           <button
-            onClick={handleOnSubmit}
+            onClick={() => {}}
             type="submit"
             class="w-100 mt-4 btn btn-light"
           >
@@ -83,9 +61,11 @@ const Login = () => {
         <h5 className="mt-4 text-center text-white">
           Don't have an account yet?
         </h5>
-        <button type="submit" class="w-100 btn text-white">
-          Register
-        </button>
+        <Link to="/register">
+          <button type="submit" class="w-100 btn text-white">
+            Register
+          </button>
+        </Link>
       </div>
     </>
   );

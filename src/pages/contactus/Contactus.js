@@ -13,27 +13,28 @@ const Contactus = () => (
     <div className="maincontent">
       <form>
         <input
+          className="cutext small"
           type="text"
           name="name"
           style={{ backgroundColor: "#d9d9d9" }}
           placeholder="Name"
-          id="small"
         />
         <input
+          className="cutext small"
           type="text"
           name="subject"
           style={{ backgroundColor: "#d9d9d9" }}
           placeholder="Subject"
-          id="small"
         />
         <textarea
           rows={10}
           name="message"
           style={{ backgroundColor: "#d9d9d9" }}
           placeholder="Message"
-          id="large"
+          className="large"
         />
         <input
+          className="submit"
           type="submit"
           value="Submit"
           style={{ backgroundColor: "#d9d9d9", color: "#373B44" }}
@@ -41,7 +42,7 @@ const Contactus = () => (
       </form>
     </div>
     <footer>
-      <p id="email" style={{ fontSize: 20 }}>
+      <p className="email" style={{ fontSize: 20 }}>
         You can also get in contact with us at the following email address:
         sh33@outlook.com
       </p>

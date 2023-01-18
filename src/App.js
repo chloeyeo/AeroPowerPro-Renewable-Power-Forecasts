@@ -6,6 +6,7 @@ import {
   Login,
   ErrorPage,
   Contactus /*, PostRequest */,
+  Register,
 } from "./pages";
 import { ProSidebarProvider } from "react-pro-sidebar";
 
@@ -31,8 +32,18 @@ const router = createBrowserRouter([
     path: "/contactus",
     element: <Contactus />,
   },
+  {
+    path: "/register",
+    element: <Register />,
+  },
 ]);
 
-const App = () => <RouterProvider router={router} />;
+function App() {
+  return (
+    <div className="App">
+      <RouterProvider router={router} />
+    </div>
+  );
+}
 
 export default App;
