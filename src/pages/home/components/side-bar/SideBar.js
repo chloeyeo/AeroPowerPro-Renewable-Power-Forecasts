@@ -6,7 +6,7 @@ import {
   MenuItem,
   useProSidebar,
 } from "react-pro-sidebar";
-
+import axios from "axios";
 import { AiOutlineSearch, AiOutlineColumnHeight } from "react-icons/ai";
 import { FiWind } from "react-icons/fi";
 import { WiSolarEclipse } from "react-icons/wi";
@@ -51,7 +51,11 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
   const [powerCurveData, setPowerCurveData] = useState([[0, 0]]);
   const [hubHeight, setHubHeight] = useState(0);
   const [numOfTurbines, setNumOfTurbines] = useState(0);
-  const [turbineModels, setTurbineModels] = useState(["V0.0", "V1.1", "V2.2"]);
+  const [turbineModels, setTurbineModels] = useState([
+    "E_28_2300",
+    "V1.1",
+    "V2.2",
+  ]);
 
   return (
     <>
@@ -74,7 +78,23 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
             <SubMenu label="Wind" icon={<FiWind />}>
               <div className="p-2">
                 <h5>Wind Turbine Model</h5>
-                <select name="turbineModels" id="turbineModels">
+                <select
+                  onChange={(event) => {
+                    axios({
+                      method: "get",
+                      url: "http://127.0.0.1:8000/generic_wind_turbines/",
+                    })
+                      .then(function (response) {
+                        console.log("TEST", response.data);
+                        // setPowerCurveData(response.data["E_28_2300"]);
+                      })
+                      .catch(function (error) {
+                        console.log(error);
+                      });
+                  }}
+                  name="turbineModels"
+                  id="turbineModels"
+                >
                   {turbineModels.map((turbineModel) => (
                     <option key={turbineModel} value={turbineModel}>
                       {turbineModel}
