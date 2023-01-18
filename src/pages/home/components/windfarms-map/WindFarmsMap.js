@@ -3,6 +3,10 @@ import GeoJSON from "ol/format/GeoJSON";
 import axios from "axios";
 import { fromLonLat, get } from "ol/proj";
 
+// import "../../Switch.css";
+// import Switch from "../../Switch";
+// import { Grid } from "@material-ui/core";
+
 import {
   SideBar,
   TileLayer,
@@ -19,6 +23,7 @@ const WindFarmsMap = () => {
   const [center, setCenter] = useState(mapConfig.center);
   const [areaSize, setAreaSize] = useState(1);
   const [geolocations, setGeolocations] = useState([]);
+  const [showWindFarms, setShowWindFarms] = useState(false);
 
   useEffect(() => {
     axios({
@@ -61,6 +66,7 @@ const WindFarmsMap = () => {
 
   const windfarms = (geolocations) => {
     let content = [];
+
     for (let i = 0; i < geolocations.length; i++) {
       content.push(
         <VectorLayer

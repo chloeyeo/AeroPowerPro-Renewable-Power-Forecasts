@@ -26,14 +26,14 @@ const Home = () => {
       {showWindFarms ? (
         <>
           <Grid align="center">
-            <h1>Wind Farms</h1>
+            <h1 style={{ fontFamily: "fangsong" }}>Wind Farms</h1>
           </Grid>
           <WindFarmsMap />
         </>
       ) : (
         <>
           <Grid align="center">
-            <h1>AreaSizeMap</h1>
+            <h1 style={{ fontFamily: "fangsong" }}>Area Size Map</h1>
           </Grid>
           <AreaSizeMap />
         </>
