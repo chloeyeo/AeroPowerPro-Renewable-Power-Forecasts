@@ -30,7 +30,6 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
     { name: "C", uv: 300, pv: 2400, amt: 2400 },
     { name: "D", uv: 200, pv: 2400, amt: 2400 },
   ];
-
   const updateCoords = () => {
     if (
       inputCoords[1] < 50 ||
@@ -49,6 +48,10 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
       setIsShown(true);
     }
   };
+  const [powerCurveData, setPowerCurveData] = useState([[0, 0]]);
+  const [hubHeight, setHubHeight] = useState(0);
+  const [numOfTurbines, setNumOfTurbines] = useState(0);
+  const [turbineModels, setTurbineModels] = useState(["V0.0", "V1.1", "V2.2"]);
 
   return (
     <>
@@ -69,18 +72,92 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
           </button>
           <Menu>
             <SubMenu label="Wind" icon={<FiWind />}>
-              <MenuItem icon={<TfiLayoutWidthDefaultAlt />}>
-                {" "}
-                Capacity (kW){" "}
-              </MenuItem>
-              <MenuItem icon={<AiOutlineColumnHeight />}>
-                {" "}
-                Hub Height (m){" "}
-              </MenuItem>
-              <MenuItem icon={<GiWindTurbine />}> Turbine Mode </MenuItem>
+              <div className="p-2">
+                <h5>Wind Turbine Model</h5>
+                <select name="turbineModels" id="turbineModels">
+                  {turbineModels.map((turbineModel) => (
+                    <option key={turbineModel} value={turbineModel}>
+                      {turbineModel}
+                    </option>
+                  ))}
+                </select>
+                <h5 className="mt-3">Power Curve Info</h5>
+
+                <table className="p-3">
+                  <thead>
+                    <tr>
+                      <td>Wind Speed (m/s)</td>
+                      <td>Power (kW)</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {powerCurveData.map((row, index) => (
+                      <tr key={index}>
+                        <td>
+                          <input
+                            aria-label={`row${index}_speed`}
+                            style={{ maxWidth: "110px" }}
+                            value={row[0]}
+                            onChange={(event) => {
+                              let temp = powerCurveData.slice();
+                              temp[index] = [event.target.value, row[1]];
+                              return setPowerCurveData(temp);
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            aria-label={`row${index}_power`}
+                            style={{ maxWidth: "70px" }}
+                            value={row[1]}
+                            onChange={(event) => {
+                              let temp = powerCurveData.slice();
+                              temp[index] = [row[0], event.target.value];
+                              return setPowerCurveData(temp);
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <button
+                            style={{ border: "none" }}
+                            onClick={() => {
+                              let temp = powerCurveData.slice();
+                              temp.splice(index, 1);
+                              return setPowerCurveData(temp);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tr>
+                    <button
+                      style={{ border: "none" }}
+                      onClick={() =>
+                        setPowerCurveData([...powerCurveData, ["0", "0"]])
+                      }
+                    >
+                      Add Row
+                    </button>
+                  </tr>
+                </table>
+
+                <h5 className="mt-3">Hub Height (m)</h5>
+                <input
+                  aria-label="hub_height"
+                  value={hubHeight}
+                  onChange={(event) => setHubHeight(event.target.value)}
+                />
+                <h5 className="mt-3">Number of Turbines</h5>
+                <input
+                  aria-label="num_of_turbines"
+                  value={numOfTurbines}
+                  onChange={(event) => setNumOfTurbines(event.target.value)}
+                />
+              </div>
             </SubMenu>
-            <MenuItem icon={<WiSolarEclipse />}> Solar </MenuItem>
-            <MenuItem icon={<ImStatsDots />}> Weather Forecast </MenuItem>
             <SubMenu label="Search" icon={<AiOutlineSearch />}>
               <div className="p-3">
                 <p>Latitude (50 to 59)</p>
