@@ -14,7 +14,8 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
-
+from generate_power_forecast import generate_power_forecast
+from .Wind_Turbine_Model.siemens_2300KW import E_28_2300
 # @api_view(['GET', 'POST'])
 # class UserViewSet(  GenericViewSet,  # generic view functionality
 #                      CreateModelMixin,  # handles POSTs
@@ -24,6 +25,38 @@ from django.http import JsonResponse
 #     permission_classes = [permissions.AllowAny]
 #     serializer_class = UserSerializer
 #     queryset = UserProfile.objects.all()
+
+class PowerForecastViewSet(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, format = None):
+        power_curve = self.request.data['power']
+        wind_speeds = self.requests.data['wind_speed']
+        hub_height = self.request.data['hub_height']
+        longitude = self.request.data['longitude']
+        latitude = self.request.data['latitude']
+        number_of_turbines = self.request.data['number_of_turbines']
+        power_output = generate_power_forecast( latitude = latitude,
+                                                longitude= longitude,
+                                                power_curve = power_curve,
+                                                wind_speeds = wind_speeds,
+                                                hub_height = hub_height,
+                                                number_of_turbines = number_of_turbines)
+
+        return JsonResponse(power_output.to_json(orient = 'records', lines = True))
+
+class GenericWindTurbineViewSet(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, reqeust, format = None):
+        # Convert to a dictionary of values to allow for Json response
+        generic_turbine = {}
+
+        generic_turbine['E_28_2300']['hub_height'] = E_28_2300
+        generic_turbine['E_28_2300']['power_curve'] = E_28_2300['power_curve']['value']
+        generic_turbine['E_28_2300']['wind_speed'] = E_28_2300['power_curve']['wind_speed']
+
+        return JsonResponse(generic_turbine)
 
 class HistoricWindViewSet(APIView):
 
