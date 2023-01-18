@@ -42,23 +42,34 @@ def insert_to_weather_forecast(data, lat, long):
                     "windspeed_10m" : forecast[2],
                     "windspeed_80m" : forecast[3],
                     }
-        # WeatherForecast.objects.create(date_val = forecast[-1], latitude = lat, longitude = long, temperature_2m = forecast[0],
-        #                                 surface_pressure = forecast[1], windspeed_10m = forecast[2], windspeed_80m = forecast[3])
-        WeatherForecast.objects.update_or_create(date_val = forecast[-1], latitude = lat, longitude = long, defaults = defaults)
+        WeatherForecast.objects.create(date_val = forecast[-1], latitude = lat, longitude = long, temperature_2m = forecast[0],
+                                        surface_pressure = forecast[1], windspeed_10m = forecast[2], windspeed_80m = forecast[3])
+        # WeatherForecast.objects.update_or_create(date_val = forecast[-1], latitude = lat, longitude = long, defaults = defaults)
         
 
 
-def get_forecasts(lat, long, start_date = datetime.now(), days = 5, ):
+def get_forecasts(lat, long, start_date = datetime.now(), days = 5, tries = 0):
     
     end_date = start_date + relativedelta(days = days)
-    start_date = start_date.strftime("%Y-%m-%d")
+    begin_date = start_date.strftime("%Y-%m-%d")
     end_date = end_date.strftime("%Y-%m-%d")
-    req = pull_forecasts_from_api(lat, long, start_date, end_date)
-    if (req.status_code != 200):
-        print(req)
-    else :
-        data = json.loads(req.content)
-        insert_to_weather_forecast(data, lat, long)
+    try :
+        req = pull_forecasts_from_api(lat, long, begin_date, end_date)
+        if (req.status_code != 200):
+            print(req)
+        else :
+            data = json.loads(req.content)
+            insert_to_weather_forecast(data, lat, long)
+
+    except requests.exceptions.Timeout:
+        print(f"Failed to get forecast for {lat},{long}")
+        if tries < 4:
+            print("Trying again")
+            get_forecasts(lat, long, start_date, days, tries + 1)
+        else :
+            print("Failed too many times, will not attempt for this lat and lon again")
+
+
     
 
 def get_forecasts_coord_step(start_date = datetime.now(), days = 5, step = 0.25):

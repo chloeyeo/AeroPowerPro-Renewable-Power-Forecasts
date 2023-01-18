@@ -32,7 +32,7 @@ const Home = () => {
         setGeolocations(response.data);
       })
       .catch(function (error) {
-        console.log(error.response.data);
+        console.log(error);
       });
   }, []);
 

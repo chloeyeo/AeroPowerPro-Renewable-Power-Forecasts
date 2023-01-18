@@ -7,10 +7,11 @@ from django.http import JsonResponse
 from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 )
+from rest_framework.generics import GenericAPIView
 from rest_framework.viewsets import GenericViewSet
-from .serializers import UserSerializer, HistoricWindSerializer, WindFarmDataSerializer
+from .serializers import UserSerializer, HistoricWindSerializer, WindFarmDataSerializer, LoginSerializer, RegisterSerializer
 # from rest_framework.decorators import api_view
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
@@ -59,6 +60,30 @@ class GeolocationsView(APIView):
         
         return JsonResponse(list(wind_farms), safe = False)
 
+class LoginView(APIView):
+
+        permission_classes = (permissions.AllowAny,)
+
+        def post(self, request, format = None):
+            serializer = LoginSerializer(data=self.request.data,
+            context={ 'request': self.request })
+            serializer.is_valid(raise_exception=True)
+            user = serializer.validated_data['user']
+            login(request, user)
+            return Response(None, status = status.HTTP_202_ACCEPTED)
+
+class RegisterApiView(GenericAPIView):
+    
+    serializer_class = RegisterSerializer
+
+    def post(self, request, format = None):
+        serializer = self.serializer_class(data = request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 # from rest_framework.views import APIView
 # from rest_framework.request import Request
