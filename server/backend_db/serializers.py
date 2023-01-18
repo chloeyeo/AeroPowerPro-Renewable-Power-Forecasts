@@ -73,8 +73,8 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print("\n\n\n\n\n")
         new_user = User.objects.create_user(**validated_data)
-        new_user.frist_name = validated_data.first_name
-        new_user.last_name = validated_data.last_name
+        new_user.first_name = validated_data['first_name']
+        new_user.last_name = validated_data['last_name']
         new_user.save()
         # print(f'asd{new_user}','\n\n\n')
         return new_user
