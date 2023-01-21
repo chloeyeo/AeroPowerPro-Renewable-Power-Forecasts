@@ -48,14 +48,13 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
       setIsShown(true);
     }
   };
-  const [powerCurveData, setPowerCurveData] = useState([[0, 0]]);
-  const [hubHeight, setHubHeight] = useState(0);
-  const [numOfTurbines, setNumOfTurbines] = useState(0);
-  const [turbineModels, setTurbineModels] = useState([
-    "E_28_2300",
-    "V1.1",
-    "V2.2",
-  ]);
+
+  const [powerCurveData, setPowerCurveData] = useState({
+    tableData: [[0, 0]],
+    hubHeight: 0,
+    numOfTurbines: 0,
+    turbineModels: ["E_28_2300"],
+  });
 
   return (
     <>
@@ -86,9 +85,10 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                     })
                       .then(function (response) {
                         console.log("TEST", response.data);
-                        setPowerCurveData(
-                          response.data["E_28_2300"].power_curve
-                        );
+                        setPowerCurveData({
+                          ...powerCurveData,
+                          tableData: response.data["E_28_2300"].power_curve,
+                        });
                       })
                       .catch(function (error) {
                         console.log(error);
@@ -97,7 +97,10 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                   name="turbineModels"
                   id="turbineModels"
                 >
-                  {turbineModels.map((turbineModel) => (
+                  <option value="" selected disabled hidden>
+                    Choose here
+                  </option>
+                  {powerCurveData.turbineModels.map((turbineModel) => (
                     <option key={turbineModel} value={turbineModel}>
                       {turbineModel}
                     </option>
@@ -113,7 +116,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {powerCurveData.map((row, index) => (
+                    {powerCurveData.tableData.map((row, index) => (
                       <tr key={index}>
                         <td>
                           <input
@@ -121,9 +124,16 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                             style={{ maxWidth: "110px" }}
                             value={row[0]}
                             onChange={(event) => {
-                              let temp = powerCurveData.slice();
-                              temp[index] = [event.target.value, row[1]];
-                              return setPowerCurveData(temp);
+                              let newTableData =
+                                powerCurveData.tableData.slice();
+                              newTableData[index] = [
+                                event.target.value,
+                                row[1],
+                              ];
+                              return setPowerCurveData({
+                                ...powerCurveData,
+                                tableData: newTableData,
+                              });
                             }}
                           />
                         </td>
@@ -133,9 +143,16 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                             style={{ maxWidth: "70px" }}
                             value={row[1]}
                             onChange={(event) => {
-                              let temp = powerCurveData.slice();
-                              temp[index] = [row[0], event.target.value];
-                              return setPowerCurveData(temp);
+                              let newTableData =
+                                powerCurveData.tableData.slice();
+                              newTableData[index] = [
+                                row[0],
+                                event.target.value,
+                              ];
+                              return setPowerCurveData({
+                                ...powerCurveData,
+                                tableData: newTableData,
+                              });
                             }}
                           />
                         </td>
@@ -143,9 +160,13 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                           <button
                             style={{ border: "none" }}
                             onClick={() => {
-                              let temp = powerCurveData.slice();
-                              temp.splice(index, 1);
-                              return setPowerCurveData(temp);
+                              let newTableData =
+                                powerCurveData.tableData.slice();
+                              newTableData.splice(index, 1);
+                              return setPowerCurveData({
+                                ...powerCurveData,
+                                tableData: newTableData,
+                              });
                             }}
                           >
                             Delete
@@ -158,7 +179,10 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                     <button
                       style={{ border: "none" }}
                       onClick={() =>
-                        setPowerCurveData([...powerCurveData, ["0", "0"]])
+                        setPowerCurveData({
+                          ...powerCurveData,
+                          tableData: [...powerCurveData.tableData, ["0", "0"]],
+                        })
                       }
                     >
                       Add Row
@@ -169,15 +193,28 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 <h5 className="mt-3">Hub Height (m)</h5>
                 <input
                   aria-label="hub_height"
-                  value={hubHeight}
-                  onChange={(event) => setHubHeight(event.target.value)}
+                  value={powerCurveData.hubHeight}
+                  onChange={(event) =>
+                    setPowerCurveData({
+                      ...powerCurveData,
+                      hubHeight: event.target.value,
+                    })
+                  }
                 />
                 <h5 className="mt-3">Number of Turbines</h5>
                 <input
                   aria-label="num_of_turbines"
-                  value={numOfTurbines}
-                  onChange={(event) => setNumOfTurbines(event.target.value)}
+                  value={powerCurveData.numOfTurbines}
+                  onChange={(event) =>
+                    setPowerCurveData({
+                      ...powerCurveData,
+                      numOfTurbines: event.target.value,
+                    })
+                  }
                 />
+                <button className="mt-3" style={{ border: "none" }}>
+                  <h4>Submit</h4>
+                </button>
               </div>
             </SubMenu>
             <SubMenu label="Search" icon={<AiOutlineSearch />}>
