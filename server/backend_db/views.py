@@ -14,28 +14,24 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
-from generate_power_forecast import generate_power_forecast
+from .generate_power_forecast import generate_power_forecast
 from .Wind_Turbine_Model.siemens_2300KW import E_28_2300
-# @api_view(['GET', 'POST'])
-# class UserViewSet(  GenericViewSet,  # generic view functionality
-#                      CreateModelMixin,  # handles POSTs
-#                      RetrieveModelMixin,  # handles GETs for 1 Company
-#                      UpdateModelMixin,  # handles PUTs and PATCHes
-#                      ListModelMixin): # handles GETs for many Companies
-#     permission_classes = [permissions.AllowAny]
-#     serializer_class = UserSerializer
-#     queryset = UserProfile.objects.all()
+import numpy as np
+
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format = None):
-        power_curve = self.request.data['power']
-        wind_speeds = self.requests.data['wind_speed']
-        hub_height = self.request.data['hub_height']
+        hub_height = self.request.data['hubHeight']
         longitude = self.request.data['longitude']
         latitude = self.request.data['latitude']
         number_of_turbines = self.request.data['number_of_turbines']
+
+        #table data is given as array of tuples(formated as arrays), 1st col is wind_speeds and 2nd is power_curve 
+        wind_speeds, power_curve = np.array(request.data['tableData']).T
+
+        #generate Power forecasts
         power_output = generate_power_forecast( latitude = latitude,
                                                 longitude= longitude,
                                                 power_curve = power_curve,
@@ -56,13 +52,7 @@ class GenericWindTurbineViewSet(APIView):
             'power_curve' : [list(pair) for pair in zip(list(E_28_2300['power_curve']['wind_speed']), list(E_28_2300['power_curve']['value']/1000))]
         }
 
-        # generic_turbine['E_28_2300']['hub_height'] = E_28_2300['hub_height']
-        # generic_turbine['E_28_2300']['power_curve'] = list(E_28_2300['power_curve']['value'])
-        # generic_turbine['E_28_2300']['wind_speed'] = E_28_2300['power_curve']['wind_speed']
-
-        print(generic_turbine)
         return JsonResponse(generic_turbine, safe = False)
-        # return JsonResponse(list(generic_turbine), safe=False)
 
 class HistoricWindViewSet(APIView):
 

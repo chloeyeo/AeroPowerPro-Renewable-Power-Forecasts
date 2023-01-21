@@ -61,7 +61,7 @@ def generate_power_forecast(latitude, longitude, power_curve, wind_speeds, hub_h
 
     weather_df[('surface_pressure',0)] = weather_df[('surface_pressure',0)].apply(lambda x : x*100) # convert from hPa to Pa
     weather_df[('temperature',2)] = weather_df[('temperature',2)].apply(lambda x : x + 273.15) # convert to Kelvin
-    weather_df[('roughness_length',0)] = 0.15
+    weather_df[('roughness_length',0)] = 0.15 # roughness level of 0.15 is typical for grassland
 
     turbine = {
         'hub_height': hub_height,
