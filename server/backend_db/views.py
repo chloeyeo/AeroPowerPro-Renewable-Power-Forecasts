@@ -26,7 +26,7 @@ class PowerForecastViewSet(APIView):
         hub_height = self.request.data['hubHeight']
         longitude = self.request.data['longitude']
         latitude = self.request.data['latitude']
-        number_of_turbines = self.request.data['number_of_turbines']
+        number_of_turbines = self.request.data['numOfTurbines']
 
         #table data is given as array of tuples(formated as arrays), 1st col is wind_speeds and 2nd is power_curve 
         wind_speeds, power_curve = np.array(request.data['tableData']).T
