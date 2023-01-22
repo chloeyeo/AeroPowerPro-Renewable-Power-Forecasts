@@ -72,7 +72,7 @@ def generate_power_forecast(latitude, longitude, power_curve, wind_speeds, hub_h
     }
 
     turbine = WindTurbine(**turbine)
-    return ModelChain(turbine).run_model(weather_df) * number_of_turbines
+    return ModelChain(turbine).run_model(weather_df).power_output * number_of_turbines
 
 
 
