@@ -38,9 +38,9 @@ class PowerForecastViewSet(APIView):
                                                 wind_speeds = wind_speeds,
                                                 hub_height = hub_height,
                                                 number_of_turbines = number_of_turbines).to_frame()
-        power_output['datetime'] = power_output.index
+
         response = {}
-        response['power_forecast'] = [list(pair) for pair in zip(list(power_output['datetime']) , list(power_output['feedin_power_plant'])   )]
+        response['power_forecast'] = [list(pair) for pair in zip(list(power_output.index) , list(power_output['feedin_power_plant'])   )]
         return JsonResponse(response, safe = False)
 
 class GenericWindTurbineViewSet(APIView):
