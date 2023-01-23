@@ -49,11 +49,12 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
     }
   };
 
+  const [turbineModels, setTurbineModels] = useState(["E_28_2300"]);
   const [powerCurveData, setPowerCurveData] = useState({
     tableData: [[0, 0]],
     hubHeight: 0,
     numOfTurbines: 0,
-    turbineModels: ["E_28_2300"],
+    turbineModel: "",
   });
 
   return (
@@ -79,15 +80,20 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 <h5>Wind Turbine Model</h5>
                 <select
                   onChange={(event) => {
+                    setPowerCurveData({
+                      ...powerCurveData,
+                      turbineModel: event.target.value,
+                    });
                     axios({
                       method: "get",
                       url: "http://127.0.0.1:8000/generic_wind_turbines/",
                     })
                       .then(function (response) {
-                        console.log("TEST", response.data);
                         setPowerCurveData({
                           ...powerCurveData,
-                          tableData: response.data["E_28_2300"].power_curve,
+                          turbineModel: event.target.value,
+                          tableData:
+                            response.data[event.target.value].power_curve,
                         });
                       })
                       .catch(function (error) {
@@ -100,7 +106,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                   <option value="" selected disabled hidden>
                     Choose here
                   </option>
-                  {powerCurveData.turbineModels.map((turbineModel) => (
+                  {turbineModels.map((turbineModel) => (
                     <option key={turbineModel} value={turbineModel}>
                       {turbineModel}
                     </option>
@@ -212,7 +218,33 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                     })
                   }
                 />
-                <button className="mt-3" style={{ border: "none" }}>
+                <button
+                  onClick={() => {
+                    axios({
+                      method: "post",
+                      url: "http://127.0.0.1:8000/generate_power_forecast/",
+                      data: {
+                        ...powerCurveData,
+                        hubHeight: parseFloat(powerCurveData.hubHeight),
+                        numOfTurbines: parseFloat(powerCurveData.numOfTurbines),
+                        latitude: center[0],
+                        longitude: center[1],
+                      },
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                    })
+                      .then(function (response) {
+                        console.log("success!", response.data);
+                      })
+                      .catch(function (error) {
+                        console.log(error);
+                        console.log("failed with data: ", powerCurveData);
+                      });
+                  }}
+                  className="mt-3"
+                  style={{ border: "none" }}
+                >
                   <h4>Submit</h4>
                 </button>
               </div>

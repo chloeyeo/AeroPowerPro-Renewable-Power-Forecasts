@@ -22,7 +22,7 @@ import numpy as np
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format = None):
+    def post(self, request, format = None):
         hub_height = self.request.data['hubHeight']
         longitude = self.request.data['longitude']
         latitude = self.request.data['latitude']
@@ -38,8 +38,8 @@ class PowerForecastViewSet(APIView):
                                                 wind_speeds = wind_speeds,
                                                 hub_height = hub_height,
                                                 number_of_turbines = number_of_turbines)
-
-        return JsonResponse(power_output.to_json(orient = 'records', lines = True))
+                                                
+        return JsonResponse(power_output.to_json(orient = 'records', lines = True), safe = False)
 
 class GenericWindTurbineViewSet(APIView):
     permission_classes = [permissions.AllowAny]
