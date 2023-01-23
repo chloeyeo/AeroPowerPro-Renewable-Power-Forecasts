@@ -17,7 +17,7 @@ from django.http import JsonResponse
 from .generate_power_forecast import generate_power_forecast
 from .Wind_Turbine_Model.siemens_2300KW import E_28_2300
 import numpy as np
-
+import json
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
@@ -37,9 +37,11 @@ class PowerForecastViewSet(APIView):
                                                 power_curve = power_curve * 1000, #convert to W from KW
                                                 wind_speeds = wind_speeds,
                                                 hub_height = hub_height,
-                                                number_of_turbines = number_of_turbines)
-        print(power_output, "\n\n",number_of_turbines)
-        return JsonResponse(power_output.to_json(orient = 'records', lines = True), safe = False)
+                                                number_of_turbines = number_of_turbines).to_frame()
+        power_output['datetime'] = power_output.index
+        response = {}
+        response['power_forecast'] = [list(pair) for pair in zip(list(power_output['datetime']) , list(power_output['feedin_power_plant'])   )]
+        return JsonResponse(response, safe = False)
 
 class GenericWindTurbineViewSet(APIView):
     permission_classes = [permissions.AllowAny]
