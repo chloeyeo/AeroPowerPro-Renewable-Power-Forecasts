@@ -34,11 +34,11 @@ class PowerForecastViewSet(APIView):
         #generate Power forecasts
         power_output = generate_power_forecast( latitude = latitude,
                                                 longitude= longitude,
-                                                power_curve = power_curve,
+                                                power_curve = power_curve * 1000, #convert to W from KW
                                                 wind_speeds = wind_speeds,
                                                 hub_height = hub_height,
                                                 number_of_turbines = number_of_turbines)
-                                                
+        print(power_output, "\n\n",number_of_turbines)
         return JsonResponse(power_output.to_json(orient = 'records', lines = True), safe = False)
 
 class GenericWindTurbineViewSet(APIView):

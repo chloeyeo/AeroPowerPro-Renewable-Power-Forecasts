@@ -6,7 +6,10 @@ django.setup()
 from backend_db.models import WeatherForecast
 import pandas as pd
 from windpowerlib import ModelChain, WindTurbine
+from numpy import clip
 
+def get_closest_coords(long, lat):
+    return clip(round(long*4)/4, -7, 3), clip(round(lat*4)/4, 51, 59)
 # turbines = ActualProduceElectricity.objects.values_list('market_generation_ngc_bmu_id', flat=True).distinct()
 # weather = WeatherForecast.objects.filter(latitude = 50.00, longitude = -2.0).values_list('date_val', 'temperature_2m', 'surface_pressure', 'windspeed_10m', 'windspeed_80m')
 # # print(weather)
@@ -50,6 +53,7 @@ from windpowerlib import ModelChain, WindTurbine
 
 
 def generate_power_forecast(latitude, longitude, power_curve, wind_speeds, hub_height, number_of_turbines):
+    longitude, latitude = get_closest_coords(longitude, latitude)
     weather = WeatherForecast.objects.filter(latitude = latitude, longitude = longitude).values_list('date_val', 'temperature_2m', 'surface_pressure', 'windspeed_10m', 'windspeed_80m')
 
     weather_df = pd.DataFrame(weather,
