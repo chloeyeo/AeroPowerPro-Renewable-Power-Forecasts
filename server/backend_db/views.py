@@ -1,7 +1,7 @@
 from django.shortcuts import render
 # from django.http import HttpResponse
 # from django.urls import reverse
-# from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout
 from backend_db.models import ActualProduceElectricity, UserProfile, HistoricWind, WindFarmData
 from django.http import JsonResponse
 from rest_framework.mixins import (
@@ -15,6 +15,9 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.decorators import login_required
 
 # @api_view(['GET', 'POST'])
 # class UserViewSet(  GenericViewSet,  # generic view functionality
@@ -26,8 +29,8 @@ from django.http import JsonResponse
 #     serializer_class = UserSerializer
 #     queryset = UserProfile.objects.all()
 
-class HistoricWindViewSet(APIView):
 
+class HistoricWindViewSet(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format = None):
@@ -36,81 +39,88 @@ class HistoricWindViewSet(APIView):
         return JsonResponse(list(historic_wind_data), safe = False)
 
 
-
 class UserView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request, format = None):
-        user = UserProfile( username = self.request.data['username'],
-                            email = self.request.data['email'],
-                            password = self.request.data['password'],
-                            first_name = self.request.data['first_name'],
-                            last_name = self.request.data['last_name'])
+    def post(self, request, format=None):
+        user = UserProfile( username=self.request.data['username'],
+                            email=self.request.data['email'],
+                            password=self.request.data['password'],
+                            first_name=self.request.data['first_name'],
+                            last_name=self.request.data['last_name'])
 
         user.save()
         return Response(request.data['username'])
 
+
 class GeolocationsView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format = None):
+    def get(self, request, format=None):
         wind_farms = WindFarmData.objects.all().values_list('longitude', 'latitude')
         print("HELLO")
         print(wind_farms)
         
-        return JsonResponse(list(wind_farms), safe = False)
+        return JsonResponse(list(wind_farms), safe=False)
 
+
+# besides calling the serializers in the login, we should also check some invalid situations and give some response messages.
 class LoginView(APIView):
-
         permission_classes = (permissions.AllowAny,)
 
-        def post(self, request, format = None):
-            serializer = LoginSerializer(data=self.request.data,
-            context={ 'request': self.request })
-            serializer.is_valid(raise_exception=True)
-            user = serializer.validated_data['user']
-            login(request, user)
-            return Response(None, status = status.HTTP_202_ACCEPTED)
+        def post(self, request, format=None):
+            if request.data['username'] and request.data['password']:
+                serializer = LoginSerializer(data=self.request.data, context={'request': self.request})
+                serializer.is_valid(raise_exception=True)
+                user = serializer.validated_data['user']
+                if not user:
+                    print('A user with this email and password is not found.')
+                    return Response({"status": status.HTTP_404_NOT_FOUND, "Token": None})
+                login(request, user)
+                token = Token.objects.create(user=user)
+                return Response({"status": status.HTTP_202_ACCEPTED, "Token": token})
+            else:
+                print('The email or password is empty in the request data.')
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "Token": None})
+
 
 class RegisterApiView(GenericAPIView):
-    
     serializer_class = RegisterSerializer
 
-    def post(self, request, format = None):
-        serializer = self.serializer_class(data = request.data)
-
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status = status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 # from rest_framework.views import APIView
 # from rest_framework.request import Request
 # from rest_framework.response import Response
 # import {Login} from '../../src/pages/login'
-
-
-# I checked how to solve the problem the for login page. The problem is in both front end and back end.
-# 1. First, the server is running in port 3000, so you should send request to http://127.0.0.1:3000 but not 8000.
-# 2. Second, the backend of RegisterView should be a function but not a Class.
-
-# @api_view['POST']
-def register_view(request):
-    if request.method == "POST":
-    #     email = request.data.get("email")
-    #     password = request.data.get("password")
-    #     user = authenticate(email=email, password=password)
-    #     print("asdsadasd")
-    #     if user:
-    #         login(request, user)
-    #         return {'status': 0}
-    #     else:
-    #         print(f"Invalid email or password: email: {email}, password: {password}")
-    # else:
-    #     return render(request, 'login/')
-        return JsonResponse({"status" : "ok I guess"})
-
+#
+# @csrf_exempt
+# def register_view(request):
+#     if request.method == "POST":
+#         username = request.data['username']
+#         email = request.data.get("email")
+#         password = request.data.get("password")
+#         first_name = request.data['first_name']
+#         last_name = request.data['last_name']
+#         user = authenticate(email=username, password=password)
+#         if user:
+#             user = UserProfile(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
+#             user.save()
+#             return JsonResponse({'status': 0})
+#         else:
+#             print(f"Invalid email or password: email: {email}, password: {password}")
+#             return JsonResponse({'status': -1})
+#     else:
+#         return render(request, 'login/')
+#
+#
+# @csrf_exempt
 # def login_view(request):
 #     if request.method == "POST":
 #         email = request.data.get("email")
@@ -121,10 +131,13 @@ def register_view(request):
 #             return {'status': 0}
 #         else:
 #             print(f"Invalid email or password: email: {email}, password: {password}")
+#             return JsonResponse({'status': -1})
 #     else:
 #         return render(request, 'login/')
 
 
+@csrf_exempt
+@login_required
 def get_elexon(request):
     context_dic = {}
     try:
@@ -136,6 +149,8 @@ def get_elexon(request):
         return render(request, 'get_elexon/', context=context_dic)
 
 
+@csrf_exempt
+@login_required
 def get_elexon_by_date(request, date):
     context_dic = {}
     try:
@@ -145,9 +160,6 @@ def get_elexon_by_date(request, date):
     except ActualProduceElectricity.DoesNotExist:
         print(f"The ActualProduceElectricity is not exist")
         return render(request, 'get_elexon/', context=context_dic)
-
-
-
 
 # validate password and email
 # import urllib library
