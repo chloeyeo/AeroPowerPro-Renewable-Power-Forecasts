@@ -14,10 +14,12 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
-from .generate_power_forecast import generate_power_forecast
+from .Turbine import generate_power_forecast
 from .Wind_Turbine_Model.siemens_2300KW import E_28_2300
 import numpy as np
 import json
+from .Turbine import Turbine
+from .WeatherSeries import WeatherSeries
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
@@ -31,15 +33,24 @@ class PowerForecastViewSet(APIView):
         #table data is given as array of tuples(formated as arrays), 1st col is wind_speeds and 2nd is power_curve 
         wind_speeds, power_curve = np.array(request.data['tableData']).T
 
+        
         #generate Power forecasts
-        power_output = generate_power_forecast( latitude = latitude,
-                                                longitude= longitude,
-                                                power_curve = power_curve * 1000, #convert to W from KW
-                                                wind_speeds = wind_speeds,
-                                                hub_height = hub_height,
-                                                number_of_turbines = number_of_turbines).to_frame()
-
+        # power_output = generate_power_forecast( latitude = latitude,
+        #                                         longitude= longitude,
+        #                                         power_curve = power_curve * 1000, #convert to W from KW
+        #                                         wind_speeds = wind_speeds,
+        #                                         hub_height = hub_height,
+        #                                         number_of_turbines = number_of_turbines).to_frame()
+        weather = WeatherSeries(longitude, latitude, get_forecasts_on_init = True)
+        weather_df = weather.get_forecasts()
+        
+        wind_turbine = Turbine(hub_height, wind_speeds, power_curve * 1000, number_of_turbines, model_on_create=True)
+        wind_turbine.generate_power_output(weather_df)
+        
+        power_output = wind_turbine.get_power_output()
         response = {}
+
+        # convert power forecast into a 2d Array of datetime, power_output
         response['power_forecast'] = [list(pair) for pair in zip(list(power_output.index) , list(power_output['feedin_power_plant'])   )]
         return JsonResponse(response, safe = False)
 
@@ -49,9 +60,15 @@ class GenericWindTurbineViewSet(APIView):
     def get(self, reqeust, format = None):
         # Convert to a dictionary of values to allow for Json response
         generic_turbine = {}
+        # Create a list of the default names for the turbines, currently only 1 default
+        generic_turbine['default_turbines'] = []
+        generic_turbine['default_turbines'].append(E_28_2300['name'])
+
+        # convert power curve into a 2D array of wind_speed,power_production
+        power_curve = [list(pair) for pair in zip(list(E_28_2300['power_curve']['wind_speed']), list(E_28_2300['power_curve']['value']/1000))]
         generic_turbine['E_28_2300'] = {
             'hub_height' : E_28_2300['hub_height'],
-            'power_curve' : [list(pair) for pair in zip(list(E_28_2300['power_curve']['wind_speed']), list(E_28_2300['power_curve']['value']/1000))]
+            'power_curve' : power_curve
         }
 
         return JsonResponse(generic_turbine, safe = False)
