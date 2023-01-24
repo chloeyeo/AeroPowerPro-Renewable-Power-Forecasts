@@ -9,7 +9,7 @@ from windpowerlib import ModelChain, WindTurbine
 from numpy import clip
 
 def get_closest_coords(long, lat):
-    return clip(round(long*4)/4, -7, 3), clip(round(lat*4)/4, 51, 59)
+    return clip(round(long*4)/4, -7, 4), clip(round(lat*4)/4, 50, 59)
 # turbines = ActualProduceElectricity.objects.values_list('market_generation_ngc_bmu_id', flat=True).distinct()
 # weather = WeatherForecast.objects.filter(latitude = 50.00, longitude = -2.0).values_list('date_val', 'temperature_2m', 'surface_pressure', 'windspeed_10m', 'windspeed_80m')
 # # print(weather)
@@ -76,7 +76,8 @@ def generate_power_forecast(latitude, longitude, power_curve, wind_speeds, hub_h
     }
 
     turbine = WindTurbine(**turbine)
-    return ModelChain(turbine).run_model(weather_df).power_output * number_of_turbines
+    #converting to kWh so divide by 1000
+    return (ModelChain(turbine).run_model(weather_df).power_output * number_of_turbines) / 1000
 
 
 
