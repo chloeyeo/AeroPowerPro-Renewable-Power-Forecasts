@@ -14,10 +14,8 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
-from .Turbine import generate_power_forecast
 from .Wind_Turbine_Model.siemens_2300KW import E_28_2300
 import numpy as np
-import json
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
 
