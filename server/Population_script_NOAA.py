@@ -29,10 +29,11 @@ def split_date(dat):
 
 #Split NOAA request into the data needed
 def split_net(link):
-    lats = link.variables['latitude']
-    heights = link.variables['height_above_ground1']
+    # print(link.variables)
+    lats = link.variables['lat']
+    heights = link.variables['height_above_ground3']
     time = link.variables['time'][:]
-    longs = link.variables['longitude']
+    longs = link.variables['lon']
     u_comp = link.variables['u-component_of_wind_height_above_ground']
     v_comp = link.variables['v-component_of_wind_height_above_ground']
 
@@ -41,7 +42,9 @@ def split_net(link):
 
 def pull_from_api(dat):
     year, month, day, hour, minutes = split_date(dat)
-    url = f"https://www.ncei.noaa.gov/thredds/ncss/grid/model-gfs-004-files/{year}{month}/{year}{month}{day}/gfs_3_{year}{month}{day}_{hour}{minutes}_000.grb2?var=u-component_of_wind_height_above_ground&var=v-component_of_wind_height_above_ground&north=59&west=-7&east=3&south=50&horizStride=1&time_start={year}-{month}-{day}T{hour}:{minutes}:00Z&time_end={year}-{month}-{day}T{hour}:{minutes}:00Z&timeStride=1&&accept=netcdf3"
+    # url = f"https://www.ncei.noaa.gov/thredds/ncss/grid/model-gfs-004-files/{year}{month}/{year}{month}{day}/gfs_3_{year}{month}{day}_{hour}{minutes}_000.grb2?var=u-component_of_wind_height_above_ground&var=v-component_of_wind_height_above_ground&north=59&west=-7&east=3&south=50&horizStride=1&time_start={year}-{month}-{day}T{hour}:{minutes}:00Z&time_end={year}-{month}-{day}T{hour}:{minutes}:00Z&timeStride=1&&accept=netcdf3"
+    url = f"https://www.ncei.noaa.gov/thredds/ncss/grid/model-gfs-004-files/{year}{month}/{year}{month}{day}/gfs_3_{year}{month}{day}_{hour}{minutes}_000.grb2?var=u-component_of_wind_height_above_ground&var=v-component_of_wind_height_above_ground&north=59&west=-7&east=3&south=50&horizStride=1&time_start={year}-{month}-{day}T{hour}:{minutes}:00Z&time_end={year}-{month}-{day}T{hour}:{minutes}:00Z&timeStride=1&vertCoord=&addLatLon=true"
+
     return requests.get(url=url)
 
 
@@ -59,7 +62,7 @@ def historic_wind_insert(link, dat):
                     HistoricWind.objects.create(date_val = insert_h, 
                                                 height_above_ground = heights[height], 
                                                 latitude = lats[lat], 
-                                                longitude = 360 - longs[lon], 
+                                                longitude = longs[lon], 
                                                 u_comp = insert_u, 
                                                 v_comp = insert_v)
 
