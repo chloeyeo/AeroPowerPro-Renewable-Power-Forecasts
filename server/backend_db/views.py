@@ -14,10 +14,12 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
-from .Wind_Turbine_Model.siemens_2300KW import E_28_2300
+from .Wind_Turbine_Model.generic_wind_turbines_from_lib import get_all_generic_turbines
 import numpy as np
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
+import windpowerlib
+
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
@@ -57,19 +59,10 @@ class GenericWindTurbineViewSet(APIView):
 
     def get(self, reqeust, format = None):
         # Convert to a dictionary of values to allow for Json response
-        generic_turbine = {}
-        # Create a list of the default names for the turbines, currently only 1 default
-        generic_turbine['default_turbines'] = []
-        generic_turbine['default_turbines'].append(E_28_2300['name'])
 
-        # convert power curve into a 2D array of wind_speed,power_production
-        power_curve = [list(pair) for pair in zip(list(E_28_2300['power_curve']['wind_speed']), list(E_28_2300['power_curve']['value']/1000))]
-        generic_turbine['E_28_2300'] = {
-            'hub_height' : E_28_2300['hub_height'],
-            'power_curve' : power_curve
-        }
+        generic_turbines = get_all_generic_turbines()
 
-        return JsonResponse(generic_turbine, safe = False)
+        return JsonResponse(generic_turbines, safe = False)
 
 class HistoricWindViewSet(APIView):
 
