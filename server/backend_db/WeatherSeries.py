@@ -19,6 +19,7 @@ class WeatherSeries():
     
     def pull_forecasts(self):
         now = timezone.now()
+        # get relevant weather data. Approprate lat, long and time greater than now (futere forecasts only)
         weather = WeatherForecast.objects.filter(latitude = self.latitude, longitude = self.longitude, date_val__gte=now).values_list('date_val', 'temperature_2m', 'surface_pressure', 'windspeed_10m', 'windspeed_80m')
 
         weather_df = pd.DataFrame(weather,

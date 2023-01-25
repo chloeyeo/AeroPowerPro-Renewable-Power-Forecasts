@@ -18,8 +18,6 @@ from .Wind_Turbine_Model.generic_wind_turbines_from_lib import get_all_generic_t
 import numpy as np
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
-import windpowerlib
-
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
@@ -33,14 +31,6 @@ class PowerForecastViewSet(APIView):
         #table data is given as array of tuples(formated as arrays), 1st col is wind_speeds and 2nd is power_curve 
         wind_speeds, power_curve = np.array(request.data['tableData']).T
 
-        
-        #generate Power forecasts
-        # power_output = generate_power_forecast( latitude = latitude,
-        #                                         longitude= longitude,
-        #                                         power_curve = power_curve * 1000, #convert to W from KW
-        #                                         wind_speeds = wind_speeds,
-        #                                         hub_height = hub_height,
-        #                                         number_of_turbines = number_of_turbines).to_frame()
         weather = WeatherSeries(longitude, latitude, get_forecasts_on_init = True)
         weather_df = weather.get_forecasts()
         
@@ -63,6 +53,7 @@ class GenericWindTurbineViewSet(APIView):
         generic_turbines = get_all_generic_turbines()
 
         return JsonResponse(generic_turbines, safe = False)
+
 
 class HistoricWindViewSet(APIView):
 
@@ -88,13 +79,18 @@ class UserView(APIView):
         user.save()
         return Response(request.data['username'])
 
+
 class GeolocationsView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format = None):
-        wind_farms = WindFarmData.objects.all().values_list('longitude', 'latitude')
-        print("HELLO")
-        print(wind_farms)
+        wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
+                                                            'longitude',
+                                                            'latitude',
+                                                            'hub_height',
+                                                            'number_of_turbines',
+                                                            'turbine_capacity',
+                                                            'is_onshore',)
         
         return JsonResponse(list(wind_farms), safe = False)
 
