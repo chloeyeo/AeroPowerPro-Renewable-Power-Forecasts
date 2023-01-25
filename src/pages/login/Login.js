@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { NavBar } from "../../components";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Login = () => {

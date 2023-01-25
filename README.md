@@ -1,11 +1,40 @@
 # School of Maths & Stats - Renewable power forecasts
 
-## Full Title 
+## Full Title
+
 Renewable power forecasts for public information and research - supporting decarbonisation reduction by connecting
 open data sources
 
 ## Project Outline
-This software should retrieve historic and live data from weather forecast providers, the Great Britain electricity transmission system operator (National Grid ESO) and potentially others. This data should be processed,  combined, and visualised to produce regional forecasts of wind and solar power production to enable electricity consumers to plan their usage to minimise carbon emissions and potentially save money. Visualisation should be accessible, e.g. via web browser or mobile app. The data gathered should be stored to allow past event to be analysed and for development of additional capabilities in the future.
 
-### Plans to sustain project 
+This software should retrieve historic and live data from weather forecast providers, the Great Britain electricity transmission system operator (National Grid ESO) and potentially others. This data should be processed, combined, and visualised to produce regional forecasts of wind and solar power production to enable electricity consumers to plan their usage to minimise carbon emissions and potentially save money. Visualisation should be accessible, e.g. via web browser or mobile app. The data gathered should be stored to allow past event to be analysed and for development of additional capabilities in the future.
+
+### Plans to sustain project
+
 If successful, Dr. Browell would hope to continue to operate and develop the system with the support of students and staff in my group
+
+## Setup and Run Guide
+
+1. Download and Install Anaconda from https://www.anaconda.com/products/distribution , making sure that python is installed with it.
+2. Download and Install Node.js from https://nodejs.org/en/download/ .
+3. Create a folder for the project on your Desktop.
+4. Open an Anaconda terminal(you can do this by searching in Windows) and run 'cd Desktop/projectfolder' to navigate to the project folder, replacing projectfolder with the name of the folder you created.
+5. Create a virtual environment with the command 'conda create --name myenv' replacing myenv with a name of your choosing.
+6. Run 'conda activate myenv' to activate your new virtual environment, once again replacing myenv with the name you chose earlier.
+7. Run 'conda install -c anaconda git' to install git.
+8. Navigate to the Gitlab page for the main project on your browser.
+9. Click on the clone button at the top right, and copy the link under 'Clone with HTTPS'.
+10. Run 'git clone "link" ' in the terminal, replacing link with the link you copied from the project page.
+11. Once that is done, run 'pip install -r requirements.txt' to install the required python packages.
+12. Open a Windows Powershell terminal(you can once again do this by searching on Windows) and navigate to the project folder using 'cd Desktop/projectfolder/sh33-main' once again replacing projectfolder with the name of the folder you created.
+13. Run 'npm install' to install the required front-end packages.
+14. Return to the Anaconda terminal, and run 'cd server'.
+15. Run 'python manage.py makemigrations backend_db' and 'python manage.py migrate' to setup the database.
+16. The next three commands are scripts to populate the database with various data. Start with 'python Open-Meteo-API.py'.
+17. Run 'python Population_script_NOAA.py'.
+18. Run 'python elexon_query.py'.
+19. To be able to view this data, you must be a superuser in order to access the admin panel. Run 'python manage.py createsuperuser'. Enter a username of your choice, an email(this can be left blank), and a password. Make note of these details.
+20. You can now run the website. First, run 'python manage.py runserver'
+21. Return to the powershell terminal and run 'npm start'. This should redirect you to a new tab in your browser that loads the website.
+22. Only steps 20 and 21 need to be repeated to run the website every time you wish to run it, although make sure you are in the right directories in the terminals(/server for anaconda terminal and /sh33-main for powershell).
+23. To access the admin panel and view the data, paste the following link into your browser 'http://127.0.0.1:8000/admin/' and login with the superuser account you made earlier.

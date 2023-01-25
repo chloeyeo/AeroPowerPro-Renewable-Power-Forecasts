@@ -7,27 +7,27 @@ const Register = () => {
   const validateEmail = (value) =>
     /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value);
 
-  const [username, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [passwords, setPasswords] = useState([]);
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    first_name: "",
+    last_name: "",
+  });
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
 
-    const validEmail = validateEmail(email);
-    const matchingPasswords = passwords[0] === passwords[1];
-    if (validEmail && matchingPasswords) {
+    if (
+      validateEmail(formData.email) &&
+      formData.password === confirmPassword
+    ) {
       console.log("will try posting now!");
       axios({
         method: "post",
         url: "http://127.0.0.1:8000/userProfile/",
-        data: {
-          username,
-          password: passwords[0],
-          email,
-          first_name: "",
-          last_name: "",
-        },
+        data: formData,
         headers: {
           "Content-Type": "application/json",
         },
@@ -43,7 +43,7 @@ const Register = () => {
         });
     } else {
       console.log("invalid!");
-      if (!validEmail) {
+      if (!validateEmail(formData.email)) {
         alert("Wrong email format");
       } else {
         alert("Passwords don't match");
@@ -67,8 +67,13 @@ const Register = () => {
               name="username"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Username"
-              value={username}
-              onChange={(event) => setUserName(event.target.value)}
+              value={formData.username}
+              onChange={(event) =>
+                setFormData({
+                  ...formData,
+                  username: event.target.value,
+                })
+              }
               required
               minLength={5}
               maxLength={16}
@@ -82,6 +87,13 @@ const Register = () => {
               name="fname"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="First Name"
+              value={formData.first_name}
+              onChange={(event) =>
+                setFormData({
+                  ...formData,
+                  first_name: event.target.value,
+                })
+              }
             />
             <input
               className="namefield small"
@@ -89,6 +101,13 @@ const Register = () => {
               name="lname"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Last Name"
+              value={formData.last_name}
+              onChange={(event) =>
+                setFormData({
+                  ...formData,
+                  last_name: event.target.value,
+                })
+              }
             />
           </div>
           <div>
@@ -98,9 +117,12 @@ const Register = () => {
               className="small"
               style={{ backgroundColor: "#d9d9d9" }}
               placeholder="Password"
-              value={passwords[0]}
+              value={formData.password}
               onChange={(event) =>
-                setPasswords([event.target.value, passwords[1]])
+                setFormData({
+                  ...formData,
+                  password: event.target.value,
+                })
               }
               required
               minLength={8}
@@ -111,10 +133,8 @@ const Register = () => {
               type="password"
               name="cpassword"
               style={{ backgroundColor: "#d9d9d9" }}
-              value={passwords[1]}
-              onChange={(event) =>
-                setPasswords([passwords[0], event.target.value])
-              }
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
               placeholder="Confirm Password"
               className="small"
               required
@@ -126,8 +146,13 @@ const Register = () => {
           <input
             className="email small"
             type="text"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            value={formData.email}
+            onChange={(event) =>
+              setFormData({
+                ...formData,
+                email: event.target.value,
+              })
+            }
             name="email"
             style={{ backgroundColor: "#d9d9d9" }}
             placeholder="E-mail"
