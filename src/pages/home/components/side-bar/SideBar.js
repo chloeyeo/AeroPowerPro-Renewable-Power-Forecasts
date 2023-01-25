@@ -68,6 +68,27 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
   });
   const [powerForecast, setPowerForecast] = useState([]);
 
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            borderRadius: "8px",
+            padding: "4px",
+            backgroundColor: "white",
+          }}
+          className="custom-tooltip"
+        >
+          <p className="label">{`${label} hours - ${payload[0].value.toFixed(
+            2
+          )} kiloWatts`}</p>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <>
       <div
@@ -236,6 +257,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 />
                 <button
                   onClick={() => {
+                    setIsShown(false);
                     axios({
                       method: "post",
                       url: "http://127.0.0.1:8000/generate_power_forecast/",
@@ -316,46 +338,52 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
         </Sidebar>
         {isShown && (
           <div display="flex">
+            <Button
+              style={{ float: "right" }}
+              variant="outline-secondary"
+              className="button-addon2"
+              onClick={() => {
+                setIsShown(false);
+              }}
+            >
+              X
+            </Button>
             <div
               style={{
                 backgroundColor: "white",
                 width: "700px",
-                height: "300px",
+                height: "450px",
+                marginTop: "16px",
               }}
+              className="linechart-wrapper"
             >
               <LineChart
                 width={600}
-                height={300}
-                data={powerForecast.map((pair) => {
-                  return {
-                    time: moment(pair[0]).format("MMMM Do YYYY, h:mm:ss a"),
-                    power: pair[1],
-                  };
-                })}
+                height={400}
+                style={{
+                  float: "right",
+                }}
+                data={powerForecast.map((pair) => ({
+                  time: moment(pair[0]).diff(moment(), "hours"),
+                  power: pair[1],
+                }))}
                 background="#fff"
               >
-                <Line type="monotone" dataKey="power" stroke="#8884d8" />
+                <Line
+                  dot={false}
+                  type="monotone"
+                  dataKey="power"
+                  stroke="#8884d8"
+                />
                 <CartesianGrid stroke="#ccc" unit="kW" strokeDasharray="5 5" />
-                <XAxis dataKey="time" />
-                <YAxis />
-                <Tooltip />
+                <XAxis
+                  dataKey="time"
+                  unit="h"
+                  ticks={[24, 48, 72, 96, 120, 144]}
+                />
+                <YAxis type="number" unit="kW" />
+                <Tooltip content={CustomTooltip} />
               </LineChart>
-            </div>
-            <div
-              style={{
-                height: "300px",
-                backgroundColor: "white",
-              }}
-            >
-              <Button
-                variant="outline-secondary"
-                className="button-addon2"
-                onClick={() => {
-                  setIsShown(false);
-                }}
-              >
-                X
-              </Button>
             </div>
           </div>
         )}
