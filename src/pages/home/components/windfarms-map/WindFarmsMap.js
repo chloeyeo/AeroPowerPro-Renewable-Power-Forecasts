@@ -48,10 +48,10 @@ const WindFarmsMap = () => {
             coordinates: [
               [
                 [
-                  [geolocations[i][0] - 0.05, geolocations[i][1] + 0.05],
-                  [geolocations[i][0] + 0.05, geolocations[i][1] + 0.05],
-                  [geolocations[i][0] + 0.05, geolocations[i][1] - 0.05],
-                  [geolocations[i][0] - 0.05, geolocations[i][1] - 0.05],
+                  [geolocations[i][1] - 0.05, geolocations[i][2] + 0.05],
+                  [geolocations[i][1] + 0.05, geolocations[i][2] + 0.05],
+                  [geolocations[i][1] + 0.05, geolocations[i][2] - 0.05],
+                  [geolocations[i][1] - 0.05, geolocations[i][2] - 0.05],
                 ],
               ],
             ],
@@ -83,7 +83,7 @@ const WindFarmsMap = () => {
   return (
     <>
       <div style={{ display: "block", height: `750px` }}>
-        <Map center={fromLonLat(center)} zoom={8} setCenter={setCenter}>
+        <Map center={fromLonLat(center)} zoom={8} geolocations={geolocations}>
           <TileLayer source={osm()} zIndex={0} />
           {windfarms(geolocations)}
           {/* <VectorLayer

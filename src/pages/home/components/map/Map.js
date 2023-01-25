@@ -4,7 +4,7 @@ import MapContext from "./MapContext";
 import * as ol from "ol";
 import * as olProj from "ol/proj";
 
-const Map = ({ children, zoom, center, setCenter }) => {
+const Map = ({ children, zoom, center, setCenter, geolocations }) => {
   const mapRef = useRef();
   const [map, setMap] = useState(null);
 
@@ -26,10 +26,29 @@ const Map = ({ children, zoom, center, setCenter }) => {
     mapObject.setTarget(mapRef.current);
     setMap(mapObject);
     mapObject.on("click", function (evt) {
-      setCenter([
-        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
-        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[1],
-      ]);
+      if (geolocations) {
+        const coords = [
+          olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
+          olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[1],
+        ];
+        const windFarmClicked = geolocations.find(
+          (geolocation) =>
+            geolocation[1] - 0.05 < coords[0] &&
+            geolocation[1] + 0.05 > coords[0] &&
+            geolocation[2] - 0.05 < coords[1] &&
+            geolocation[2] + 0.05 > coords[1]
+        );
+        if (windFarmClicked) {
+          alert(
+            `Windfarm ID: ${windFarmClicked[0]}\nHub Height: ${windFarmClicked[3]}\nNumber of turbines: ${windFarmClicked[4]}\nTurbine Capacity: ${windFarmClicked[5]}\nIs onshore?: ${windFarmClicked[6]}\n`
+          );
+        }
+      }
+      setCenter &&
+        setCenter([
+          olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
+          olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[1],
+        ]);
     });
 
     return () => mapObject.setTarget(undefined);
