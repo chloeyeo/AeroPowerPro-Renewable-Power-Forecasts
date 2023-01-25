@@ -1,23 +1,12 @@
-import React, { useState, useEffect } from "react";
-import GeoJSON from "ol/format/GeoJSON";
-import axios from "axios";
-import { fromLonLat, get } from "ol/proj";
-
+import React, { useState } from "react";
+import "./Switch.css";
+import Switch from "./Switch";
 import { NavBar } from "../../components";
-
-import {
-  SideBar,
-  TileLayer,
-  VectorLayer,
-  Map,
-  osm,
-  vector,
-  FullScreenControl,
-  Styles as FeatureStyles,
-} from "./components";
-import mapConfig from "./config.json";
+import { AreaSizeMap, WindFarmsMap } from "./components";
+import { Grid } from "@material-ui/core";
 
 const Home = () => {
+<<<<<<< HEAD
   const [center, setCenter] = useState(mapConfig.center);
   const [areaSize, setAreaSize] = useState(0.25);
   const [geolocations, setGeolocations] = useState([]);
@@ -57,31 +46,40 @@ const Home = () => {
       },
     ],
   };
+=======
+  const [showWindFarms, setShowWindFarms] = useState(false);
+>>>>>>> dev-branch
 
   return (
     <>
       <NavBar />
-      <SideBar
-        center={center}
-        setCenter={setCenter}
-        areaSize={areaSize}
-        setAreaSize={setAreaSize}
-      />
-      <div style={{ display: "block", height: `750px` }}>
-        <Map center={fromLonLat(center)} zoom={8} setCenter={setCenter}>
-          <TileLayer source={osm()} zIndex={0} />
-
-          <VectorLayer
-            source={vector({
-              features: new GeoJSON().readFeatures(geoObject, {
-                featureProjection: get("EPSG:3857"),
-              }),
-            })}
-            style={FeatureStyles.MultiPolygon}
+      <div className="app">
+        <Grid container justify="flex-end">
+          <Switch
+            isOn={showWindFarms}
+            onColor="#EF476F"
+            handleToggle={() => setShowWindFarms(!showWindFarms)}
           />
-          <FullScreenControl />
-        </Map>
+        </Grid>
       </div>
+      {/* <button onClick={() => setShowWindFarms(!showWindFarms)}>
+        <h4>SWITCH</h4>
+      </button> */}
+      {showWindFarms ? (
+        <>
+          <Grid align="center">
+            <h1 style={{ fontFamily: "fangsong" }}>Wind Farms</h1>
+          </Grid>
+          <WindFarmsMap />
+        </>
+      ) : (
+        <>
+          <Grid align="center">
+            <h1 style={{ fontFamily: "fangsong" }}>Area Size Map</h1>
+          </Grid>
+          <AreaSizeMap />
+        </>
+      )}
     </>
   );
 };
