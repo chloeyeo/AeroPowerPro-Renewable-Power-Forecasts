@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Sidebar,
   SubMenu,
@@ -67,6 +67,20 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
     turbineModel: "",
   });
   const [powerForecast, setPowerForecast] = useState([]);
+
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: "http://127.0.0.1:8000/generic_wind_turbines/",
+    })
+      .then(function (response) {
+        console.log(response.data.default_turbines);
+        setTurbineModels(response.data.default_turbines);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <>
