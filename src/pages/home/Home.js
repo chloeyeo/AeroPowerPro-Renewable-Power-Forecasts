@@ -6,49 +6,7 @@ import { AreaSizeMap, WindFarmsMap } from "./components";
 import { Grid } from "@material-ui/core";
 
 const Home = () => {
-<<<<<<< HEAD
-  const [center, setCenter] = useState(mapConfig.center);
-  const [areaSize, setAreaSize] = useState(0.25);
-  const [geolocations, setGeolocations] = useState([]);
-
-  useEffect(() => {
-    axios({
-      method: "get",
-      url: "http://127.0.0.1:8000/geolocations/",
-    })
-      .then(function (response) {
-        console.log(response);
-        setGeolocations(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, []);
-
-  let geoObject = {
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "Feature",
-        geometry: {
-          type: "MultiPolygon",
-          coordinates: [
-            [
-              [
-                [center[0] - areaSize * 0.5, center[1] + areaSize * 0.5],
-                [center[0] + areaSize * 0.5, center[1] + areaSize * 0.5],
-                [center[0] + areaSize * 0.5, center[1] - areaSize * 0.5],
-                [center[0] - areaSize * 0.5, center[1] - areaSize * 0.5],
-              ],
-            ],
-          ],
-        },
-      },
-    ],
-  };
-=======
   const [showWindFarms, setShowWindFarms] = useState(false);
->>>>>>> dev-branch
 
   return (
     <>
