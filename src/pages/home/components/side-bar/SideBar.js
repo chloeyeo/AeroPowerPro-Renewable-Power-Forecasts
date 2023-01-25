@@ -59,7 +59,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
     }
   };
 
-  const [turbineModels, setTurbineModels] = useState([]);
+  const [turbineModels, setTurbineModels] = useState({});
   const [powerCurveData, setPowerCurveData] = useState({
     tableData: [[0, 0]],
     hubHeight: 0,
@@ -74,13 +74,13 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
       url: "http://127.0.0.1:8000/generic_wind_turbines/",
     })
       .then(function (response) {
-        console.log(response.data.default_turbines);
         setTurbineModels(response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
   }, []);
+
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -109,6 +109,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
           display: "flex",
           position: "absolute",
           zIndex: 3,
+          marginTop: 42,
         }}
       >
         <Sidebar>
@@ -123,26 +124,33 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
             <SubMenu label="Wind Power Forecast" icon={<FiWind />}>
               <div className="p-2">
                 <h5>Wind Turbine Model</h5>
-                <select
-                  onChange={(event) =>
-                    setPowerCurveData({
-                      ...powerCurveData,
-                      turbineModel: event.target.value,
-                      tableData: turbineModels[event.target.value].power_curve,
-                    })
-                  }
-                  name="turbineModels"
-                  id="turbineModels"
-                >
-                  <option value="" selected disabled hidden>
-                    Choose here
-                  </option>
-                  {Object.keys(turbineModels).map((turbineModel) => (
-                    <option key={turbineModel} value={turbineModel}>
-                      {turbineModel}
+                {
+                  <select
+                    onChange={(event) =>
+                      setPowerCurveData({
+                        ...powerCurveData,
+                        turbineModel: event.target.value,
+                        tableData:
+                          turbineModels[event.target.value].power_curve,
+                      })
+                    }
+                    name="turbineModels"
+                    id="turbineModels"
+                  >
+                    <option value="" selected disabled hidden>
+                      {turbineModels &&
+                      Object.keys(turbineModels).length === 0 &&
+                      Object.getPrototypeOf(turbineModels) === Object.prototype
+                        ? "Turbines loading..."
+                        : "Choose here"}
                     </option>
-                  ))}
-                </select>
+                    {Object.keys(turbineModels).map((turbineModel) => (
+                      <option key={turbineModel} value={turbineModel}>
+                        {turbineModel}
+                      </option>
+                    ))}
+                  </select>
+                }
                 <h5 className="mt-3">Power Curve Info</h5>
 
                 <div className="table-wrapper">
@@ -233,6 +241,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 </div>
 
                 <h5 className="mt-3">Hub Height (m)</h5>
+
                 <input
                   aria-label="hub_height"
                   value={powerCurveData.hubHeight}
