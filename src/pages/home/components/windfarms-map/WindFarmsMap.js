@@ -12,14 +12,13 @@ import {
   VectorLayer,
   Map,
   osm,
+  SideBar,
   vector,
   FullScreenControl,
   Styles as FeatureStyles,
 } from "../../components";
-import mapConfig from "./config.json";
 
-const WindFarmsMap = () => {
-  const [center, setCenter] = useState(mapConfig.center);
+const WindFarmsMap = ({ center, powerCurveData, setPowerCurveData }) => {
   const [geolocations, setGeolocations] = useState([]);
   const [showWindFarms, setShowWindFarms] = useState(false);
 
@@ -83,7 +82,13 @@ const WindFarmsMap = () => {
   return (
     <>
       <div style={{ display: "block", height: `750px` }}>
-        <Map center={fromLonLat(center)} zoom={8} geolocations={geolocations}>
+        <Map
+          center={fromLonLat(center)}
+          zoom={8}
+          geolocations={geolocations}
+          powerCurveData={powerCurveData}
+          setPowerCurveData={setPowerCurveData}
+        >
           <TileLayer source={osm()} zIndex={0} />
           {windfarms(geolocations)}
           {/* <VectorLayer

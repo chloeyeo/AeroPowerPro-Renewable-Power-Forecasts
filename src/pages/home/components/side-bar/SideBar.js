@@ -29,10 +29,17 @@ import InputGroup from "react-bootstrap/InputGroup";
 
 import "./styles.css";
 
-const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
+const SideBar = ({
+  powerCurveData,
+  setPowerCurveData,
+  center,
+  setCenter,
+  areaSize,
+  setAreaSize,
+}) => {
   const { collapseSidebar, collapsed } = useProSidebar();
   const [inputCoords, setInputCoords] = useState(center || "");
-  const [inputSize, setInputSize] = useState(areaSize || 0.1);
+  const [inputSize, setInputSize] = useState(areaSize || 0.25);
   const [isShown, setIsShown] = useState(false);
   const data = [
     { name: "A", uv: 400, pv: 10000, amt: 10000 },
@@ -55,17 +62,10 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
     } else {
       setCenter([parseFloat(inputCoords[0]), parseFloat(inputCoords[1])]);
       setAreaSize(parseFloat(inputSize));
-      setIsShown(true);
     }
   };
 
   const [turbineModels, setTurbineModels] = useState({});
-  const [powerCurveData, setPowerCurveData] = useState({
-    tableData: [[0, 0]],
-    hubHeight: 0,
-    numOfTurbines: 0,
-    turbineModel: "",
-  });
   const [powerForecast, setPowerForecast] = useState([]);
 
   useEffect(() => {

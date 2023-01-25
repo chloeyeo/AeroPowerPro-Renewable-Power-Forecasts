@@ -4,7 +4,15 @@ import MapContext from "./MapContext";
 import * as ol from "ol";
 import * as olProj from "ol/proj";
 
-const Map = ({ children, zoom, center, setCenter, geolocations }) => {
+const Map = ({
+  children,
+  zoom,
+  center,
+  setCenter,
+  geolocations,
+  powerCurveData,
+  setPowerCurveData,
+}) => {
   const mapRef = useRef();
   const [map, setMap] = useState(null);
 
@@ -39,6 +47,11 @@ const Map = ({ children, zoom, center, setCenter, geolocations }) => {
             geolocation[2] + 0.05 > coords[1]
         );
         if (windFarmClicked) {
+          setPowerCurveData({
+            ...powerCurveData,
+            hubHeight: windFarmClicked[3],
+            numOfTurbines: windFarmClicked[4],
+          });
           alert(
             `Windfarm ID: ${windFarmClicked[0]}\nHub Height: ${windFarmClicked[3]}\nNumber of turbines: ${windFarmClicked[4]}\nTurbine Capacity: ${windFarmClicked[5]}\nIs onshore?: ${windFarmClicked[6]}\n`
           );

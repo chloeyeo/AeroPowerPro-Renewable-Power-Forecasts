@@ -14,10 +14,7 @@ import {
 } from "../../components";
 import mapConfig from "./config.json";
 
-const AreaSizeMap = () => {
-  const [center, setCenter] = useState(mapConfig.center);
-  const [areaSize, setAreaSize] = useState(0.25);
-
+const AreaSizeMap = ({ areaSize, center, setCenter }) => {
   let geoObject = {
     type: "FeatureCollection",
     features: [
@@ -42,12 +39,6 @@ const AreaSizeMap = () => {
 
   return (
     <>
-      <SideBar
-        center={center}
-        setCenter={setCenter}
-        areaSize={areaSize}
-        setAreaSize={setAreaSize}
-      />
       <div style={{ display: "block", height: `750px` }}>
         <Map center={fromLonLat(center)} zoom={8} setCenter={setCenter}>
           <TileLayer source={osm()} zIndex={0} />
