@@ -1,8 +1,8 @@
 .sidebar-wrapper {
-  max-height: 700px;
+  height: 700px;
 }
 
 .table-wrapper {
-  max-height: 150px;
+  max-height: 250px;
   overflow: scroll;
 }

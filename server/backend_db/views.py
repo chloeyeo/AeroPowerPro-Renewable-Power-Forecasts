@@ -51,7 +51,7 @@ class PowerForecastViewSet(APIView):
         response = {}
 
         # convert power forecast into a 2d Array of datetime, power_output
-        response['power_forecast'] = [list(pair) for pair in zip(list(power_output.index) , list(power_output['feedin_power_plant'])   )]
+        response['power_forecast'] = [list(pair) for pair in zip(list(power_output.index) , list(power_output['feedin_power_plant'] / 1000))]
         return JsonResponse(response, safe = False)
 
 class GenericWindTurbineViewSet(APIView):

@@ -59,7 +59,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
     }
   };
 
-  const [turbineModels, setTurbineModels] = useState(["E_28_2300"]);
+  const [turbineModels, setTurbineModels] = useState([]);
   const [powerCurveData, setPowerCurveData] = useState({
     tableData: [[0, 0]],
     hubHeight: 0,
@@ -75,7 +75,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
     })
       .then(function (response) {
         console.log(response.data.default_turbines);
-        setTurbineModels(response.data.default_turbines);
+        setTurbineModels(response.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -104,34 +104,20 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
               <div className="p-2">
                 <h5>Wind Turbine Model</h5>
                 <select
-                  onChange={(event) => {
+                  onChange={(event) =>
                     setPowerCurveData({
                       ...powerCurveData,
                       turbineModel: event.target.value,
-                    });
-                    axios({
-                      method: "get",
-                      url: "http://127.0.0.1:8000/generic_wind_turbines/",
+                      tableData: turbineModels[event.target.value].power_curve,
                     })
-                      .then(function (response) {
-                        setPowerCurveData({
-                          ...powerCurveData,
-                          turbineModel: event.target.value,
-                          tableData:
-                            response.data[event.target.value].power_curve,
-                        });
-                      })
-                      .catch(function (error) {
-                        console.log(error);
-                      });
-                  }}
+                  }
                   name="turbineModels"
                   id="turbineModels"
                 >
                   <option value="" selected disabled hidden>
                     Choose here
                   </option>
-                  {turbineModels.map((turbineModel) => (
+                  {Object.keys(turbineModels).map((turbineModel) => (
                     <option key={turbineModel} value={turbineModel}>
                       {turbineModel}
                     </option>
