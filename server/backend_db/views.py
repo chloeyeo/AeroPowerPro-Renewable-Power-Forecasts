@@ -94,6 +94,67 @@ class GeolocationsView(APIView):
         
         return JsonResponse(list(wind_farms), safe = False)
 
+class PowerForecastByAreaViewSet(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, format = None):
+        max_lat, max_long = self.request.data['max_latitude'], self.reqeust.data['max_longitude']
+        min_lat, min_long = self.request.data['min_latitude'], self.reqeust.data['min_longitude']
+        response = {}
+        
+        wind_farms = WindFarmData.object.filter(latitude__gte=min_lat,
+                                                latitude__lte=max_lat,
+                                                longitude__gte=min_long,
+                                                longitude__lte=max_lat)
+
+        response['wind_farms'] = {}
+        response['total_turbines'] = 0
+        response['total_turbine_capacity'] = 0
+        response['total_power_output'] = []
+        datetimes = None
+
+        power_forecasts = []
+        for farm in wind_farms:
+            longitude = farm.longitude
+            latitude = farm.latitude
+            hub_height = farm.hub_height
+            number_of_turbines = farm.number_of_turbines
+            turbine_capacity = farm.turbine_capacity
+            farm_id = farm.windfarm_data_id
+
+            response['wind_farms'][farm_id] = {   'longitude' : longitude,
+                                                                'latitude' : latitude,
+                                                                'hub_height' : hub_height,
+                                                                'number_of_turbines' : number_of_turbines,
+                                                                'turbine_capacity' : turbine_capacity,
+                                                                'is_onshore' : farm.is_onshore,}
+            response['total_turbines'] += number_of_turbines
+            total_turbine_capacity += farm.turbine_capacity
+
+            weather = WeatherSeries(longitude, latitude, get_forecasts_on_init = True)
+            weather_df = weather.get_forecasts()
+
+            ## NEED TO GET WIND POWER CURVE FOR TURBINE FROM REQUEST
+            wind_turbine = Turbine(hub_height, wind_speeds, power_curve * 1000, number_of_turbines, model_on_create=True)
+            wind_turbine.generate_power_output(weather_df)
+            
+            power_output = wind_turbine.get_power_output()
+            datetimes = list(power_output.index)
+            power_output = [list(pair) for pair in zip(list(power_output.index) , list(power_output['feedin_power_plant'] / 1000))]
+            
+            response[farm_id]['power_forecast'] = power_output
+            power_forecasts.append( np.array(power_output)[:,1])
+        
+        # There were farms in the selected area
+        if datetimes != None:
+        # Add the forecasts all up
+            total_power_forecast = np.sum(power_forecasts, axis = 0)
+            response['total_power_forecast'] = [list(pair) for pair in zip (datetimes ,list(total_power_forecast))]
+            
+        return JsonResponse(response, safe = False)
+
+
+
 
 # from rest_framework.views import APIView
 # from rest_framework.request import Request
