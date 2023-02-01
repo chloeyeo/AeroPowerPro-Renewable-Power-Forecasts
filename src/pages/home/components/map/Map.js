@@ -65,10 +65,10 @@ const Map = ({
           method: "post",
           url: "http://127.0.0.1:8000/farm_data_by_area/",
           data: {
-            max_latitude: center[0] + areaSize * 0.5,
-            min_latitude: center[0] - areaSize * 0.5,
-            max_longitude: center[1] + areaSize * 0.5,
-            min_longitude: center[1] - areaSize * 0.5,
+            max_latitude: coords[1] + areaSize * 0.5,
+            min_latitude: coords[1] - areaSize * 0.5,
+            max_longitude: coords[0] + areaSize * 0.5,
+            min_longitude: coords[0] - areaSize * 0.5,
           },
           headers: {
             "Content-Type": "application/json",

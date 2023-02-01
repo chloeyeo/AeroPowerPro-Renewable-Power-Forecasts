@@ -106,6 +106,7 @@ class WindFarmDataByArea(APIView):
                                                 latitude__lte=max_lat,
                                                 longitude__gte=min_long,
                                                 longitude__lte=max_long)
+        print(max_lat, max_long, min_lat, min_long)
 
         response['wind_farms'] = {}
         response['total_turbines'] = 0
@@ -151,7 +152,8 @@ class WindFarmDataByArea(APIView):
         # Add the forecasts all up
             # total_power_forecast = np.sum(power_forecasts, axis = 0)
             # response['total_power_forecast'] = [list(pair) for pair in zip (datetimes ,list(total_power_forecast))]
-        response['average_hub_height'] = np.sum(response['average_hub_height'])/len(average_hub_height)
+        if len(response['average_hub_height']) != 0:
+            response['average_hub_height'] = np.sum(response['average_hub_height'])/len(response['average_hub_height'])
         
         return JsonResponse(response, safe = False)
 
