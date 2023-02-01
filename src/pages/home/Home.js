@@ -71,7 +71,9 @@ const Home = () => {
 
       <div style={{ display: "block", height: `750px` }}>
         <Map
-          geolocations={geolocations}
+          {...(showWindFarms && {
+            geolocations,
+          })}
           areaSize={parseFloat(areaSize)}
           center={fromLonLat([parseFloat(center[0]), parseFloat(center[1])])}
           setCenter={setCenter}
