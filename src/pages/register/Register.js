@@ -26,7 +26,7 @@ const Register = () => {
       console.log("will try posting now!");
       axios({
         method: "post",
-        url: "http://127.0.0.1:8000/userProfile/",
+        url: "http://127.0.0.1:8000/register/",
         data: formData,
         headers: {
           "Content-Type": "application/json",
