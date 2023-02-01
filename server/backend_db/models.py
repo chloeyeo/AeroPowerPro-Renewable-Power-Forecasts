@@ -2,7 +2,7 @@ from django.db import models
 from backend_db.elexon_model import ActualProduceElectricity
 from backend_db.open_meteo_model import WeatherForecast
 from backend_db.power_forecast import PowerForecast
-from backend_db.wind_farm_data import WindFarmData
+from backend_db.wind_farm_data import WindFarmData, WindFarmDetailData
 # Create your models here.
 
 
