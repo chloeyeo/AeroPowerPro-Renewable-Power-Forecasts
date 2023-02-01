@@ -11,7 +11,6 @@ const Map = ({
   areaSize,
   center,
   setCenter,
-  setInputCoords,
   geolocations,
   powerCurveData,
   setPowerCurveData,
@@ -86,8 +85,7 @@ const Map = ({
             console.log(error);
           });
       }
-      setInputCoords && setInputCoords(coords.map((coord) => coord.toFixed(2)));
-      setCenter && setCenter(coords);
+      setCenter(coords.map((coord) => coord.toFixed(2)));
     });
 
     return () => mapObject.setTarget(undefined);
