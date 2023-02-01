@@ -30,10 +30,9 @@ class Turbine():
 
         # Convert from Series to DataFrame
         self.power_output = self.power_output.to_frame()
-        print(self.power_output)
         
         
-    def check_is_numberic(self, value):
+    def check_is_numeric(self, value):
         return isinstance(value, (int, float))
 
     @property
@@ -59,7 +58,7 @@ class Turbine():
 
     @hub_height.setter
     def hub_height(self, hub_height):
-        if (self.check_is_numberic(hub_height) and hub_height > 0):
+        if (self.check_is_numeric(hub_height) and hub_height > 0):
             self._hub_height = hub_height
         else:
             raise TypeError("Hub height should be a numeric value greater than 0")
@@ -73,14 +72,18 @@ class Turbine():
 
     @power_curve.setter
     def power_curve(self, power_curve):
-        if all(self.check_is_numberic(item) for item in power_curve):
+        if all(self.check_is_numeric(item) for item in power_curve):
             self._power_curve = power_curve
         else:
             raise TypeError("Power Curve should be a list of numeric values")
 
     @number_of_turbines.setter
     def number_of_turbines(self, number_of_turbines):
-        if (self.check_is_numberic(number_of_turbines)):
+        if (self.check_is_numeric(number_of_turbines)):
             self._number_of_turbines = number_of_turbines
         else:
             raise TypeError("The number of turbines should be a numeric value greater than 0")
+        
+    @power_output.setter
+    def power_output(self, power_output):
+        self._power_output = power_output

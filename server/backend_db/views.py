@@ -45,7 +45,7 @@ class PowerForecastViewSet(APIView):
             return JsonResponse({'message' : e}, status = 400)
         wind_turbine.generate_power_output(weather_df)
         
-        power_output = wind_turbine.get_power_output()
+        power_output = wind_turbine.power_output
         response = {}
 
         # convert power forecast into a 2d Array of datetime, power_output
