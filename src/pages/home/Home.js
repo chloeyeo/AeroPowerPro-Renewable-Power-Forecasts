@@ -61,6 +61,8 @@ const Home = () => {
           </Grid>
           <AreaSizeMap
             setInputCoords={setInputCoords}
+            setPowerCurveData={setPowerCurveData}
+            powerCurveData={powerCurveData}
             areaSize={areaSize}
             center={center}
             setCenter={setCenter}

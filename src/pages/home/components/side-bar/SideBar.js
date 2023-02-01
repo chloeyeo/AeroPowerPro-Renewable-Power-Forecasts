@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Grid } from "@material-ui/core";
 import {
   Sidebar,
   SubMenu,
@@ -104,7 +105,7 @@ const SideBar = ({
           display: "flex",
           position: "absolute",
           zIndex: 3,
-          marginTop: 42,
+          marginTop: 98,
         }}
       >
         <Sidebar>
@@ -210,7 +211,7 @@ const SideBar = ({
                                 });
                               }}
                             >
-                              Delete
+                              Del
                             </button>
                           </td>
                         </tr>
@@ -265,7 +266,10 @@ const SideBar = ({
                       method: "post",
                       url: "http://127.0.0.1:8000/generate_power_forecast/",
                       data: {
-                        ...powerCurveData,
+                        tableData: powerCurveData.tableData.map((pair) => [
+                          parseFloat(pair[0]),
+                          parseFloat(pair[1]),
+                        ]),
                         hubHeight: parseFloat(powerCurveData.hubHeight),
                         numOfTurbines: parseFloat(powerCurveData.numOfTurbines),
                         latitude: center[0],
@@ -340,23 +344,35 @@ const SideBar = ({
           </Menu>
         </Sidebar>
         {isShown && (
-          <div display="flex">
-            <Button
-              style={{ float: "right" }}
-              variant="outline-secondary"
-              className="button-addon2"
-              onClick={() => {
-                setIsShown(false);
-              }}
-            >
-              X
-            </Button>
+          <div
+            display="flex"
+            style={{
+              backgroundColor: "white",
+              width: "650px",
+              height: "475px",
+            }}
+          >
+            <Grid container justifyContent="space-between">
+              <div></div>
+              <h5 style={{ textAlign: "center" }}>
+                Power Production (MW) for next 5 days
+              </h5>
+              <Button
+                style={{ float: "right" }}
+                variant="outline-secondary"
+                className="button-addon2"
+                onClick={() => {
+                  setIsShown(false);
+                }}
+              >
+                X
+              </Button>
+            </Grid>
             <div
               style={{
-                backgroundColor: "white",
-                width: "700px",
-                height: "450px",
-                marginTop: "16px",
+                width: "625px",
+                height: "410px",
+                borderRadius: "4px",
               }}
               className="linechart-wrapper"
             >
@@ -378,13 +394,22 @@ const SideBar = ({
                   dataKey="power"
                   stroke="#8884d8"
                 />
+
                 <CartesianGrid stroke="#ccc" unit="MW" strokeDasharray="5 5" />
                 <XAxis
+                  label={{ value: "Time (h)", position: "insideBottom" }}
                   dataKey="time"
                   unit="h"
                   ticks={[24, 48, 72, 96, 120, 144]}
                 />
-                <YAxis type="number" unit="kW" />
+                <YAxis
+                  label={{
+                    value: "Power (MW)",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
+                  type="number"
+                />
                 <Tooltip content={CustomTooltip} />
               </LineChart>
             </div>

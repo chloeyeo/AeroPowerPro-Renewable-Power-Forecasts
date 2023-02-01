@@ -76,6 +76,11 @@ const Map = ({
         })
           .then(function (response) {
             console.log("farmed data by area!", response.data);
+            setPowerCurveData({
+              ...powerCurveData,
+              hubHeight: response.data.average_hub_height.toFixed(2),
+              numOfTurbines: response.data.total_turbines,
+            });
           })
           .catch(function (error) {
             console.log(error);

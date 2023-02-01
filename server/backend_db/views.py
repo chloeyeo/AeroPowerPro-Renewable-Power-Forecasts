@@ -153,7 +153,9 @@ class WindFarmDataByArea(APIView):
             # total_power_forecast = np.sum(power_forecasts, axis = 0)
             # response['total_power_forecast'] = [list(pair) for pair in zip (datetimes ,list(total_power_forecast))]
         if len(response['average_hub_height']) != 0:
-            response['average_hub_height'] = np.sum(response['average_hub_height'])/len(response['average_hub_height'])
+            response['average_hub_height'] = np.average(response['average_hub_height'])
+        else: 
+            response['average_hub_height'] = 0
         
         return JsonResponse(response, safe = False)
 

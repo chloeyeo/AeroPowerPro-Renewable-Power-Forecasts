@@ -14,7 +14,14 @@ import {
 } from "../../components";
 import mapConfig from "./config.json";
 
-const AreaSizeMap = ({ areaSize, center, setCenter, setInputCoords }) => {
+const AreaSizeMap = ({
+  areaSize,
+  center,
+  setCenter,
+  setPowerCurveData,
+  powerCurveData,
+  setInputCoords,
+}) => {
   let geoObject = {
     type: "FeatureCollection",
     features: [
@@ -46,6 +53,8 @@ const AreaSizeMap = ({ areaSize, center, setCenter, setInputCoords }) => {
           areaSize={areaSize}
           setCenter={setCenter}
           setInputCoords={setInputCoords}
+          powerCurveData={powerCurveData}
+          setPowerCurveData={setPowerCurveData}
         >
           <TileLayer source={osm()} zIndex={0} />
 
