@@ -9,7 +9,7 @@ def get_closest_coords(long, lat):
 
 class WeatherSeries():
     
-    def __init__(self, longitude, latitude, get_forecasts_on_init = False):
+    def __init__(self, longitude : float, latitude : float, get_forecasts_on_init : bool = False):
         self.longitude, self.latitude = get_closest_coords(longitude, latitude)
 
         self.forecasts = None
@@ -34,24 +34,40 @@ class WeatherSeries():
         weather_df[('roughness_length',0)] = 0.15 # roughness level of 0.15 is typical for grassland
 
         self.forecasts = weather_df
+    
+    
+    def check_is_numeric(self, item: float):
+        return isinstance(item , (int, float))
+    
+    
+    @property
+    def longitude(self) -> float:
+        return self._longitude
 
-    def get_longitude(self):
-        return self.longitude
+    @property
+    def latitude(self) -> float:
+        return self._latitude
 
-    def get_latitude(self):
-        return self.latitude
+    @property
+    def forecasts(self) -> pd.DataFrame:
+        return self._forecasts
 
-    def get_forecasts(self):
-        return self.forecasts
 
-    def set_longitude(self, longitude):
-        if (isinstance(longitude, (int, float)) and longitude > 0):
-            self.longitude = longitude
+    @longitude.setter
+    def longitude(self, longitude):
+        if (self.check_is_numeric(longitude) and longitude > 0):
+            self._longitude = longitude
         else:
             raise TypeError("Longitude should be a numeric value greater than 0")
 
-    def set_latitude(self, latitude):
-        if (isinstance(latitude, (int, float)) and latitude > 0):
-            self.longitude = latitude
+    @latitude.setter
+    def latitude(self, latitude):
+        if (self.check_is_numeric(latitude) and latitude > 0):
+            self._latitude = latitude
         else:
             raise TypeError("Latitude should be a numeric value greater than 0")
+        
+    @forecasts.setter
+    def forecasts(self, forecasts):
+        self._forecasts = forecasts
+        

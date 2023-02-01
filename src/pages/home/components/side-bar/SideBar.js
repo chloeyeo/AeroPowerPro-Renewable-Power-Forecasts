@@ -282,12 +282,12 @@ const SideBar = ({
                       .then(function (response) {
                         console.log("success!", response.data);
                         setPowerForecast(response.data.power_forecast);
+                        setIsShown(true);
                       })
                       .catch(function (error) {
                         console.log(error);
                         console.log("failed with data: ", powerCurveData);
                       });
-                    setIsShown(true);
                   }}
                   className="mt-3"
                   style={{ border: "none" }}

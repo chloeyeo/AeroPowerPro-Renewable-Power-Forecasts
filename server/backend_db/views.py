@@ -36,13 +36,14 @@ class PowerForecastViewSet(APIView):
         wind_speeds, power_curve = np.array(request.data['tableData']).T
 
         weather = WeatherSeries(longitude, latitude, get_forecasts_on_init = True)
-        weather_df = weather.get_forecasts()
+        weather_df = weather.forecasts
+        if weather_df.empty:
+            return JsonResponse({'message' : "Could not find weather forecasts"}, status = 500)
         
         try:
             wind_turbine = Turbine(hub_height, wind_speeds, power_curve * 1000, number_of_turbines, model_on_create=True)
         except TypeError as e:
-            # Response({"status": status.HTTP_400_BAD_REQUEST, "Token": None})
-            return JsonResponse({'message' : e}, status = 400)
+            return JsonResponse({'message' : str(e)}, status = 400)
         wind_turbine.generate_power_output(weather_df)
         
         power_output = wind_turbine.power_output
@@ -50,6 +51,7 @@ class PowerForecastViewSet(APIView):
 
         # convert power forecast into a 2d Array of datetime, power_output
         response['power_forecast'] = [list(pair) for pair in zip(list(power_output.index) , list(power_output['feedin_power_plant'] / 1000))]
+        
         return JsonResponse(response, safe = False)
 
 class GenericWindTurbineViewSet(APIView):
