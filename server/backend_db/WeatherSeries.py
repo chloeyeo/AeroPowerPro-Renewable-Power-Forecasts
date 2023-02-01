@@ -1,7 +1,7 @@
 import pandas as pd
 from numpy import clip
 from backend_db.models import WeatherForecast
-
+from django.utils import timezone
 
 def get_closest_coords(long, lat):
     return clip(round(long*4)/4, -7, 3), clip(round(lat*4)/4, 51, 59)
@@ -18,7 +18,9 @@ class WeatherSeries():
             self.pull_forecasts()
     
     def pull_forecasts(self):
-        weather = WeatherForecast.objects.filter(latitude = self.latitude, longitude = self.longitude).values_list('date_val', 'temperature_2m', 'surface_pressure', 'windspeed_10m', 'windspeed_80m')
+        now = timezone.now()
+        # get relevant weather data. Approprate lat, long and time greater than now (futere forecasts only)
+        weather = WeatherForecast.objects.filter(latitude = self.latitude, longitude = self.longitude, date_val__gte=now).values_list('date_val', 'temperature_2m', 'surface_pressure', 'windspeed_10m', 'windspeed_80m')
 
         weather_df = pd.DataFrame(weather,
                                     columns = [['variable_name', 'temperature', 'surface_pressure', 'wind_speed', 'wind_speed'],

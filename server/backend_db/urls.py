@@ -3,7 +3,7 @@ from django.contrib import admin
 #  path('', views.index, name='index'),
 # path('backend_db/', include('backend_db.urls')),
 # from backend_db.views import register_view, get_elexon, get_elexon_by_date
-from backend_db.views import UserView, get_elexon, get_elexon_by_date, register_view, GeolocationsView, HistoricWindViewSet, PowerForecastViewSet
+from backend_db.views import UserView, get_elexon, get_elexon_by_date, register_view, GeolocationsView, HistoricWindViewSet, PowerForecastViewSet, WindFarmDataByArea
 from .views import GenericWindTurbineViewSet
 from django.conf.urls import include
 from rest_framework.routers import DefaultRouter
@@ -23,5 +23,6 @@ urlpatterns = [
     path('get_elexon/<str:date>', get_elexon_by_date, name='get_elexon_by_date'),
     path('generate_power_forecast/', PowerForecastViewSet.as_view(), name = "generate_power_forecast"),
     path('generic_wind_turbines/', GenericWindTurbineViewSet.as_view(), name = "generic_wind_turbines"),
+    path('farm_data_by_area/', WindFarmDataByArea.as_view(), name = "farm_data_by_area"),
     # re_path('^',include(router.urls)),
 ]

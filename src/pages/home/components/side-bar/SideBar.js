@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Grid } from "@material-ui/core";
 import {
   Sidebar,
   SubMenu,
@@ -29,17 +30,19 @@ import InputGroup from "react-bootstrap/InputGroup";
 
 import "./styles.css";
 
-const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
+const SideBar = ({
+  powerCurveData,
+  setPowerCurveData,
+  center,
+  setCenter,
+  inputCoords,
+  setInputCoords,
+  areaSize,
+  setAreaSize,
+}) => {
   const { collapseSidebar, collapsed } = useProSidebar();
-  const [inputCoords, setInputCoords] = useState(center || "");
-  const [inputSize, setInputSize] = useState(areaSize || 0.1);
+  const [inputSize, setInputSize] = useState(areaSize || 0.25);
   const [isShown, setIsShown] = useState(false);
-  const data = [
-    { name: "A", uv: 400, pv: 10000, amt: 10000 },
-    { name: "B", uv: 300, pv: 2400, amt: 2400 },
-    { name: "C", uv: 300, pv: 2400, amt: 2400 },
-    { name: "D", uv: 200, pv: 2400, amt: 2400 },
-  ];
   const updateCoords = () => {
     if (
       inputCoords[1] < 50 ||
@@ -55,18 +58,45 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
     } else {
       setCenter([parseFloat(inputCoords[0]), parseFloat(inputCoords[1])]);
       setAreaSize(parseFloat(inputSize));
-      setIsShown(true);
     }
   };
 
-  const [turbineModels, setTurbineModels] = useState(["E_28_2300"]);
-  const [powerCurveData, setPowerCurveData] = useState({
-    tableData: [[0, 0]],
-    hubHeight: 0,
-    numOfTurbines: 0,
-    turbineModel: "",
-  });
+  const [turbineModels, setTurbineModels] = useState({});
   const [powerForecast, setPowerForecast] = useState([]);
+
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: "http://127.0.0.1:8000/generic_wind_turbines/",
+    })
+      .then(function (response) {
+        setTurbineModels(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            borderRadius: "8px",
+            padding: "4px",
+            backgroundColor: "white",
+          }}
+          className="custom-tooltip"
+        >
+          <p className="label">{`${label} hours - ${payload[0].value.toFixed(
+            2
+          )} MegaWatts`}</p>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <>
@@ -75,6 +105,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
           display: "flex",
           position: "absolute",
           zIndex: 3,
+          marginTop: 98,
         }}
       >
         <Sidebar>
@@ -89,40 +120,33 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
             <SubMenu label="Wind Power Forecast" icon={<FiWind />}>
               <div className="p-2">
                 <h5>Wind Turbine Model</h5>
-                <select
-                  onChange={(event) => {
-                    setPowerCurveData({
-                      ...powerCurveData,
-                      turbineModel: event.target.value,
-                    });
-                    axios({
-                      method: "get",
-                      url: "http://127.0.0.1:8000/generic_wind_turbines/",
-                    })
-                      .then(function (response) {
-                        setPowerCurveData({
-                          ...powerCurveData,
-                          turbineModel: event.target.value,
-                          tableData:
-                            response.data[event.target.value].power_curve,
-                        });
+                {
+                  <select
+                    onChange={(event) =>
+                      setPowerCurveData({
+                        ...powerCurveData,
+                        turbineModel: event.target.value,
+                        tableData:
+                          turbineModels[event.target.value].power_curve,
                       })
-                      .catch(function (error) {
-                        console.log(error);
-                      });
-                  }}
-                  name="turbineModels"
-                  id="turbineModels"
-                >
-                  <option value="" selected disabled hidden>
-                    Choose here
-                  </option>
-                  {turbineModels.map((turbineModel) => (
-                    <option key={turbineModel} value={turbineModel}>
-                      {turbineModel}
+                    }
+                    name="turbineModels"
+                    id="turbineModels"
+                  >
+                    <option value="" selected disabled hidden>
+                      {turbineModels &&
+                      Object.keys(turbineModels).length === 0 &&
+                      Object.getPrototypeOf(turbineModels) === Object.prototype
+                        ? "Turbines loading..."
+                        : "Choose here"}
                     </option>
-                  ))}
-                </select>
+                    {Object.keys(turbineModels).map((turbineModel) => (
+                      <option key={turbineModel} value={turbineModel}>
+                        {turbineModel}
+                      </option>
+                    ))}
+                  </select>
+                }
                 <h5 className="mt-3">Power Curve Info</h5>
 
                 <div className="table-wrapper">
@@ -187,7 +211,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                                 });
                               }}
                             >
-                              Delete
+                              Del
                             </button>
                           </td>
                         </tr>
@@ -213,6 +237,7 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 </div>
 
                 <h5 className="mt-3">Hub Height (m)</h5>
+
                 <input
                   aria-label="hub_height"
                   value={powerCurveData.hubHeight}
@@ -236,11 +261,15 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
                 />
                 <button
                   onClick={() => {
+                    setIsShown(false);
                     axios({
                       method: "post",
                       url: "http://127.0.0.1:8000/generate_power_forecast/",
                       data: {
-                        ...powerCurveData,
+                        tableData: powerCurveData.tableData.map((pair) => [
+                          parseFloat(pair[0]),
+                          parseFloat(pair[1]),
+                        ]),
                         hubHeight: parseFloat(powerCurveData.hubHeight),
                         numOfTurbines: parseFloat(powerCurveData.numOfTurbines),
                         latitude: center[0],
@@ -315,39 +344,21 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
           </Menu>
         </Sidebar>
         {isShown && (
-          <div display="flex">
-            <div
-              style={{
-                backgroundColor: "white",
-                width: "700px",
-                height: "300px",
-              }}
-            >
-              <LineChart
-                width={600}
-                height={300}
-                data={powerForecast.map((pair) => {
-                  return {
-                    time: moment(pair[0]).format("MMMM Do YYYY, h:mm:ss a"),
-                    power: pair[1],
-                  };
-                })}
-                background="#fff"
-              >
-                <Line type="monotone" dataKey="power" stroke="#8884d8" />
-                <CartesianGrid stroke="#ccc" unit="kW" strokeDasharray="5 5" />
-                <XAxis dataKey="time" />
-                <YAxis />
-                <Tooltip />
-              </LineChart>
-            </div>
-            <div
-              style={{
-                height: "300px",
-                backgroundColor: "white",
-              }}
-            >
+          <div
+            display="flex"
+            style={{
+              backgroundColor: "white",
+              width: "650px",
+              height: "475px",
+            }}
+          >
+            <Grid container justifyContent="space-between">
+              <div></div>
+              <h5 style={{ textAlign: "center" }}>
+                Power Production (MW) for next 5 days
+              </h5>
               <Button
+                style={{ float: "right" }}
                 variant="outline-secondary"
                 className="button-addon2"
                 onClick={() => {
@@ -356,6 +367,51 @@ const SideBar = ({ center, setCenter, areaSize, setAreaSize }) => {
               >
                 X
               </Button>
+            </Grid>
+            <div
+              style={{
+                width: "625px",
+                height: "410px",
+                borderRadius: "4px",
+              }}
+              className="linechart-wrapper"
+            >
+              <LineChart
+                width={600}
+                height={400}
+                style={{
+                  float: "right",
+                }}
+                data={powerForecast.map((pair) => ({
+                  time: moment(pair[0]).diff(moment(), "hours"),
+                  power: pair[1] / 1000,
+                }))}
+                background="#fff"
+              >
+                <Line
+                  dot={false}
+                  type="monotone"
+                  dataKey="power"
+                  stroke="#8884d8"
+                />
+
+                <CartesianGrid stroke="#ccc" unit="MW" strokeDasharray="5 5" />
+                <XAxis
+                  label={{ value: "Time (h)", position: "insideBottom" }}
+                  dataKey="time"
+                  unit="h"
+                  ticks={[24, 48, 72, 96, 120, 144]}
+                />
+                <YAxis
+                  label={{
+                    value: "Power (MW)",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
+                  type="number"
+                />
+                <Tooltip content={CustomTooltip} />
+              </LineChart>
             </div>
           </div>
         )}
