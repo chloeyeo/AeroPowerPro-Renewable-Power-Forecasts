@@ -42,9 +42,9 @@ def insert_to_weather_forecast(data, lat, long):
                     "windspeed_10m" : forecast[2],
                     "windspeed_80m" : forecast[3],
                     }
-        # WeatherForecast.objects.create(date_val = forecast[-1], latitude = lat, longitude = long, temperature_2m = forecast[0],
-        #                                 surface_pressure = forecast[1], windspeed_10m = forecast[2], windspeed_80m = forecast[3])
-        WeatherForecast.objects.update_or_create(date_val = forecast[-1], latitude = lat, longitude = long, defaults = defaults)
+        WeatherForecast.objects.create(date_val = forecast[-1], latitude = lat, longitude = long, temperature_2m = forecast[0],
+                                        surface_pressure = forecast[1], windspeed_10m = forecast[2], windspeed_80m = forecast[3])
+        # WeatherForecast.objects.update_or_create(date_val = forecast[-1], latitude = lat, longitude = long, defaults = defaults)
         
 
 
@@ -53,18 +53,25 @@ def get_forecasts(lat, long, start_date = datetime.now(), days = 5, ):
     end_date = start_date + relativedelta(days = days)
     start_date = start_date.strftime("%Y-%m-%d")
     end_date = end_date.strftime("%Y-%m-%d")
-    req = pull_forecasts_from_api(lat, long, start_date, end_date)
-    if (req.status_code != 200):
-        print(req)
-    else :
-        data = json.loads(req.content)
-        insert_to_weather_forecast(data, lat, long)
+    count = 0
+    pulled = False
+    
+    while count < 3 and not pulled:
+        try :
+            req = pull_forecasts_from_api(lat, long, start_date, end_date)
+            data = json.loads(req.content)
+            insert_to_weather_forecast(data, lat, long)
+            pulled = True
+        except requests.exceptions.ReadTimeout:
+            print(f"Failed to pull weather forecats for ({lat},{long}), trying again")
+            count += 1
+            
     
 
 def get_forecasts_coord_step(start_date = datetime.now(), days = 5, step = 0.25):
     print(f"Getting forecasts for the next {days} days")
-    for lat in np.arange(50.0, 59.01, step):
-        for long in np.arange(-7.0, 3.01, step):
+    for lat in np.arange(50.0, 59.25, step):
+        for long in np.arange(-7.0, 3.25, step):
             get_forecasts(lat, long, start_date, days)
             print(f"Power forecasts for ({lat},{long})")
     print("Done")
