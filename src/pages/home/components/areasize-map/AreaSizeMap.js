@@ -14,7 +14,7 @@ import {
 } from "../../components";
 import mapConfig from "./config.json";
 
-const AreaSizeMap = ({ areaSize, center, setCenter }) => {
+const AreaSizeMap = ({ areaSize, center, setCenter, setInputCoords }) => {
   let geoObject = {
     type: "FeatureCollection",
     features: [
@@ -40,7 +40,12 @@ const AreaSizeMap = ({ areaSize, center, setCenter }) => {
   return (
     <>
       <div style={{ display: "block", height: `750px` }}>
-        <Map center={fromLonLat(center)} zoom={8} setCenter={setCenter}>
+        <Map
+          center={fromLonLat(center)}
+          zoom={8}
+          setCenter={setCenter}
+          setInputCoords={setInputCoords}
+        >
           <TileLayer source={osm()} zIndex={0} />
 
           <VectorLayer

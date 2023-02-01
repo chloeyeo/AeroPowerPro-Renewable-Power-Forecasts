@@ -9,7 +9,7 @@ import mapConfig from "./config.json";
 const Home = () => {
   const [showWindFarms, setShowWindFarms] = useState(false);
   const [areaSize, setAreaSize] = useState(0.25);
-
+  const [inputCoords, setInputCoords] = useState(center || "");
   const [center, setCenter] = useState(mapConfig.center);
   const [powerCurveData, setPowerCurveData] = useState({
     tableData: [[0, 0]],
@@ -38,6 +38,8 @@ const Home = () => {
         setCenter={setCenter}
         areaSize={areaSize}
         setAreaSize={setAreaSize}
+        inputCoords={inputCoords}
+        setInputCoords={setInputCoords}
         powerCurveData={powerCurveData}
         setPowerCurveData={setPowerCurveData}
       />
@@ -58,6 +60,7 @@ const Home = () => {
             <h1 style={{ fontFamily: "fangsong" }}>Area Size Map</h1>
           </Grid>
           <AreaSizeMap
+            setInputCoords={setInputCoords}
             areaSize={areaSize}
             center={center}
             setCenter={setCenter}

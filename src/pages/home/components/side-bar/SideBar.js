@@ -34,19 +34,14 @@ const SideBar = ({
   setPowerCurveData,
   center,
   setCenter,
+  inputCoords,
+  setInputCoords,
   areaSize,
   setAreaSize,
 }) => {
   const { collapseSidebar, collapsed } = useProSidebar();
-  const [inputCoords, setInputCoords] = useState(center || "");
   const [inputSize, setInputSize] = useState(areaSize || 0.25);
   const [isShown, setIsShown] = useState(false);
-  const data = [
-    { name: "A", uv: 400, pv: 10000, amt: 10000 },
-    { name: "B", uv: 300, pv: 2400, amt: 2400 },
-    { name: "C", uv: 300, pv: 2400, amt: 2400 },
-    { name: "D", uv: 200, pv: 2400, amt: 2400 },
-  ];
   const updateCoords = () => {
     if (
       inputCoords[1] < 50 ||
@@ -94,7 +89,7 @@ const SideBar = ({
         >
           <p className="label">{`${label} hours - ${payload[0].value.toFixed(
             2
-          )} kiloWatts`}</p>
+          )} MegaWatts`}</p>
         </div>
       );
     }
@@ -373,7 +368,7 @@ const SideBar = ({
                 }}
                 data={powerForecast.map((pair) => ({
                   time: moment(pair[0]).diff(moment(), "hours"),
-                  power: pair[1],
+                  power: pair[1] / 1000,
                 }))}
                 background="#fff"
               >
@@ -383,7 +378,7 @@ const SideBar = ({
                   dataKey="power"
                   stroke="#8884d8"
                 />
-                <CartesianGrid stroke="#ccc" unit="kW" strokeDasharray="5 5" />
+                <CartesianGrid stroke="#ccc" unit="MW" strokeDasharray="5 5" />
                 <XAxis
                   dataKey="time"
                   unit="h"

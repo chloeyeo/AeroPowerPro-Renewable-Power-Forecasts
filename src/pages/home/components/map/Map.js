@@ -9,6 +9,7 @@ const Map = ({
   zoom,
   center,
   setCenter,
+  setInputCoords,
   geolocations,
   powerCurveData,
   setPowerCurveData,
@@ -34,6 +35,7 @@ const Map = ({
     mapObject.setTarget(mapRef.current);
     setMap(mapObject);
     mapObject.on("click", function (evt) {
+      evt.preventDefault();
       if (geolocations) {
         const coords = [
           olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
@@ -57,11 +59,13 @@ const Map = ({
           );
         }
       }
-      setCenter &&
-        setCenter([
-          olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
-          olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[1],
-        ]);
+      const newCoords = [
+        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
+        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[1],
+      ];
+      setInputCoords &&
+        setInputCoords(newCoords.map((coord) => coord.toFixed(2)));
+      setCenter && setCenter(newCoords);
     });
 
     return () => mapObject.setTarget(undefined);
