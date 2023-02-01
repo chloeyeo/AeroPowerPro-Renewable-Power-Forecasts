@@ -35,18 +35,14 @@ class PowerForecastViewSet(APIView):
         #table data is given as array of tuples(formated as arrays), 1st col is wind_speeds and 2nd is power_curve 
         wind_speeds, power_curve = np.array(request.data['tableData']).T
 
-        
-        #generate Power forecasts
-        # power_output = generate_power_forecast( latitude = latitude,
-        #                                         longitude= longitude,
-        #                                         power_curve = power_curve * 1000, #convert to W from KW
-        #                                         wind_speeds = wind_speeds,
-        #                                         hub_height = hub_height,
-        #                                         number_of_turbines = number_of_turbines).to_frame()
         weather = WeatherSeries(longitude, latitude, get_forecasts_on_init = True)
         weather_df = weather.get_forecasts()
         
-        wind_turbine = Turbine(hub_height, wind_speeds, power_curve * 1000, number_of_turbines, model_on_create=True)
+        try:
+            wind_turbine = Turbine(hub_height, wind_speeds, power_curve * 1000, number_of_turbines, model_on_create=True)
+        except TypeError as e:
+            # Response({"status": status.HTTP_400_BAD_REQUEST, "Token": None})
+            return JsonResponse({'message' : e}, status = 400)
         wind_turbine.generate_power_output(weather_df)
         
         power_output = wind_turbine.get_power_output()
