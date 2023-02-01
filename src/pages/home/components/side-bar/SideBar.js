@@ -242,8 +242,8 @@ const SideBar = ({
                       ]),
                       hubHeight: parseFloat(powerCurveData.hubHeight),
                       numOfTurbines: parseFloat(powerCurveData.numOfTurbines),
-                      latitude: center[0],
-                      longitude: center[1],
+                      latitude: parseFloat(center[0]),
+                      longitude: parseFloat(center[1]),
                     },
                     headers: {
                       "Content-Type": "application/json",
