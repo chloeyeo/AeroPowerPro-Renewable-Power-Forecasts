@@ -96,7 +96,7 @@ def post_elexon(url):
                                                 quantity=float(value_str_list_new[10]))
 
 
-if __name__ == "__main__":
+def main():
     today = datetime.datetime.now()
     start_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
     end_time = start_time - relativedelta(days=60)        # Start getting data from 2 years ago
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         get_data_by_restful(settlementDate=year + '-' + month.zfill(2) + '-' + day.zfill(2), period="*")
 
     # create periodic task and do it every 6 hours starting from this script started running
-    schedule.every(6).hours.do(elexon_schedule_job)
-    while True:
-        schedule.run_pending()
-        time.sleep(21300)           # sleep for 5 hours and 55 minutes before next retrieval
+    # schedule.every(6).hours.do(elexon_schedule_job)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(21300)           sleep for 5 hours and 55 minutes before next retrieval
