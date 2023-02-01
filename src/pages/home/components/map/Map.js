@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import axios from "axios";
 import "./Map.css";
 import MapContext from "./MapContext";
 import * as ol from "ol";
@@ -7,6 +8,7 @@ import * as olProj from "ol/proj";
 const Map = ({
   children,
   zoom,
+  areaSize,
   center,
   setCenter,
   setInputCoords,
@@ -36,11 +38,11 @@ const Map = ({
     setMap(mapObject);
     mapObject.on("click", function (evt) {
       evt.preventDefault();
+      const coords = [
+        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
+        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[1],
+      ];
       if (geolocations) {
-        const coords = [
-          olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
-          olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[1],
-        ];
         const windFarmClicked = geolocations.find(
           (geolocation) =>
             geolocation[1] - 0.05 < coords[0] &&
@@ -58,14 +60,29 @@ const Map = ({
             `Windfarm ID: ${windFarmClicked[0]}\nHub Height: ${windFarmClicked[3]}\nNumber of turbines: ${windFarmClicked[4]}\nTurbine Capacity: ${windFarmClicked[5]}\nIs onshore?: ${windFarmClicked[6]}\n`
           );
         }
+      } else {
+        axios({
+          method: "post",
+          url: "http://127.0.0.1:8000/farm_data_by_area/",
+          data: {
+            max_latitude: center[0] + areaSize * 0.5,
+            min_latitude: center[0] - areaSize * 0.5,
+            max_longitude: center[1] + areaSize * 0.5,
+            min_longitude: center[1] - areaSize * 0.5,
+          },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then(function (response) {
+            console.log("farmed data by area!", response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
-      const newCoords = [
-        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[0],
-        olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326")[1],
-      ];
-      setInputCoords &&
-        setInputCoords(newCoords.map((coord) => coord.toFixed(2)));
-      setCenter && setCenter(newCoords);
+      setInputCoords && setInputCoords(coords.map((coord) => coord.toFixed(2)));
+      setCenter && setCenter(coords);
     });
 
     return () => mapObject.setTarget(undefined);

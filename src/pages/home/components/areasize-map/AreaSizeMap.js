@@ -43,6 +43,7 @@ const AreaSizeMap = ({ areaSize, center, setCenter, setInputCoords }) => {
         <Map
           center={fromLonLat(center)}
           zoom={8}
+          areaSize={areaSize}
           setCenter={setCenter}
           setInputCoords={setInputCoords}
         >

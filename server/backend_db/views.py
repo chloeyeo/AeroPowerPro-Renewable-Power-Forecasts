@@ -97,12 +97,12 @@ class GeolocationsView(APIView):
 class WindFarmDataByArea(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format = None):
+    def post(self, request, format = None):
         max_lat, max_long = request.data['max_latitude'], request.data['max_longitude']
         min_lat, min_long = request.data['min_latitude'], request.data['min_longitude']
         response = {}
         
-        wind_farms = WindFarmData.object.filter(latitude__gte=min_lat,
+        wind_farms = WindFarmData.objects.filter(latitude__gte=min_lat,
                                                 latitude__lte=max_lat,
                                                 longitude__gte=min_long,
                                                 longitude__lte=max_long)
