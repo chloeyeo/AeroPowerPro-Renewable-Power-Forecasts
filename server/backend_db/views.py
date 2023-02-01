@@ -18,7 +18,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.decorators import login_required
-from .Wind_Turbine_Model.siemens_2300KW import E_28_2300
+from .Wind_Turbine_Model.generic_wind_turbines_from_lib import get_all_generic_turbines
 import numpy as np
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
@@ -49,7 +49,7 @@ class PowerForecastViewSet(APIView):
         response = {}
 
         # convert power forecast into a 2d Array of datetime, power_output
-        response['power_forecast'] = [list(pair) for pair in zip(list(power_output.index) , list(power_output['feedin_power_plant'])   )]
+        response['power_forecast'] = [list(pair) for pair in zip(list(power_output.index) , list(power_output['feedin_power_plant'] / 1000))]
         return JsonResponse(response, safe = False)
 
 class GenericWindTurbineViewSet(APIView):
@@ -57,19 +57,11 @@ class GenericWindTurbineViewSet(APIView):
 
     def get(self, reqeust, format = None):
         # Convert to a dictionary of values to allow for Json response
-        generic_turbine = {}
-        # Create a list of the default names for the turbines, currently only 1 default
-        generic_turbine['default_turbines'] = []
-        generic_turbine['default_turbines'].append(E_28_2300['name'])
 
-        # convert power curve into a 2D array of wind_speed,power_production
-        power_curve = [list(pair) for pair in zip(list(E_28_2300['power_curve']['wind_speed']), list(E_28_2300['power_curve']['value']/1000))]
-        generic_turbine['E_28_2300'] = {
-            'hub_height' : E_28_2300['hub_height'],
-            'power_curve' : power_curve
-        }
+        generic_turbines = get_all_generic_turbines()
 
-        return JsonResponse(generic_turbine, safe = False)
+        return JsonResponse(generic_turbines, safe = False)
+
 
 
 class HistoricWindViewSet(APIView):
@@ -98,10 +90,14 @@ class UserView(APIView):
 class GeolocationsView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format=None):
-        wind_farms = WindFarmData.objects.all().values_list('longitude', 'latitude')
-        print("HELLO")
-        print(wind_farms)
+    def get(self, request, format = None):
+        wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
+                                                            'longitude',
+                                                            'latitude',
+                                                            'hub_height',
+                                                            'number_of_turbines',
+                                                            'turbine_capacity',
+                                                            'is_onshore',)
         
         return JsonResponse(list(wind_farms), safe=False)
 
@@ -135,6 +131,73 @@ class RegisterApiView(GenericAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class WindFarmDataByArea(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, format = None):
+        max_lat, max_long = request.data['max_latitude'], request.data['max_longitude']
+        min_lat, min_long = request.data['min_latitude'], request.data['min_longitude']
+        response = {}
+        
+        wind_farms = WindFarmData.objects.filter(latitude__gte=min_lat,
+                                                latitude__lte=max_lat,
+                                                longitude__gte=min_long,
+                                                longitude__lte=max_long)
+        print(max_lat, max_long, min_lat, min_long)
+
+        response['wind_farms'] = {}
+        response['total_turbines'] = 0
+        response['total_turbine_capacity'] = 0
+        response['average_hub_height'] = []
+        # response['total_power_output'] = []
+        # datetimes = None
+        average_hub_height = []
+        # power_forecasts = []
+        for farm in wind_farms:
+            longitude = farm.longitude
+            latitude = farm.latitude
+            hub_height = farm.hub_height
+            number_of_turbines = farm.number_of_turbines
+            turbine_capacity = farm.turbine_capacity
+            farm_id = farm.windfarm_data_id
+
+            response['wind_farms'][farm_id] = {   'longitude' : longitude,
+                                                                'latitude' : latitude,
+                                                                'hub_height' : hub_height,
+                                                                'number_of_turbines' : number_of_turbines,
+                                                                'turbine_capacity' : turbine_capacity,
+                                                                'is_onshore' : farm.is_onshore,}
+            response['total_turbines'] += number_of_turbines
+            response['total_turbine_capacity'] += farm.turbine_capacity
+            response['average_hub_height'].append(hub_height)
+            # weather = WeatherSeries(longitude, latitude, get_forecasts_on_init = True)
+            # weather_df = weather.get_forecasts()
+
+            ## NEED TO GET WIND POWER CURVE FOR TURBINE FROM REQUEST
+            # wind_turbine = Turbine(hub_height, wind_speeds, power_curve * 1000, number_of_turbines, model_on_create=True)
+            # wind_turbine.generate_power_output(weather_df)
+            
+            # power_output = wind_turbine.get_power_output()
+            # datetimes = list(power_output.index)
+            # power_output = [list(pair) for pair in zip(list(power_output.index) , list(power_output['feedin_power_plant'] / 1000))]
+            
+            # response[farm_id]['power_forecast'] = power_output
+            # power_forecasts.append( np.array(power_output)[:,1])
+        
+        # There were farms in the selected area
+        # if datetimes != None:
+        # Add the forecasts all up
+            # total_power_forecast = np.sum(power_forecasts, axis = 0)
+            # response['total_power_forecast'] = [list(pair) for pair in zip (datetimes ,list(total_power_forecast))]
+        if len(response['average_hub_height']) != 0:
+            response['average_hub_height'] = np.average(response['average_hub_height'])
+        else: 
+            response['average_hub_height'] = 0
+        
+        return JsonResponse(response, safe = False)
+
+
 
 
 # from rest_framework.views import APIView

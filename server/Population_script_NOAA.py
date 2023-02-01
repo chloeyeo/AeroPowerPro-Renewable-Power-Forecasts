@@ -97,7 +97,7 @@ def NOAA_schedule_job():
     NOAA_get_historic(start_time, end_time)
 
 
-if __name__ == '__main__':
+def main():
     today = datetime.datetime.now()
     end_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
     start_time = end_time - relativedelta(years=2)        # Start getting data from 2 years ago
