@@ -4,16 +4,14 @@ from backend_db.models import WeatherForecast
 from django.utils import timezone
 
 def get_closest_coords(long, lat):
-    return clip(round(long*4)/4, -7, 3), clip(round(lat*4)/4, 51, 59)
+    return clip(round(long*4)/4, -7, 3), clip(round(lat*4)/4, 50, 59)
 
 
 class WeatherSeries():
     
     def __init__(self, longitude : float, latitude : float, get_forecasts_on_init : bool = False):
         self.longitude, self.latitude = get_closest_coords(longitude, latitude)
-
         self.forecasts = None
-
         if (get_forecasts_on_init):
             self.pull_forecasts()
     
@@ -55,14 +53,14 @@ class WeatherSeries():
 
     @longitude.setter
     def longitude(self, longitude):
-        if (self.check_is_numeric(longitude) and longitude > 0):
+        if (self.check_is_numeric(longitude)):
             self._longitude = longitude
         else:
             raise TypeError("Longitude should be a numeric value greater than 0")
 
     @latitude.setter
     def latitude(self, latitude):
-        if (self.check_is_numeric(latitude) and latitude > 0):
+        if (self.check_is_numeric(latitude)):
             self._latitude = latitude
         else:
             raise TypeError("Latitude should be a numeric value greater than 0")
