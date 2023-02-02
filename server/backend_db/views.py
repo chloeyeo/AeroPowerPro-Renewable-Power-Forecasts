@@ -27,25 +27,42 @@ class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, format = None):
+        """ On receiving a post request, generates power forecasts for the given turbine
+            at the given lat and long
+
+        Args:
+            request (HTTPRequest): the latitude and longitude,
+                                   the turbine data (hubHeight, 2D array tableData of wind speeds and projected power output)
+            format (_type_, optional): _description_. Defaults to None.
+
+        Returns:
+            A Json response with the power forecasts as a 2D array of lists
+        """
         hub_height = self.request.data['hubHeight']
         longitude = self.request.data['longitude']
         latitude = self.request.data['latitude']
         number_of_turbines = self.request.data['numOfTurbines']
+        
         #table data is given as array of tuples(formated as arrays), 1st col is wind_speeds and 2nd is power_curve 
         wind_speeds, power_curve = np.array(request.data['tableData']).T
 
+        # Get weather forecasts for the given lat and long
         weather = WeatherSeries(longitude, latitude, get_forecasts_on_init = True)
         weather_df = weather.forecasts
+        
+        # no forecasts found
         if weather_df.empty:
             return JsonResponse({'message' : "Could not find weather forecasts"}, status = 500)
         
+        # will raise a TypeError exception if data type passed is wrong
         try:
             wind_turbine = Turbine(hub_height, wind_speeds, power_curve * 1000, number_of_turbines, model_on_create=True)
         except TypeError as e:
             return JsonResponse({'message' : str(e)}, status = 400)
-        wind_turbine.generate_power_output(weather_df)
         
+        wind_turbine.generate_power_output(weather_df)
         power_output = wind_turbine.power_output
+        
         response = {}
 
         # convert power forecast into a 2d Array of datetime, power_output
@@ -56,7 +73,16 @@ class PowerForecastViewSet(APIView):
 class GenericWindTurbineViewSet(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, reqeust, format = None):
+    def get(self, request, format = None):
+        """ Generates predefined power curves
+
+        Args:
+            reqeust : None
+            format (_type_, optional): _description_. Defaults to None.
+
+        Returns:
+            JsonResponse of the wind turbines and associated power curves
+        """
         # Convert to a dictionary of values to allow for Json response
 
         generic_turbines = get_all_generic_turbines()
@@ -92,6 +118,15 @@ class GeolocationsView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format = None):
+        """Finds all available wind farms
+
+        Args:
+            request (_type_): None
+            format (_type_, optional): _description_. Defaults to None.
+
+        Returns:
+            List of the farm data and their metadata ('windfarm_data_id', 'longitude', 'latitude', 'hub_height', 'number_of_turbines', 'turbine_capacity', 'is_onshore')
+        """
         wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
                                                             'longitude',
                                                             'latitude',
@@ -137,21 +172,43 @@ class WindFarmDataByArea(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, format = None):
+        """Get all available wind farm data for a specified area
+
+        Args:
+            request (_type_): min_latitude : float
+                              max_latitude: float,
+                              min_longitude: float,
+                              min_latitude: float 
+                              
+            format (_type_, optional): _description_. Defaults to None.
+
+        Returns:
+           JsonResponse of all available data in the speicfied area, including the total number of turbines and average hub height
+        """
         max_lat, max_long = request.data['max_latitude'], request.data['max_longitude']
         min_lat, min_long = request.data['min_latitude'], request.data['min_longitude']
-        response = {}
         
+        
+        # Find all wind farms in the specified coordinate range
         wind_farms = WindFarmData.objects.filter(latitude__gte=min_lat,
                                                 latitude__lte=max_lat,
                                                 longitude__gte=min_long,
                                                 longitude__lte=max_long)
         
+        # Holds the data to be returned
+        response = {}
         response['wind_farms'] = {}
         response['total_turbines'] = 0
         response['total_turbine_capacity'] = 0
+        
+        # If no windfarms found in area, set all to default value and return
+        if len(wind_farms) == 0:
+            response['average_hub_height'] = 0
+            return JsonResponse(response, safe = False)
+        
         response['average_hub_height'] = []
 
-
+        # Go through all the wind turbines found and add them up to the response dict
         for farm in wind_farms:
             longitude = farm.longitude
             latitude = farm.latitude
@@ -160,6 +217,7 @@ class WindFarmDataByArea(APIView):
             turbine_capacity = farm.turbine_capacity
             farm_id = farm.windfarm_data_id
 
+            # Format wind farm data for each individual wind farm
             response['wind_farms'][farm_id] = {   'longitude' : longitude,
                                                                 'latitude' : latitude,
                                                                 'hub_height' : hub_height,
@@ -169,11 +227,9 @@ class WindFarmDataByArea(APIView):
             response['total_turbines'] += number_of_turbines
             response['total_turbine_capacity'] += farm.turbine_capacity
             response['average_hub_height'].append(hub_height)
-
-        if len(response['average_hub_height']) != 0:
-            response['average_hub_height'] = np.average(response['average_hub_height'])
-        else: 
-            response['average_hub_height'] = 0
+            
+            
+        response['average_hub_height'] = np.average(response['average_hub_height'])
         
         return JsonResponse(response, safe = False)
 
