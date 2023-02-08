@@ -36,18 +36,7 @@ def insert_to_weather_forecast(data, lat, long):
     forecasts = split_to_np(hourly)
     
     for forecast in forecasts:
-        defaults = {"temperature_2m" : forecast[0],
-                    "surface_pressure" : forecast[1],
-                    "windspeed_10m" : forecast[2],
-                    "windspeed_80m" : forecast[3],
-                    }
-        
-        # WeatherForecast.objects.create(date_val = forecast[-1], latitude = lat, longitude = long, temperature_2m = forecast[0],
-        #                                 surface_pressure = forecast[1], windspeed_10m = forecast[2], windspeed_80m = forecast[3])
-        # WeatherForecast.objects.update_or_create(date_val = forecast[-1], latitude = lat, longitude = long, defaults = defaults)
-        
-        
-        # Create the new Weahter Forecast object without saving to db, so that old entries in db can be deleted
+        # Create the new Weather Forecast object without saving to db, so that old entries in db can be deleted
         obj = WeatherForecast(date_val = forecast[-1], latitude = lat, longitude = long, temperature_2m = forecast[0],
                                         surface_pressure = forecast[1], windspeed_10m = forecast[2], windspeed_80m = forecast[3])
         return obj     
