@@ -68,3 +68,5 @@ def get_forecasts_coord_step(start_date = datetime.now(), days = 5, step = 0.25)
             get_forecasts(lat, long, start_date, days)
             print(f"Weather forecasts for ({lat},{long})")
     print("Done")
+
+get_forecasts_coord_step()
