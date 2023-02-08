@@ -65,7 +65,6 @@ def get_forecasts(lat, long, start_date=datetime.now(), days=5):
             req = pull_forecasts_from_api(lat, long, start_date, end_date)
             data = json.loads(req.content)
             insert_to_weather_forecast(data, lat, long)
-            print("Here")
             pulled = True
         except:
             print(f"Failed to pull weather forecats for ({lat},{long}), trying again")

@@ -83,5 +83,3 @@ def get_windfarms():
             print("\n\n\n")
             WindFarmData.objects.create(**data_dict)
             print(f'{bm_unit_id} inserted')
-            
-get_windfarms()
