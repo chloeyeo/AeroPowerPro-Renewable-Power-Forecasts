@@ -30,7 +30,7 @@ If successful, Dr. Browell would hope to continue to operate and develop the sys
 13. Run 'npm install --legacy-peer-deps' to install the required front-end packages.
 14. Return to the Anaconda terminal, and run 'cd server'.
 15. Run 'python manage.py makemigrations backend_db' and 'python manage.py migrate' to setup the database.
-16. The next command is a script to populate the database with various data. Run 'python Population_script.py'.
+16. The next command is a script to populate the database with various data. Run 'python Population_script.py'.This will take a while as a lot of data must be inserted into the database.
 17. To be able to view this data, you must be a superuser in order to access the admin panel. Run 'python manage.py createsuperuser'. Enter a username of your choice, an email(this can be left blank), and a password. Make note of these details.
 18. You can now run the website. First, run 'python manage.py runserver'
 19. Return to the powershell terminal and run 'npm start'. This should redirect you to a new tab in your browser that loads the website.
