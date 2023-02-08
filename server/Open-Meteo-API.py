@@ -23,6 +23,7 @@ def pull_forecasts_from_api(lat, long, start_date, end_date):
 
 def split_to_np(data, days=1, time_interval=6):
     # convert to an np array, where each row is a data entry (forecast)
+    print(data)
     if days == 5:
         start_time = datetime.now().hour
         end_time = start_time + days * 24
@@ -41,7 +42,6 @@ def split_to_np(data, days=1, time_interval=6):
 def insert_to_weather_forecast(data, lat, long, days=1):
     hourly = data['hourly']
     forecasts = split_to_np(data=hourly, days=days)
-
     for forecast in forecasts:
         defaults = {"temperature_2m": forecast[0],
                     "surface_pressure": forecast[1],
@@ -65,11 +65,11 @@ def get_forecasts(lat, long, start_date=datetime.now(), days=5):
             req = pull_forecasts_from_api(lat, long, start_date, end_date)
             data = json.loads(req.content)
             insert_to_weather_forecast(data, lat, long)
+            print("Here")
             pulled = True
         except:
             print(f"Failed to pull weather forecats for ({lat},{long}), trying again")
-            count += 1
-            
+            count += 1            
     
 
 
