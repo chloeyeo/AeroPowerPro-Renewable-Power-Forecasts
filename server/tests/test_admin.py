@@ -1,12 +1,12 @@
 from django.test import TestCase
 from django.contrib import admin
-from backend_db.models import ActualProduceElectricity, UserProfile, HistoricWind, WindFarmData
+from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 
 class TestAdmin(TestCase):
     def test_all_models_are_registered(self):
-        models = [HistoricWind, UserProfile, WindFarmData, ActualProduceElectricity]
+        models = [HistoricWind, WindFarmData, ActualProduceElectricity]
 
         for model in models:
             # print(model.__name__)
