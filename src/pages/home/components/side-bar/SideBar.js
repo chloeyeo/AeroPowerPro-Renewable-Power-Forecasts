@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 import { Sidebar, SubMenu, Menu, useProSidebar } from "react-pro-sidebar";
@@ -123,7 +122,7 @@ const SideBar = ({
                           />
                         </td>
                         <td>
-                          <input
+                          <Form.Control
                             aria-label={`row${index}_power`}
                             style={{ maxWidth: "60px" }}
                             value={row[1]}
@@ -176,27 +175,34 @@ const SideBar = ({
                 </table>
               </div>
 
-              <h5 className="mt-2">Hub Height (m)</h5>
+              <div className="mt-2">Hub Height (m)</div>
 
-              <input
+              <Form.Control
+                placeholder="hub height"
                 aria-label="hub_height"
-                value={powerCurveData.hubHeight}
-                onChange={(event) =>
-                  setPowerCurveData({
-                    ...powerCurveData,
-                    hubHeight: event.target.value,
-                  })
+                defaultValue={powerCurveData.hubHeight}
+                onBlur={(event) =>
+                  parseFloat(event.target.value) >= 0
+                    ? setPowerCurveData({
+                        ...powerCurveData,
+                        hubHeight: event.target.value,
+                      })
+                    : (event.target.value = "")
                 }
               />
-              <h5 className="mt-2">Number of Turbines</h5>
-              <input
+
+              <div className="mt-2">Number of Turbines</div>
+              <Form.Control
+                placeholder="num of turbines"
                 aria-label="num_of_turbines"
-                value={powerCurveData.numOfTurbines}
-                onChange={(event) =>
-                  setPowerCurveData({
-                    ...powerCurveData,
-                    numOfTurbines: event.target.value,
-                  })
+                defaultValue={powerCurveData.numOfTurbines}
+                onBlur={(event) =>
+                  parseFloat(event.target.value) >= 0
+                    ? setPowerCurveData({
+                        ...powerCurveData,
+                        numOfTurbines: event.target.value,
+                      })
+                    : (event.target.value = "")
                 }
               />
 
@@ -246,45 +252,43 @@ const SideBar = ({
               </button>
             </div>
           </SubMenu>
+
           <SubMenu label="Area Search" icon={<AiOutlineSearch />}>
-            <div className="p-3">
-              <div className="mt-2 mb-2">Latitude (50 to 59)</div>
-              <InputGroup>
-                <Form.Control
-                  placeholder="Latitude"
-                  aria-label="Latitude"
-                  aria-describedby="basic-addon2"
-                  defaultValue={center[1]}
-                  onBlur={(event) =>
-                    parseFloat(event.target.value) >= 50 &&
-                    parseFloat(event.target.value) <= 59
-                      ? setCenter([center[0], event.target.value])
-                      : (event.target.value = "")
-                  }
-                />
-              </InputGroup>
+            <div className="p-2">
+              <div className="mb-2">Latitude (50 to 59)</div>
+              <Form.Control
+                placeholder="Latitude"
+                aria-label="Latitude"
+                aria-describedby="basic-addon2"
+                defaultValue={center[1]}
+                onBlur={(event) =>
+                  parseFloat(event.target.value) >= 50 &&
+                  parseFloat(event.target.value) <= 59
+                    ? setCenter([center[0], event.target.value])
+                    : (event.target.value = "")
+                }
+              />
               <div className="mt-2 mb-2">Longitude (-7 to 4)</div>
-              <InputGroup>
-                <Form.Control
-                  placeholder="Longitude"
-                  aria-label="Longitude"
-                  aria-describedby="basic-addon2"
-                  defaultValue={center[0]}
-                  onBlur={(event) =>
-                    parseFloat(event.target.value) >= -7 &&
-                    parseFloat(event.target.value) <= 4
-                      ? setCenter([event.target.value, center[1]])
-                      : (event.target.value = "")
-                  }
-                />
-              </InputGroup>
-              <div className="mt-2 mb-2">
-                Scale of Selected Area(In degrees) (0.25 to 5)
-              </div>
+
+              <Form.Control
+                placeholder="Longitude"
+                aria-label="Longitude"
+                aria-describedby="basic-addon2"
+                defaultValue={center[0]}
+                onBlur={(event) =>
+                  parseFloat(event.target.value) >= -7 &&
+                  parseFloat(event.target.value) <= 4
+                    ? setCenter([event.target.value, center[1]])
+                    : (event.target.value = "")
+                }
+              />
+
+              <div className="mt-2 mb-2">Area Scale - Degrees (0.25 to 5)</div>
               <Form.Control
                 placeholder="Area Size"
                 aria-label="Area Size"
                 aria-describedby="basic-addon2"
+                defaultValue={areaSize}
                 onBlur={(event) =>
                   parseFloat(event.target.value) >= 0.25 &&
                   parseFloat(event.target.value) <= 5
@@ -294,7 +298,7 @@ const SideBar = ({
               />
               <Button
                 variant="outline-secondary"
-                className="button-addon2"
+                className="button-addon2 mt-2"
                 onClick={updateCoords}
               >
                 Search

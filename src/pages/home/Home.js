@@ -6,14 +6,7 @@ import { fromLonLat } from "ol/proj";
 import { NavBar } from "../../components";
 
 import { geoJsonObject } from "./utils";
-import {
-  SideBar,
-  Switch,
-  TileLayer,
-  Map,
-  osm,
-  FullScreenControl,
-} from "./components";
+import { SideBar, Switch, TileLayer, Map, osm } from "./components";
 
 import { ProSidebarProvider } from "react-pro-sidebar";
 
@@ -91,7 +84,6 @@ const Home = () => {
                 [parseFloat(center[0]), parseFloat(center[1])],
                 parseFloat(areaSize) * 0.5
               )}
-          <FullScreenControl />
         </Map>
       </div>
     </>
