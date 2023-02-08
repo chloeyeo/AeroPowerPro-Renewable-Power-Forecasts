@@ -3,6 +3,7 @@ from django.shortcuts import render
 # from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
@@ -78,7 +79,7 @@ class UserView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, format=None):
-        user = UserProfile( username=self.request.data['username'],
+        user = User(username=self.request.data['username'],
                             email=self.request.data['email'],
                             password=self.request.data['password'],
                             first_name=self.request.data['first_name'],
@@ -105,22 +106,22 @@ class GeolocationsView(APIView):
 
 # besides calling the serializers in the login, we should also check some invalid situations and give some response messages.
 class LoginView(APIView):
-        permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
-        def post(self, request, format=None):
-            if request.data['username'] and request.data['password']:
-                serializer = LoginSerializer(data=self.request.data, context={'request': self.request})
-                serializer.is_valid(raise_exception=True)
-                user = serializer.validated_data['user']
-                if not user:
-                    print('A user with this email and password is not found.')
-                    return Response({"status": status.HTTP_404_NOT_FOUND, "Token": None})
-                login(request, user)
-                token = Token.objects.create(user=user)
-                return Response({"status": status.HTTP_202_ACCEPTED, "Token": token})
-            else:
-                print('The email or password is empty in the request data.')
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "Token": None})
+    def post(self, request, format=None):
+        if request.data['username'] and request.data['password']:
+            serializer = LoginSerializer(data=self.request.data, context={'request': self.request})
+            serializer.is_valid(raise_exception=True)
+            user = serializer.validated_data['user']
+            if not user:
+                print('A user with this email and password is not found.')
+                return Response({"status": status.HTTP_404_NOT_FOUND, "Token": None})
+            login(request, user)
+            token = Token.objects.create(user=user)
+            return Response({"status": status.HTTP_202_ACCEPTED, "Token": token})
+        else:
+            print('The email or password is empty in the request data.')
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "Token": None})
 
 
 class RegisterApiView(GenericAPIView):

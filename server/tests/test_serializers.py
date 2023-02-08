@@ -1,9 +1,15 @@
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
+
+import django
+django.setup()
+
 import unittest
 from backend_db.views import *
 
 class TestSerializers(unittest.TestCase):
 
-    def test_user_serializer(self): 
+    def test_user_serializer(self):
         val_dict = {'email': 'user123@gmail.com', 'password':'123ZW14Abe', 'username': 'user123', 'first_name': 'u__s', 'last_name': 'er_1'} 
         serializer = UserSerializer(data=val_dict)
         if serializer.is_valid():
