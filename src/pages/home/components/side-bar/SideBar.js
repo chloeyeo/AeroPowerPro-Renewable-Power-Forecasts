@@ -1,23 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Grid } from "@material-ui/core";
-import { Sidebar, SubMenu, Menu, useProSidebar } from "react-pro-sidebar";
-import moment from "moment";
+import Button from "react-bootstrap/Button";
+import InputGroup from "react-bootstrap/InputGroup";
+import Form from "react-bootstrap/Form";
 import axios from "axios";
+import { Sidebar, SubMenu, Menu, useProSidebar } from "react-pro-sidebar";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FiWind } from "react-icons/fi";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
 
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
-
+import { ForecastGraph } from "./components";
 import "./styles.css";
 
 const SideBar = ({
@@ -51,27 +41,6 @@ const SideBar = ({
         console.log(error);
       });
   }, []);
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div
-          style={{
-            borderRadius: "8px",
-            padding: "4px",
-            backgroundColor: "white",
-          }}
-          className="custom-tooltip"
-        >
-          <p className="label">{`${label} hours - ${payload[0].value.toFixed(
-            2
-          )} MegaWatts`}</p>
-        </div>
-      );
-    }
-
-    return null;
-  };
 
   return (
     <div
@@ -285,10 +254,12 @@ const SideBar = ({
                   placeholder="Latitude"
                   aria-label="Latitude"
                   aria-describedby="basic-addon2"
+                  defaultValue={center[1]}
                   onBlur={(event) =>
                     parseFloat(event.target.value) >= 50 &&
-                    parseFloat(event.target.value) <= 59 &&
-                    setCenter([center[0], event.target.value])
+                    parseFloat(event.target.value) <= 59
+                      ? setCenter([center[0], event.target.value])
+                      : (event.target.value = "")
                   }
                 />
               </InputGroup>
@@ -298,28 +269,29 @@ const SideBar = ({
                   placeholder="Longitude"
                   aria-label="Longitude"
                   aria-describedby="basic-addon2"
+                  defaultValue={center[0]}
                   onBlur={(event) =>
                     parseFloat(event.target.value) >= -7 &&
-                    parseFloat(event.target.value) <= 4 &&
-                    setCenter([event.target.value, center[1]])
+                    parseFloat(event.target.value) <= 4
+                      ? setCenter([event.target.value, center[1]])
+                      : (event.target.value = "")
                   }
                 />
               </InputGroup>
               <div className="mt-2 mb-2">
                 Scale of Selected Area(In degrees) (0.25 to 5)
               </div>
-              <InputGroup>
-                <Form.Control
-                  placeholder="Area Size"
-                  aria-label="Area Size"
-                  aria-describedby="basic-addon2"
-                  onBlur={(event) =>
-                    parseFloat(event.target.value) >= 0.25 &&
-                    parseFloat(event.target.value) <= 5 &&
-                    setAreaSize(event.target.value)
-                  }
-                />
-              </InputGroup>
+              <Form.Control
+                placeholder="Area Size"
+                aria-label="Area Size"
+                aria-describedby="basic-addon2"
+                onBlur={(event) =>
+                  parseFloat(event.target.value) >= 0.25 &&
+                  parseFloat(event.target.value) <= 5
+                    ? setAreaSize(event.target.value)
+                    : (event.target.value = "")
+                }
+              />
               <Button
                 variant="outline-secondary"
                 className="button-addon2"
@@ -332,76 +304,7 @@ const SideBar = ({
         </Menu>
       </Sidebar>
       {isShown && (
-        <div
-          display="flex"
-          style={{
-            backgroundColor: "white",
-            width: "650px",
-            height: "475px",
-          }}
-        >
-          <Grid container justifyContent="space-between">
-            <div></div>
-            <h5 style={{ textAlign: "center" }}>
-              Power Production (MW) for next 5 days
-            </h5>
-            <Button
-              style={{ float: "right" }}
-              variant="outline-secondary"
-              className="button-addon2"
-              onClick={() => {
-                setIsShown(false);
-              }}
-            >
-              X
-            </Button>
-          </Grid>
-          <div
-            style={{
-              width: "625px",
-              height: "410px",
-              borderRadius: "4px",
-            }}
-            className="linechart-wrapper"
-          >
-            <LineChart
-              width={600}
-              height={400}
-              style={{
-                float: "right",
-              }}
-              data={powerForecast.map((pair) => ({
-                time: moment(pair[0]).diff(moment(), "hours"),
-                power: pair[1] / 1000,
-              }))}
-              background="#fff"
-            >
-              <Line
-                dot={false}
-                type="monotone"
-                dataKey="power"
-                stroke="#8884d8"
-              />
-
-              <CartesianGrid stroke="#ccc" unit="MW" strokeDasharray="5 5" />
-              <XAxis
-                label={{ value: "Time (h)", position: "insideBottom" }}
-                dataKey="time"
-                unit="h"
-                ticks={[24, 48, 72, 96, 120, 144]}
-              />
-              <YAxis
-                label={{
-                  value: "Power (MW)",
-                  angle: -90,
-                  position: "insideLeft",
-                }}
-                type="number"
-              />
-              <Tooltip content={CustomTooltip} />
-            </LineChart>
-          </div>
-        </div>
+        <ForecastGraph setIsShown={setIsShown} powerForecast={powerForecast} />
       )}
     </div>
   );
