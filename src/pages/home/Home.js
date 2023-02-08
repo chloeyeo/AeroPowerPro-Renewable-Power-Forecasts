@@ -6,14 +6,7 @@ import { fromLonLat } from "ol/proj";
 import { NavBar } from "../../components";
 
 import { geoJsonObject } from "./utils";
-import {
-  SideBar,
-  Switch,
-  TileLayer,
-  Map,
-  osm,
-  FullScreenControl,
-} from "./components";
+import { SideBar, Switch, TileLayer, Map, osm } from "./components";
 
 import { ProSidebarProvider } from "react-pro-sidebar";
 
@@ -54,22 +47,23 @@ const Home = () => {
           setAreaSize={setAreaSize}
           powerCurveData={powerCurveData}
           setPowerCurveData={setPowerCurveData}
+          showWindFarms={showWindFarms}
         />
       </ProSidebarProvider>
 
-      <Grid container justifyContent="flex-end">
+      <Grid
+        container
+        style={{ zIndex: 2, position: "absolute" }}
+        justifyContent="flex-end"
+      >
         <Switch
           isOn={showWindFarms}
           onColor="#EF476F"
-          style={{ float: "right" }}
           handleToggle={() => setShowWindFarms(!showWindFarms)}
         />
       </Grid>
-      <h1 style={{ textAlign: "center", fontFamily: "fangsong" }}>
-        {showWindFarms ? "Wind Farms" : "Area Size Map"}
-      </h1>
 
-      <div style={{ display: "block", height: `750px` }}>
+      <div style={{ height: "910px" }}>
         <Map
           {...(showWindFarms && {
             geolocations,
@@ -90,7 +84,6 @@ const Home = () => {
                 [parseFloat(center[0]), parseFloat(center[1])],
                 parseFloat(areaSize) * 0.5
               )}
-          <FullScreenControl />
         </Map>
       </div>
     </>
