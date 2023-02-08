@@ -76,4 +76,3 @@ def main():
 
         WindFarmDetailData.objects.create(**data_dict)
         print(f"turbine operator name {row[1]} with sitename {row[2]} inserted")
-main()
