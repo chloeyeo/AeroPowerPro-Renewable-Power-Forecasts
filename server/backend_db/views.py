@@ -2,7 +2,7 @@ from django.shortcuts import render
 # from django.http import HttpResponse
 # from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from backend_db.models import ActualProduceElectricity, UserProfile, HistoricWind, WindFarmData
+from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData
 from django.http import JsonResponse
 from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
