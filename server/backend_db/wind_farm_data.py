@@ -20,5 +20,8 @@ class WindFarmDetailData(models.Model):
     development_status = models.CharField(null = True, max_length=200)
     x_coordinate = models.FloatField(null = True, blank = True)
     y_coordinate = models.FloatField(null = True, blank = True)
+    address = models.CharField(null = True, max_length=200)
+    region = models.CharField(null = True, max_length=200)
+    country = models.CharField(null = True, max_length=200)
     longitude = models.FloatField(null = True, blank = True)
     latitude = models.FloatField(null = True, blank = True)

@@ -60,14 +60,20 @@ def main():
             data_dict['y_coordinate'] = row[9]
         else:
             data_dict['y_coordinate'] = None
-        if(not math.isnan(row[10])):
-            data_dict['longitude'] = row[10]
+        
+        data_dict['address'] = row[10]
+        data_dict['region'] = row[11]
+        data_dict['country'] = row[12]
+
+        if(not math.isnan(row[13])):
+            data_dict['longitude'] = row[13]
         else:
             data_dict['longitude'] = None
-        if(not math.isnan(row[11])):
-            data_dict['latitude'] = row[11]
+        if(not math.isnan(row[14])):
+            data_dict['latitude'] = row[14]
         else:
             data_dict['latitude'] = None
 
         WindFarmDetailData.objects.create(**data_dict)
         print(f"turbine operator name {row[1]} with sitename {row[2]} inserted")
+main()
