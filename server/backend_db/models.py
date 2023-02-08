@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 from backend_db.elexon_model import ActualProduceElectricity
 from backend_db.open_meteo_model import WeatherForecast
 from backend_db.power_forecast import PowerForecast
@@ -26,6 +27,3 @@ class UserProfile(models.Model):
     password = models.CharField(max_length=64, null=True)
     first_name = models.CharField(null=True, max_length=50)
     last_name = models.CharField(null=True, max_length=50)
-
-class DefaultUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
