@@ -54,22 +54,23 @@ const Home = () => {
           setAreaSize={setAreaSize}
           powerCurveData={powerCurveData}
           setPowerCurveData={setPowerCurveData}
+          showWindFarms={showWindFarms}
         />
       </ProSidebarProvider>
 
-      <Grid container justifyContent="flex-end">
+      <Grid
+        container
+        style={{ zIndex: 2, position: "absolute" }}
+        justifyContent="flex-end"
+      >
         <Switch
           isOn={showWindFarms}
           onColor="#EF476F"
-          style={{ float: "right" }}
           handleToggle={() => setShowWindFarms(!showWindFarms)}
         />
       </Grid>
-      <h1 style={{ textAlign: "center", fontFamily: "fangsong" }}>
-        {showWindFarms ? "Wind Farms" : "Area Size Map"}
-      </h1>
 
-      <div style={{ display: "block", height: `750px` }}>
+      <div style={{ height: "910px" }}>
         <Map
           {...(showWindFarms && {
             geolocations,

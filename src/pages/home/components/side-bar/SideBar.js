@@ -27,6 +27,7 @@ const SideBar = ({
   setCenter,
   areaSize,
   setAreaSize,
+  showWindFarms,
 }) => {
   const { collapseSidebar, collapsed } = useProSidebar();
   const [isShown, setIsShown] = useState(false);
@@ -78,18 +79,20 @@ const SideBar = ({
         display: "flex",
         position: "absolute",
         zIndex: 3,
-        marginTop: 98,
       }}
     >
       <Sidebar>
         <button
           className="btn btn-secondary"
-          styles={{ width: "100%" }}
+          style={{ width: "100%" }}
           onClick={() => collapseSidebar()}
         >
           {collapsed ? "Expand" : "Collapse"}
         </button>
-        <Menu className="sidebar-wrapper">
+        <h3 style={{ textAlign: "center", fontFamily: "fangsong" }}>
+          {showWindFarms ? "Wind Farms" : "Area Size Map"}
+        </h3>
+        <Menu closeOnClick className="sidebar-wrapper">
           <SubMenu label="Wind Power Forecast" icon={<FiWind />}>
             <div className="p-2">
               <h5>Wind Turbine Model</h5>
@@ -119,7 +122,6 @@ const SideBar = ({
                   ))}
                 </select>
               }
-              <h5 className="mt-3">Power Curve Info</h5>
 
               <div className="table-wrapper">
                 <table className="p-3">
@@ -205,7 +207,7 @@ const SideBar = ({
                 </table>
               </div>
 
-              <h5 className="mt-3">Hub Height (m)</h5>
+              <h5 className="mt-2">Hub Height (m)</h5>
 
               <input
                 aria-label="hub_height"
@@ -217,7 +219,7 @@ const SideBar = ({
                   })
                 }
               />
-              <h5 className="mt-3">Number of Turbines</h5>
+              <h5 className="mt-2">Number of Turbines</h5>
               <input
                 aria-label="num_of_turbines"
                 value={powerCurveData.numOfTurbines}
@@ -242,8 +244,8 @@ const SideBar = ({
                       ]),
                       hubHeight: parseFloat(powerCurveData.hubHeight),
                       numOfTurbines: parseFloat(powerCurveData.numOfTurbines),
-                      latitude: parseFloat(center[0]),
-                      longitude: parseFloat(center[1]),
+                      latitude: parseFloat(center[1]),
+                      longitude: parseFloat(center[0]),
                     },
                     headers: {
                       "Content-Type": "application/json",
@@ -256,10 +258,19 @@ const SideBar = ({
                     })
                     .catch(function (error) {
                       console.log(error);
-                      console.log("failed with data: ", powerCurveData);
+                      console.log("failed with data: ", {
+                        tableData: powerCurveData.tableData.map((pair) => [
+                          parseFloat(pair[0]),
+                          parseFloat(pair[1]),
+                        ]),
+                        hubHeight: parseFloat(powerCurveData.hubHeight),
+                        numOfTurbines: parseFloat(powerCurveData.numOfTurbines),
+                        latitude: parseFloat(center[1]),
+                        longitude: parseFloat(center[0]),
+                      });
                     });
                 }}
-                className="mt-3"
+                className="mt-2"
                 style={{ border: "none" }}
               >
                 <h4>Submit</h4>
@@ -268,8 +279,8 @@ const SideBar = ({
           </SubMenu>
           <SubMenu label="Area Search" icon={<AiOutlineSearch />}>
             <div className="p-3">
-              <p>Latitude (50 to 59)</p>
-              <InputGroup className="mb-3">
+              <div className="mt-2 mb-2">Latitude (50 to 59)</div>
+              <InputGroup>
                 <Form.Control
                   placeholder="Latitude"
                   aria-label="Latitude"
@@ -281,8 +292,8 @@ const SideBar = ({
                   }
                 />
               </InputGroup>
-              <p>Longitude (-7 to 4)</p>
-              <InputGroup className="mb-3">
+              <div className="mt-2 mb-2">Longitude (-7 to 4)</div>
+              <InputGroup>
                 <Form.Control
                   placeholder="Longitude"
                   aria-label="Longitude"
@@ -294,8 +305,10 @@ const SideBar = ({
                   }
                 />
               </InputGroup>
-              <p>Scale of Selected Area(In degrees) (0.25 to 5)</p>
-              <InputGroup className="mb-3">
+              <div className="mt-2 mb-2">
+                Scale of Selected Area(In degrees) (0.25 to 5)
+              </div>
+              <InputGroup>
                 <Form.Control
                   placeholder="Area Size"
                   aria-label="Area Size"
