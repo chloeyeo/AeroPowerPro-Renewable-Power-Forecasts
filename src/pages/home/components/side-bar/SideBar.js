@@ -168,12 +168,12 @@ const SideBar = ({
 
               {inputFieldProps
                 .slice(0, 2)
-                .map(({ title, minVal, maxVal, defaultValue, updateFunc }) => (
+                .map(({ title, minVal, maxVal, value, updateFunc }) => (
                   <InputField
                     title={title}
                     minVal={minVal}
                     maxVal={maxVal}
-                    defaultValue={defaultValue}
+                    value={value}
                     updateFunc={updateFunc}
                   />
                 ))}
@@ -200,12 +200,12 @@ const SideBar = ({
             <div className="p-2">
               {inputFieldProps
                 .slice(2, 5)
-                .map(({ title, minVal, maxVal, defaultValue, updateFunc }) => (
+                .map(({ title, minVal, maxVal, value, updateFunc }) => (
                   <InputField
                     title={title}
                     minVal={minVal}
                     maxVal={maxVal}
-                    defaultValue={defaultValue}
+                    value={value}
                     updateFunc={updateFunc}
                   />
                 ))}
