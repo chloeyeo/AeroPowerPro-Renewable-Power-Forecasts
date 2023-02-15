@@ -3,11 +3,11 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 
 const FarmPopup = ({ setIsShown, farmdetails }) => {
-  if (farmdetails.farmName == null) {
+  if (farmdetails.farmName === null) {
     farmdetails.farmName = "Unnamed Windfarm";
   }
   let shr = "Offshore";
-  if (farmdetails.onshore == true) {
+  if (farmdetails.onshore === true) {
     shr = "Onshore";
   }
   return (
