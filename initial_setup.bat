@@ -7,6 +7,8 @@ CALL :activate_conda_env
 call npm install --legacy-peer-deps
 start powershell.exe npm start
 cd server/
+IF "%RUN_BEFORE%"=="" python Population_script.py
+SETX RUN_BEFORE TRUE
 python manage.py runserver
 
 
