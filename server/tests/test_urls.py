@@ -1,3 +1,9 @@
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
+
+import django
+django.setup()
+
 from django.urls import reverse, resolve
 from backend_db.views import UserView, get_elexon, get_elexon_by_date, GeolocationsView, HistoricWindViewSet, LoginView, RegisterApiView, PowerForecastViewSet, WindFarmDataByArea, GenericWindTurbineViewSet
 

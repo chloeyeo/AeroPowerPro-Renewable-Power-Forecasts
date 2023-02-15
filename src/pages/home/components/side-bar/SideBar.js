@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import axios from "axios";
 import { Sidebar, SubMenu, Menu, useProSidebar } from "react-pro-sidebar";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FiWind } from "react-icons/fi";
 
-import { ForecastGraph } from "./components";
+import { ForecastGraph, InputField } from "./components";
+import { geoLocReq, forecastReq } from "./utils";
+import withInputFieldProps from "./withInputFieldProps";
 import "./styles.css";
 
 const SideBar = ({
@@ -17,6 +18,7 @@ const SideBar = ({
   areaSize,
   setAreaSize,
   showWindFarms,
+  inputFieldProps,
 }) => {
   const { collapseSidebar, collapsed } = useProSidebar();
   const [isShown, setIsShown] = useState(false);
@@ -28,18 +30,7 @@ const SideBar = ({
   const [turbineModels, setTurbineModels] = useState({});
   const [powerForecast, setPowerForecast] = useState([]);
 
-  useEffect(() => {
-    axios({
-      method: "get",
-      url: "http://127.0.0.1:8000/generic_wind_turbines/",
-    })
-      .then(function (response) {
-        setTurbineModels(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, []);
+  useEffect(() => geoLocReq(setTurbineModels), []);
 
   return (
     <div
@@ -103,7 +94,7 @@ const SideBar = ({
                     {powerCurveData.tableData.map((row, index) => (
                       <tr key={index}>
                         <td>
-                          <input
+                          <Form.Control
                             aria-label={`row${index}_speed`}
                             style={{ maxWidth: "90px" }}
                             value={row[0]}
@@ -175,127 +166,50 @@ const SideBar = ({
                 </table>
               </div>
 
-              <div className="mt-2">Hub Height (m)</div>
+              {inputFieldProps
+                .slice(0, 2)
+                .map(({ title, minVal, maxVal, defaultValue, updateFunc }) => (
+                  <InputField
+                    title={title}
+                    minVal={minVal}
+                    maxVal={maxVal}
+                    defaultValue={defaultValue}
+                    updateFunc={updateFunc}
+                  />
+                ))}
 
-              <Form.Control
-                placeholder="hub height"
-                aria-label="hub_height"
-                defaultValue={powerCurveData.hubHeight}
-                onBlur={(event) =>
-                  parseFloat(event.target.value) >= 0
-                    ? setPowerCurveData({
-                        ...powerCurveData,
-                        hubHeight: event.target.value,
-                      })
-                    : (event.target.value = "")
-                }
-              />
-
-              <div className="mt-2">Number of Turbines</div>
-              <Form.Control
-                placeholder="num of turbines"
-                aria-label="num_of_turbines"
-                defaultValue={powerCurveData.numOfTurbines}
-                onBlur={(event) =>
-                  parseFloat(event.target.value) >= 0
-                    ? setPowerCurveData({
-                        ...powerCurveData,
-                        numOfTurbines: event.target.value,
-                      })
-                    : (event.target.value = "")
-                }
-              />
-
-              <button
+              <Button
+                variant="outline-secondary"
+                className="button-addon2 mt-2"
                 onClick={() => {
                   setIsShown(false);
-                  axios({
-                    method: "post",
-                    url: "http://127.0.0.1:8000/generate_power_forecast/",
-                    data: {
-                      tableData: powerCurveData.tableData.map((pair) => [
-                        parseFloat(pair[0]),
-                        parseFloat(pair[1]),
-                      ]),
-                      hubHeight: parseFloat(powerCurveData.hubHeight),
-                      numOfTurbines: parseFloat(powerCurveData.numOfTurbines),
-                      latitude: parseFloat(center[1]),
-                      longitude: parseFloat(center[0]),
-                    },
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  })
-                    .then(function (response) {
-                      console.log("success!", response.data);
-                      setPowerForecast(response.data.power_forecast);
-                      setIsShown(true);
-                    })
-                    .catch(function (error) {
-                      console.log(error);
-                      console.log("failed with data: ", {
-                        tableData: powerCurveData.tableData.map((pair) => [
-                          parseFloat(pair[0]),
-                          parseFloat(pair[1]),
-                        ]),
-                        hubHeight: parseFloat(powerCurveData.hubHeight),
-                        numOfTurbines: parseFloat(powerCurveData.numOfTurbines),
-                        latitude: parseFloat(center[1]),
-                        longitude: parseFloat(center[0]),
-                      });
-                    });
+                  forecastReq(
+                    powerCurveData,
+                    center,
+                    setPowerForecast,
+                    setIsShown
+                  );
                 }}
-                className="mt-2"
-                style={{ border: "none" }}
               >
-                <h4>Submit</h4>
-              </button>
+                Submit
+              </Button>
             </div>
           </SubMenu>
 
           <SubMenu label="Area Search" icon={<AiOutlineSearch />}>
             <div className="p-2">
-              <div className="mb-2">Latitude (50 to 59)</div>
-              <Form.Control
-                placeholder="Latitude"
-                aria-label="Latitude"
-                aria-describedby="basic-addon2"
-                defaultValue={center[1]}
-                onBlur={(event) =>
-                  parseFloat(event.target.value) >= 50 &&
-                  parseFloat(event.target.value) <= 59
-                    ? setCenter([center[0], event.target.value])
-                    : (event.target.value = "")
-                }
-              />
-              <div className="mt-2 mb-2">Longitude (-7 to 4)</div>
+              {inputFieldProps
+                .slice(2, 5)
+                .map(({ title, minVal, maxVal, defaultValue, updateFunc }) => (
+                  <InputField
+                    title={title}
+                    minVal={minVal}
+                    maxVal={maxVal}
+                    defaultValue={defaultValue}
+                    updateFunc={updateFunc}
+                  />
+                ))}
 
-              <Form.Control
-                placeholder="Longitude"
-                aria-label="Longitude"
-                aria-describedby="basic-addon2"
-                defaultValue={center[0]}
-                onBlur={(event) =>
-                  parseFloat(event.target.value) >= -7 &&
-                  parseFloat(event.target.value) <= 4
-                    ? setCenter([event.target.value, center[1]])
-                    : (event.target.value = "")
-                }
-              />
-
-              <div className="mt-2 mb-2">Area Scale - Degrees (0.25 to 5)</div>
-              <Form.Control
-                placeholder="Area Size"
-                aria-label="Area Size"
-                aria-describedby="basic-addon2"
-                defaultValue={areaSize}
-                onBlur={(event) =>
-                  parseFloat(event.target.value) >= 0.25 &&
-                  parseFloat(event.target.value) <= 5
-                    ? setAreaSize(event.target.value)
-                    : (event.target.value = "")
-                }
-              />
               <Button
                 variant="outline-secondary"
                 className="button-addon2 mt-2"
@@ -314,4 +228,4 @@ const SideBar = ({
   );
 };
 
-export default SideBar;
+export default withInputFieldProps(SideBar);

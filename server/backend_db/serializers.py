@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from django.contrib.auth.models import User
-from .models import UserProfile, HistoricWind, WindFarmData
+from .models import HistoricWind, WindFarmData
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
