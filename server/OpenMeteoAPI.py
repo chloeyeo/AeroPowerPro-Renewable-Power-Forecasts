@@ -42,7 +42,7 @@ def insert_to_weather_forecast(data, lat, long):
 
 
 @transaction.atomic
-def get_forecasts(lat, long, start_date=datetime.now(), days=1, hourly=None):
+def get_forecasts(lat, long, start_date=datetime.now(), days=1):
     end_date = start_date + relativedelta(days=days)
     start_date = start_date.strftime("%Y-%m-%d")
     end_date = end_date.strftime("%Y-%m-%d")
@@ -52,11 +52,7 @@ def get_forecasts(lat, long, start_date=datetime.now(), days=1, hourly=None):
         try:
             req = pull_forecasts_from_api(lat, long, start_date, end_date)
             data = json.loads(req.content)
-            if hourly is None:
-                obj = insert_to_weather_forecast(data, lat, long)
-            else:
-
-                obj = insert_to_weather_forecast(data, lat, long)
+            obj = insert_to_weather_forecast(data, lat, long)
             return obj
         except requests.exceptions.ReadTimeout:
             print(f"Connection timed out for ({lat}, {long})")
@@ -78,4 +74,5 @@ def get_forecasts_coord_step(start_date=datetime.now(), days=5, step=0.25):
     
     # Then bulk create all new forecasts
     WeatherForecast.objects.bulk_create(new_forecasts, ignore_conflicts=True)
-    print("Done")
+    print("The get_forecasts_coord_step is Done!")
+
