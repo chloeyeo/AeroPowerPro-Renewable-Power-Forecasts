@@ -4,6 +4,7 @@ import "./Map.css";
 import MapContext from "./MapContext";
 import * as ol from "ol";
 import * as olProj from "ol/proj";
+import { FarmPopup } from "./components";
 
 const Map = ({
   children,
@@ -14,9 +15,12 @@ const Map = ({
   geolocations,
   powerCurveData,
   setPowerCurveData,
+  setWindFarmData,
+  windFarmData,
 }) => {
   const mapRef = useRef();
   const [map, setMap] = useState(null);
+  const [isShown, setIsShown] = useState(false);
 
   // on component mount
   useEffect(() => {
@@ -55,9 +59,15 @@ const Map = ({
             hubHeight: windFarmClicked[3],
             numOfTurbines: windFarmClicked[4],
           });
-          alert(
-            `Windfarm ID: ${windFarmClicked[0]}\nHub Height: ${windFarmClicked[3]}\nNumber of turbines: ${windFarmClicked[4]}\nTurbine Capacity: ${windFarmClicked[5]}\nIs onshore?: ${windFarmClicked[6]}\n`
-          );
+          setIsShown(true);
+          setWindFarmData({
+            farmName: "Windfarm",
+            id: windFarmClicked[0],
+            hubHeight: windFarmClicked[3],
+            numberOfTurbines: windFarmClicked[4],
+            capacity: windFarmClicked[5],
+            onshore: windFarmClicked[6],
+          });
         }
       } else {
         axios({
@@ -92,15 +102,20 @@ const Map = ({
   }, [center]);
 
   return (
-    <MapContext.Provider value={{ map }}>
-      <div
-        ref={mapRef}
-        style={{ display: "block", height: "100%" }}
-        className="ol-map"
-      >
-        {children}
-      </div>
-    </MapContext.Provider>
+    <>
+      {isShown && (
+        <FarmPopup setIsShown={setIsShown} farmdetails={windFarmData} />
+      )}
+      <MapContext.Provider value={{ map }}>
+        <div
+          ref={mapRef}
+          style={{ display: "block", height: "100%" }}
+          className="ol-map"
+        >
+          {children}
+        </div>
+      </MapContext.Provider>
+    </>
   );
 };
 

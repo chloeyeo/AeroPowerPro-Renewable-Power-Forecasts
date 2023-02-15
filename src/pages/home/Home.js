@@ -21,6 +21,14 @@ const Home = () => {
     numOfTurbines: 0,
     turbineModel: "",
   });
+  const [windFarmData, setWindFarmData] = useState({
+    farmName: "",
+    id: 0,
+    hubHeight: 0,
+    numberOfTurbines: 0,
+    capacity: 0,
+    onshore: false,
+  });
 
   useEffect(() => {
     axios({
@@ -74,6 +82,8 @@ const Home = () => {
           zoom={8}
           powerCurveData={powerCurveData}
           setPowerCurveData={setPowerCurveData}
+          windFarmData={windFarmData}
+          setWindFarmData={setWindFarmData}
         >
           <TileLayer source={osm()} zIndex={0} />
           {showWindFarms
