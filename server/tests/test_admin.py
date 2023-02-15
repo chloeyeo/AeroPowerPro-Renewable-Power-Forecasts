@@ -1,3 +1,9 @@
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
+
+import django
+django.setup()
+
 from django.test import TestCase
 from django.contrib import admin
 from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData

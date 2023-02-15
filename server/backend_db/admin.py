@@ -1,19 +1,19 @@
 from django.contrib import admin
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import Permission
-from django.contrib.admin.models import LogEntry
-from backend_db.models import HistoricWind, ActualProduceElectricity, WeatherForecast, PowerForecast, WindFarmData, WindFarmDetailData
+from backend_db.models import ActualProduceElectricity
+import backend_db.models
 # Register your models here.
 
-admin.site.register(HistoricWind)
+
 
 admin.site.register(ActualProduceElectricity)
 
-admin.site.register(WeatherForecast)
+admin.site.register(backend_db.models.HistoricWind)
 
-admin.site.register(PowerForecast)
+admin.site.register(backend_db.models.WeatherForecast)
 
-admin.site.register(WindFarmData)
+admin.site.register(backend_db.models.PowerForecast)
 
-admin.site.register(WindFarmDetailData)
+admin.site.register(backend_db.models.WindFarmData)
+
+admin.site.register(backend_db.models.WindFarmDetailData)
 
