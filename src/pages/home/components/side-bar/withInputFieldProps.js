@@ -14,7 +14,7 @@ const withInputFieldProps = (Component) => (props) => {
     {
       title: "Hub Height",
       minVal: 0,
-      defaultValue: powerCurveData.hubHeight,
+      value: powerCurveData.hubHeight,
       updateFunc: (newVal) =>
         setPowerCurveData({
           ...powerCurveData,
@@ -24,7 +24,7 @@ const withInputFieldProps = (Component) => (props) => {
     {
       title: "Num of turbines",
       minVal: 0,
-      defaultValue: powerCurveData.numOfTurbines,
+      value: powerCurveData.numOfTurbines,
       updateFunc: (newVal) =>
         setPowerCurveData({
           ...powerCurveData,
@@ -35,21 +35,21 @@ const withInputFieldProps = (Component) => (props) => {
       title: "Latitude",
       minVal: 50,
       maxVal: 59,
-      defaultValue: center[1],
+      value: center[1],
       updateFunc: (newVal) => setCenter([center[0], newVal]),
     },
     {
       title: "Longitude",
       minVal: -7,
       maxVal: 4,
-      defaultValue: center[0],
+      value: center[0],
       updateFunc: (newVal) => setCenter([newVal, center[1]]),
     },
     {
       title: "Area Size",
       minVal: 0.25,
       maxVal: 5,
-      defaultValue: areaSize,
+      value: areaSize,
       updateFunc: (newVal) => setAreaSize(newVal),
     },
   ];

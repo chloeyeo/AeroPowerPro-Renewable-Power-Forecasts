@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "react-bootstrap/Form";
 
-const InputField = ({ title, defaultValue, maxVal, minVal, updateFunc }) => {
+const InputField = ({ title, value, maxVal, minVal, updateFunc }) => {
   return (
     <>
       <div className="mt-2 mb-2">
@@ -13,8 +13,9 @@ const InputField = ({ title, defaultValue, maxVal, minVal, updateFunc }) => {
         placeholder={title}
         aria-label={title}
         aria-describedby="basic-addon2"
-        defaultValue={defaultValue}
+        value={value}
         onKeyDown={(event) => event.key === "Enter" && event.target.blur()}
+        onChange={(event) => updateFunc(event.target.value)}
         onBlur={(event) =>
           parseFloat(event.target.value) >= minVal &&
           parseFloat(event.target.value) <= maxVal
