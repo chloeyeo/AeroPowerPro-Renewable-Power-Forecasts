@@ -6,14 +6,7 @@ import { fromLonLat } from "ol/proj";
 import { NavBar } from "../../components";
 
 import { geoJsonObject } from "./utils";
-import {
-  SideBar,
-  Switch,
-  TileLayer,
-  Map,
-  osm,
-  FullScreenControl,
-} from "./components";
+import { SideBar, Switch, TileLayer, Map, osm } from "./components";
 
 import { ProSidebarProvider } from "react-pro-sidebar";
 
@@ -27,6 +20,14 @@ const Home = () => {
     hubHeight: 0,
     numOfTurbines: 0,
     turbineModel: "",
+  });
+  const [windFarmData, setWindFarmData] = useState({
+    farmName: "",
+    id: 0,
+    hubHeight: 0,
+    numberOfTurbines: 0,
+    capacity: 0,
+    onshore: false,
   });
 
   useEffect(() => {
@@ -54,30 +55,35 @@ const Home = () => {
           setAreaSize={setAreaSize}
           powerCurveData={powerCurveData}
           setPowerCurveData={setPowerCurveData}
+          showWindFarms={showWindFarms}
         />
       </ProSidebarProvider>
 
-      <Grid container justifyContent="flex-end">
+      <Grid
+        container
+        style={{ zIndex: 2, position: "absolute" }}
+        justifyContent="flex-end"
+      >
         <Switch
           isOn={showWindFarms}
           onColor="#EF476F"
-          style={{ float: "right" }}
           handleToggle={() => setShowWindFarms(!showWindFarms)}
         />
       </Grid>
-      <h1 style={{ textAlign: "center", fontFamily: "fangsong" }}>
-        {showWindFarms ? "Wind Farms" : "Area Size Map"}
-      </h1>
 
-      <div style={{ display: "block", height: `750px` }}>
+      <div style={{ height: "910px" }}>
         <Map
-          geolocations={geolocations}
+          {...(showWindFarms && {
+            geolocations,
+          })}
           areaSize={parseFloat(areaSize)}
           center={fromLonLat([parseFloat(center[0]), parseFloat(center[1])])}
           setCenter={setCenter}
           zoom={8}
           powerCurveData={powerCurveData}
           setPowerCurveData={setPowerCurveData}
+          windFarmData={windFarmData}
+          setWindFarmData={setWindFarmData}
         >
           <TileLayer source={osm()} zIndex={0} />
           {showWindFarms
@@ -88,7 +94,6 @@ const Home = () => {
                 [parseFloat(center[0]), parseFloat(center[1])],
                 parseFloat(areaSize) * 0.5
               )}
-          <FullScreenControl />
         </Map>
       </div>
     </>
