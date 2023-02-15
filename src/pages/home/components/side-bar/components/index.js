@@ -1,4 +1,13 @@
 import ForecastGraph from "./forecast-graph";
-import InputField from "./input-field";
+import PowerCurveTable from "./power-curve-table";
+import TurbineModelSelect from "./turbine-model-select";
+import InputsAndSubmit from "./inputs-and-submit";
+import SidebarHeader from "./sidebar-header";
 
-export { ForecastGraph, InputField };
+export {
+  ForecastGraph,
+  PowerCurveTable,
+  TurbineModelSelect,
+  InputsAndSubmit,
+  SidebarHeader,
+};
