@@ -16,17 +16,25 @@ const FarmPopup = ({ setIsShown, farmdetails }) => {
       style={{
         position: "absolute",
         zIndex: 2,
-        backgroundColor: "white",
+        backgroundColor: "rgba(255,255,255,0.65)",
         width: "300px",
         height: "160px",
         left: "250px",
+        borderRadius: "15px",
       }}
     >
       <Grid container justifyContent="space-between">
         <div></div>
-        <h5 style={{ textAlign: "center" }}>{farmdetails.farmName}</h5>
+        <h5 style={{ textAlign: "center", opacity: "100%" }}>
+          {farmdetails.farmName}
+        </h5>
         <Button
-          style={{ float: "right" }}
+          style={{
+            position: "relative",
+            top: "10px",
+            right: "10px",
+            opacity: "100%",
+          }}
           variant="outline-secondary"
           className="button-addon2"
           onClick={() => {
@@ -38,9 +46,12 @@ const FarmPopup = ({ setIsShown, farmdetails }) => {
       </Grid>
       <div
         style={{
-          width: "625px",
-          height: "410px",
+          width: "300px",
+          height: "140px",
           borderRadius: "4px",
+          paddingLeft: "15px",
+          paddingBottom: "10px",
+          opacity: "100%",
         }}
       >
         Windfarm ID: {farmdetails.id} <br />
