@@ -3,7 +3,7 @@ from backend_db.elexon_model import ActualProduceElectricity
 from backend_db.open_meteo_model import WeatherForecast
 from backend_db.power_forecast import PowerForecast
 from backend_db.wind_farm_data import WindFarmData, WindFarmDetailData
-from backend_db.solar_energy_data import SolarEnergyData
+from backend_db.solar_energy_data import SolarEnergyData, SolarFarmDetailData
 # Create your models here.
 
 
