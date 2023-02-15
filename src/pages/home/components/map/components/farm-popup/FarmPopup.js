@@ -15,7 +15,7 @@ const FarmPopup = ({ setIsShown, farmdetails }) => {
       display="flex"
       style={{
         position: "absolute",
-        zIndex: 2,
+        zIndex: 3,
         backgroundColor: "rgba(255,255,255,0.65)",
         width: "300px",
         height: "160px",

@@ -61,7 +61,7 @@ const Home = () => {
 
       <Grid
         container
-        style={{ zIndex: 3, position: "absolute" }}
+        style={{ zIndex: 2, position: "absolute" }}
         justifyContent="flex-end"
       >
         <Switch

@@ -28,7 +28,7 @@ const SideBar = ({
   useEffect(() => geoLocReq(setTurbineModels), []);
 
   return (
-    <div className="sidebar">
+    <div style={{ zIndex: 3 }} className="sidebar">
       <Sidebar>
         <SidebarHeader
           showWindFarms={showWindFarms}
