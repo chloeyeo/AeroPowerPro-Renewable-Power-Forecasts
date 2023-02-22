@@ -1,16 +1,18 @@
 from django.shortcuts import render
 # from django.http import HttpResponse
 # from django.urls import reverse
-from django.contrib.auth import authenticate, login, logout
+# from django.contrib.auth import authenticate, logout
+from django.contrib.auth import login
 from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from rest_framework.mixins import (
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-)
+# from rest_framework.mixins import (
+#     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
+# )
 from rest_framework.generics import GenericAPIView
-from rest_framework.viewsets import GenericViewSet
-from .serializers import UserSerializer, HistoricWindSerializer, WindFarmDataSerializer, LoginSerializer, RegisterSerializer
+# from rest_framework.viewsets import GenericViewSet
+# from .serializers import UserSerializer, HistoricWindSerializer, WindFarmDataSerializer, 
+from .serializers import LoginSerializer, RegisterSerializer, MyTokenObtainPairSerializer
 # from rest_framework.decorators import api_view
 from rest_framework import permissions, status
 from rest_framework.views import APIView
@@ -23,6 +25,8 @@ from .Wind_Turbine_Model.generic_wind_turbines_from_lib import get_all_generic_t
 import numpy as np
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
@@ -134,6 +138,11 @@ class RegisterApiView(GenericAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyObtainTokenPairView(TokenObtainPairView):
+    permission_classes= (permissions.AllowAny,)
+    serializer_class = MyTokenObtainPairSerializer
 
 class WindFarmDataByArea(APIView):
     permission_classes = [permissions.AllowAny]
