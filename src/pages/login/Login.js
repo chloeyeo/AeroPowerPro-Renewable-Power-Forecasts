@@ -5,7 +5,7 @@ import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
@@ -15,7 +15,7 @@ const Login = () => {
     console.log("Attempting to post!");
     axios({
       method: "post",
-      url: "http://127.0.0.1:8000/login/",
+      url: "http://127.0.0.1:8000/token/",
       data: formData,
       headers: {
         "Content-Type": "application/json",
@@ -50,18 +50,14 @@ const Login = () => {
         <h1 className="pt-5 text-white text-center">Welcome</h1>
         <form onSubmit={handleOnSubmit}>
           <div class="p-3 form-group">
-            <label className="text-white" for="exampleInputEmail1">
-              Email address
-            </label>
+            <label className="text-white">Username</label>
             <input
-              type="email"
+              type="text"
               class="form-control"
-              value={formData.email}
-              className="exampleInputEmail1"
-              aria-describedby="emailHelp"
-              placeholder="Enter email"
+              value={formData.username}
+              placeholder="Enter username"
               onChange={(event) =>
-                setFormData({ ...formData, email: event.target.value })
+                setFormData({ ...formData, username: event.target.value })
               }
             />
           </div>
@@ -72,7 +68,6 @@ const Login = () => {
             <input
               type="password"
               class="form-control"
-              className="exampleInputPassword1"
               value={formData.password}
               onChange={(event) =>
                 setFormData({ ...formData, password: event.target.value })
