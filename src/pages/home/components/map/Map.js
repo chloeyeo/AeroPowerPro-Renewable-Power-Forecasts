@@ -8,11 +8,10 @@ import { farmDataByAreaReq, updateWindFarmData } from "./utils";
 
 const Map = ({
   children,
-  zoom,
   areaSize,
   center,
   setCenter,
-  geolocations,
+  windFarms,
   powerCurveData,
   setPowerCurveData,
   setWindFarmData,
@@ -25,7 +24,7 @@ const Map = ({
   useEffect(() => {
     let options = {
       view: new ol.View({
-        zoom,
+        zoom: 8,
         center,
         extent: [-1500000, 6200000, 600000, 8800000],
       }),
@@ -41,9 +40,9 @@ const Map = ({
     mapObject.on("click", function (evt) {
       evt.preventDefault();
       const coords = olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326");
-      if (geolocations) {
+      if (windFarms) {
         updateWindFarmData(
-          geolocations,
+          windFarms,
           coords,
           powerCurveData,
           setPowerCurveData,

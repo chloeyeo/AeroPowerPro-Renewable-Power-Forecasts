@@ -6,7 +6,7 @@ export default {
       radius: 10,
       fill: null,
       stroke: new Stroke({
-        color: "magenta",
+        color: "yellow",
       }),
     }),
   }),

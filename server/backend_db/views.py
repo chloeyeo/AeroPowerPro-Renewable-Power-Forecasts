@@ -130,7 +130,7 @@ def event_stream(data):
 class GeolocationsView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format = None):
+    def post(self, request, format = None):
         """Finds all available wind farms
 
         Args:
@@ -141,48 +141,30 @@ class GeolocationsView(APIView):
         Returns:
             List of the farm data and their metadata ('windfarm_data_id', 'longitude', 'latitude', 'hub_height', 'number_of_turbines', 'turbine_capacity', 'is_onshore', ...)
         """     
-        if (request.small):
-            
-            wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
-                                                            'longitude',
-                                                            'latitude',
-                                                            'hub_height',
-                                                            'number_of_turbines',
-                                                            'turbine_capacity',
-                                                            'is_onshore',)
         
-            return JsonResponse(list(wind_farms), safe=False)
+        wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
+                                                        'longitude',
+                                                        'latitude',
+                                                        'hub_height',
+                                                        'number_of_turbines',
+                                                        'turbine_capacity',
+                                                        'is_onshore',)
+    
+            # return JsonResponse(list(wind_farms), safe=False)
 
         
-        STEP = 1500
         response = {}
         
-        detail_wind_farms = WindFarmDetailData.objects.filter(longitude__isnull = False, latitude__isnull = False, operator__isnull = False ,turbine_height__isnull = False, number_of_turbines__isnull = False, sitename__isnull = False).values_list(
-                                                                        'id',
-                                                                        'latitude',
-                                                                        'longitude',
-                                                                        'operator',
-                                                                        'sitename',
-                                                                        'is_onshore',
-                                                                        'turbine_height',
-                                                                        'number_of_turbines',
-                                                                        'turbine_capacity',
-                                                                        'development_status',
-                                                                        'address',
-                                                                        'region',
-                                                                        'country',
-                                                                        )
-        
-        
-        start = request.start
-        
-        if (next_start := start + STEP) < len(detail_wind_farms):
-            response['metadata']['next_start_index'] = next_start + 1
-            response['windfarm_data'] = detail_wind_farms[start:next_start - 1]
-        else:
-            response['metadata']['next_start_index'] = -1
-            response['windfarm_data'] = detail_wind_farms[start:]
-        
+        detail_wind_farms = WindFarmDetailData.objects.filter(longitude__isnull = False, 
+        latitude__isnull = False,  latitude__lte=59, operator__isnull = False ,
+        turbine_height__isnull = False, number_of_turbines__isnull = False, 
+        sitename__isnull = False).values_list('id', 'latitude', 'longitude','operator',
+        'sitename','is_onshore','turbine_height','number_of_turbines','turbine_capacity',
+        'development_status',# 'address','region','country',
+        )
+    
+        response['large_windfarm_data'] = list(detail_wind_farms)
+        response['small_windfarm_data'] = list(wind_farms)
         return JsonResponse(response, safe = False)
         
         

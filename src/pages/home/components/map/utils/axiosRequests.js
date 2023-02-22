@@ -21,9 +21,17 @@ const farmDataByAreaReq = (
   })
     .then(function (response) {
       console.log("farmed data by area!", response.data);
+      const newHubHeight = response.data.average_hub_height;
+      const averageHubHeight = Array.isArray(newHubHeight)
+        ? (
+            newHubHeight.reduce((total, acc) => total + acc, 0) /
+            newHubHeight.length
+          ).toFixed(2)
+        : newHubHeight.toFixed(2);
+
       setPowerCurveData({
         ...powerCurveData,
-        hubHeight: response.data.average_hub_height.toFixed(2),
+        hubHeight: averageHubHeight,
         numOfTurbines: response.data.total_turbines,
       });
     })

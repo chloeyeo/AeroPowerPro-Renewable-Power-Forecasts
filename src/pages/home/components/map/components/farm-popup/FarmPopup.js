@@ -6,19 +6,16 @@ const FarmPopup = ({ setIsShown, farmdetails }) => {
   if (farmdetails.farmName === null) {
     farmdetails.farmName = "Unnamed Windfarm";
   }
-  let shr = "Offshore";
-  if (farmdetails.onshore === true) {
-    shr = "Onshore";
-  }
+
   return (
     <div
       display="flex"
       style={{
         position: "absolute",
         zIndex: 3,
-        backgroundColor: "rgba(255,255,255,0.65)",
+        backgroundColor: "rgba(255,255,255,0.75)",
         width: "300px",
-        height: "160px",
+        height: "360px",
         left: "250px",
         borderRadius: "15px",
       }}
@@ -46,7 +43,7 @@ const FarmPopup = ({ setIsShown, farmdetails }) => {
       </Grid>
       <div
         style={{
-          width: "300px",
+          width: "600px",
           height: "140px",
           borderRadius: "4px",
           paddingLeft: "15px",
@@ -54,11 +51,11 @@ const FarmPopup = ({ setIsShown, farmdetails }) => {
           opacity: "100%",
         }}
       >
-        Windfarm ID: {farmdetails.id} <br />
-        Hub height: {farmdetails.hubHeight} <br />
-        Number of Turbines: {farmdetails.numberOfTurbines} <br />
-        Turbine Capacity: {farmdetails.capacity / 1000000}MW <br />
-        {shr}
+        {Object.entries(farmdetails).map(([key, value]) => (
+          <div key={key}>
+            {key} : {value}
+          </div>
+        ))}
       </div>
     </div>
   );
