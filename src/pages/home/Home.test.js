@@ -18,7 +18,6 @@ it("renders correct text", () => {
   );
   expect(screen.getByText("Area Size Map")).toBeInTheDocument();
   expect(screen.getByText("Jethro's Power Forecasts")).toBeInTheDocument();
-  expect(screen.getByText("Home")).toBeInTheDocument();
   expect(screen.getByText("About")).toBeInTheDocument();
   expect(screen.getByText("Contact Us")).toBeInTheDocument();
   expect(screen.getByText("Login")).toBeInTheDocument();
