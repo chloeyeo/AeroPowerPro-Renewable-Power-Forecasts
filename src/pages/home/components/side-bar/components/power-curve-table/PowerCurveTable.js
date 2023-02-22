@@ -60,20 +60,23 @@ const PowerCurveTable = ({ powerCurveData, setPowerCurveData }) => (
             </td>
           </tr>
         ))}
+
+        <tr>
+          <td>
+            <button
+              style={{ border: "none" }}
+              onClick={() =>
+                setPowerCurveData({
+                  ...powerCurveData,
+                  tableData: [...powerCurveData.tableData, ["0", "0"]],
+                })
+              }
+            >
+              Add Row
+            </button>
+          </td>
+        </tr>
       </tbody>
-      <tr>
-        <button
-          style={{ border: "none" }}
-          onClick={() =>
-            setPowerCurveData({
-              ...powerCurveData,
-              tableData: [...powerCurveData.tableData, ["0", "0"]],
-            })
-          }
-        >
-          Add Row
-        </button>
-      </tr>
     </table>
   </div>
 );
