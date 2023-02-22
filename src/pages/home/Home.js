@@ -10,7 +10,7 @@ import { SideBar, Switch, TileLayer, Map, osm } from "./components";
 import { ProSidebarProvider } from "react-pro-sidebar";
 
 const Home = () => {
-  const [showWindFarms, setShowWindFarms] = useState(false);
+  const [view, setView] = useState("Area Size");
   const [center, setCenter] = useState(["-4.2518", "55.8642"]);
   const [areaSize, setAreaSize] = useState("0.25");
   const [windFarms, setWindFarms] = useState([]);
@@ -45,27 +45,42 @@ const Home = () => {
           setAreaSize={setAreaSize}
           powerCurveData={powerCurveData}
           setPowerCurveData={setPowerCurveData}
-          showWindFarms={showWindFarms}
+          showWindFarms={view !== "Area Size"}
         />
       </ProSidebarProvider>
 
       <Grid
         container
-        style={{ zIndex: 2, position: "absolute" }}
+        style={{ zIndex: 2, position: "absolute", top: "100px", right: "25px" }}
         justifyContent="flex-end"
       >
-        <Switch
-          isOn={showWindFarms}
-          onColor="#EF476F"
-          handleToggle={() => setShowWindFarms(!showWindFarms)}
-        />
+        <button
+          value="Area Size"
+          onClick={(event) => setView(event.target.value)}
+        >
+          Area Size
+        </button>
+        <button
+          value="Small Wind Farms"
+          onClick={(event) => setView(event.target.value)}
+        >
+          Small Wind Farms
+        </button>
+        <button
+          value="Large Wind Farms"
+          onClick={(event) => setView(event.target.value)}
+        >
+          Large Wind Farms
+        </button>
       </Grid>
 
       <div style={{ height: "910px" }}>
         <Map
-          {...(showWindFarms && {
-            windFarms,
-          })}
+          windFarms={
+            view === "Small Wind Farms"
+              ? windFarms.small_windfarm_data
+              : windFarms.large_windfarm_data
+          }
           areaSize={parseFloat(areaSize)}
           center={fromLonLat([parseFloat(center[0]), parseFloat(center[1])])}
           setCenter={setCenter}
@@ -75,8 +90,11 @@ const Home = () => {
           setWindFarmData={setWindFarmData}
         >
           <TileLayer source={osm()} zIndex={0} />
-          {showWindFarms
-            ? windFarms.map((windFarm) =>
+          {view !== "Area Size"
+            ? (view === "Small Wind Farms"
+                ? windFarms.small_windfarm_data
+                : windFarms.large_windfarm_data
+              ).map((windFarm) =>
                 geoJsonObject(
                   [windFarm[1], windFarm[2]],
                   windFarm.length !== 10 && 0.05

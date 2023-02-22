@@ -12,10 +12,7 @@ const getWindFarmsReq = (setWindFarms) => {
     },
   })
     .then(function (response) {
-      setWindFarms([
-        ...response.data.small_windfarm_data,
-        ...response.data.large_windfarm_data,
-      ]);
+      setWindFarms(response.data);
     })
     .catch(function (error) {
       console.log(error);
