@@ -78,9 +78,16 @@ class RegisterSerializer(serializers.ModelSerializer):
         new_user.save()
         # print(f'asd{new_user}','\n\n\n')
         return new_user
-    
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """_summary_
+        Serializer used for logging in. Creates a JWT token to be returned. 
+    Returns:
+        username
+        first_name
+        last_name
+    """    
     @classmethod
     def get_token(cls, user):
         token = super(MyTokenObtainPairSerializer, cls).get_token(user)

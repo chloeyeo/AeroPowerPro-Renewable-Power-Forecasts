@@ -17,5 +17,4 @@ urlpatterns = [
     path('generate_power_forecast/', PowerForecastViewSet.as_view(), name = "generate_power_forecast"),
     path('generic_wind_turbines/', GenericWindTurbineViewSet.as_view(), name = "generic_wind_turbines"),
     path('farm_data_by_area/', WindFarmDataByArea.as_view(), name = "farm_data_by_area"),
-    # re_path('^',include(router.urls)),
 ]
