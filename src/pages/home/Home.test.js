@@ -17,4 +17,12 @@ it("renders correct text", () => {
     </Router>
   );
   expect(screen.getByText("Area Size Map")).toBeInTheDocument();
+  expect(screen.getByText("Jethro's Power Forecasts")).toBeInTheDocument();
+  expect(screen.getByText("Home")).toBeInTheDocument();
+  expect(screen.getByText("About")).toBeInTheDocument();
+  expect(screen.getByText("Contact Us")).toBeInTheDocument();
+  expect(screen.getByText("Login")).toBeInTheDocument();
+  expect(screen.getByText("Register")).toBeInTheDocument();
+  expect(screen.getByText("Wind Power Forecast")).toBeInTheDocument();
+  expect(screen.getByText("Collapse")).toBeInTheDocument();
 });
