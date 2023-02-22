@@ -4,6 +4,7 @@ SET CONDA_ENV=Power
 
 CALL :activate_conda_env
 
+start powershell.exe pip install -r requirements.txt
 call npm install --legacy-peer-deps
 start powershell.exe npm start
 cd server/
