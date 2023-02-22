@@ -109,19 +109,20 @@ class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        if request.data['username'] and request.data['password']:
+        print(request.data)
+        if request.data['email']!='' and request.data['password']!='':
             serializer = LoginSerializer(data=self.request.data, context={'request': self.request})
             serializer.is_valid(raise_exception=True)
             user = serializer.validated_data['user']
             if not user:
                 print('A user with this email and password is not found.')
-                return Response({"status": status.HTTP_404_NOT_FOUND, "Token": None})
+                return JsonResponse({'message' : 'User not found', 'Token': None }, status = 404 )
             login(request, user)
             token = Token.objects.create(user=user)
-            return Response({"status": status.HTTP_202_ACCEPTED, "Token": token})
+            return JsonResponse({'message' : 'Logged in!', 'Token': token }, status = 202 )
         else:
             print('The email or password is empty in the request data.')
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "Token": None})
+            return JsonResponse({'message' : 'The email or password is empty in the request data'}, status = 400)
 
 
 class RegisterApiView(GenericAPIView):
