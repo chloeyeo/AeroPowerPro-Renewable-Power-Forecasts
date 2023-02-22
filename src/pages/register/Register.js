@@ -162,6 +162,7 @@ const Register = () => {
           <input
             className="register"
             type="submit"
+            id="register-button"
             value="Register"
             style={{ backgroundColor: "#d9d9d9", color: "#373B44" }}
           />
