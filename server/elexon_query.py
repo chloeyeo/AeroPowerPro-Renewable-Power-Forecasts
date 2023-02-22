@@ -14,7 +14,6 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import httplib2
 import pandas as pd
-import schedule
 from backend_db.models import ActualProduceElectricity
 from django.db import transaction
 
@@ -96,7 +95,7 @@ def post_elexon(url):
                                                 quantity=float(value_str_list_new[10]))
 
 
-def main():
+if __name__ == '__main()__':
     today = datetime.datetime.now()
     start_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
     end_time = start_time - relativedelta(days=60)        # Start getting data from 2 years ago

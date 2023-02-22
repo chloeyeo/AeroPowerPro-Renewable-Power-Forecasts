@@ -12,26 +12,26 @@ import json
 import numpy as np
 
 
-def pull_forecasts_from_api(lat ,long, start_date, end_date):
+def pull_forecasts_from_api(lat, long, start_date, end_date):
     url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={long}&hourly=temperature_2m,surface_pressure,windspeed_10m,windspeed_80m&windspeed_unit=ms&start_date={start_date}&end_date={end_date}"
     req = requests.get(url=url)
-    
     return req
+
 
 def split_to_np(data):
     now = datetime.now().isoformat() # convert to iso, which we receive from API
     # convert to an np array, where each row is a data entry (forecast)
-    forecasts = np.array( [ [data["temperature_2m"][count],
+    forecasts = np.array([[data["temperature_2m"][count],
                         data["surface_pressure"][count],
                         data["windspeed_10m"][count],
                         data["windspeed_80m"][count],
                         parser.parse(data['time'][count]).replace(tzinfo=pytz.UTC),] 
-                        for count in range(len(data['time'])) if data['time'][count] > now] )
+                        for count in range(len(data['time'])) if data['time'][count] > now])
     return forecasts
+
 
 def insert_to_weather_forecast(data, lat, long):
     hourly = data['hourly']
-
     forecasts = split_to_np(hourly)
     obj = []
     for forecast in forecasts:
@@ -45,9 +45,8 @@ def get_forecasts(lat, long, start_date = datetime.now(), days = 5, ):
     end_date = start_date + relativedelta(days = days)
     start_date = start_date.strftime("%Y-%m-%d")
     end_date = end_date.strftime("%Y-%m-%d")
-    
-    
-    count  = 0
+
+    count = 0
     while count < 3:
         try:
             req = pull_forecasts_from_api(lat, long, start_date, end_date)
@@ -73,5 +72,6 @@ def get_forecasts_coord_step(start_date = datetime.now(), days = 5, step = 0.25)
     WeatherForecast.objects.all().delete()
     
     # Then bulk create all new forecasts
-    WeatherForecast.objects.bulk_create(new_forecasts, ignore_conflicts= True)
-    print("Done")
+    WeatherForecast.objects.bulk_create(new_forecasts, ignore_conflicts=True)
+    print("The get_forecasts_coord_step is Done!")
+
