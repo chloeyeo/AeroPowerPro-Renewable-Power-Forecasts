@@ -5,8 +5,8 @@ import django
 django.setup()
 
 from django.urls import reverse, resolve
-from backend_db.views import UserView, get_elexon, get_elexon_by_date, GeolocationsView, HistoricWindViewSet, LoginView, RegisterApiView, PowerForecastViewSet, WindFarmDataByArea, GenericWindTurbineViewSet
-
+from backend_db.views import UserView, GeolocationsView, HistoricWindViewSet, RegisterApiView, PowerForecastViewSet, WindFarmDataByArea, GenericWindTurbineViewSet, MyObtainTokenPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 import unittest
 
 class TestUrls(unittest.TestCase):
@@ -36,7 +36,14 @@ class TestUrls(unittest.TestCase):
         self.assertEqual(url, '/login/')
 
         resolver = resolve('/login/')
-        self.assertEqual(resolver.func.cls, LoginView)
+        self.assertEqual(resolver.func.cls, MyObtainTokenPairView)
+    
+    def test_login_refresh(self):
+        url = reverse('login_refresh')
+        self.assertEqual(url, '/login_refresh/')
+        
+        resolver = resolve('/login_refresh/')
+        self.assertEqual(resolver.func.cls, TokenRefreshView)
     
     def test_register(self):
         url = reverse('register')
