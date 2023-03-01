@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import { NavBar } from "../../components";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useCookies, Cookies } from "react-cookie";
 
 const Login = () => {
+  const [cookies, setCookie] = useCookies([
+    "LoggedIn",
+    "AccessToken",
+    "RefreshToken",
+  ]);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -25,10 +31,14 @@ const Login = () => {
         event.preventDefault();
         window.location.replace("http://127.0.0.1:3000");
         console.log(response);
-        alert("Logged In!");
+        setCookie("LoggedIn", true, { path: "/" });
+        setCookie("AccessToken", response.data.access, { path: "/" });
+        setCookie("RefreshToken", response.data.refresh, { path: "/" });
+        const cookiees = new Cookies();
+        cookiees.set("LoggedIn", true);
       })
       .catch(function (error) {
-        alert(" Login Error");
+        alert(" Invalid Credentials");
         console.log(error);
       });
   };
