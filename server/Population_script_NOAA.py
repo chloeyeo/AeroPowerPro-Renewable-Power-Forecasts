@@ -30,13 +30,21 @@ def split_date(dat):
 #Split NOAA request into the data needed
 def split_net(link):
     # print(link.variables)
-    lats = link.variables['lat']
-    heights = link.variables['height_above_ground3']
-    time = link.variables['time'][:]
-    longs = link.variables['lon']
-    u_comp = link.variables['u-component_of_wind_height_above_ground']
-    v_comp = link.variables['v-component_of_wind_height_above_ground']
-
+    try:
+        lats = link.variables['lat']
+        # After Jan 2023, u components are associated with a new name (replace 3 with 4)
+        try:
+            heights = link.variables['height_above_ground3']
+        except KeyError:
+            heights = link.variables['height_above_ground4']
+        time = link.variables['time'][:]
+        longs = link.variables['lon']
+        u_comp = link.variables['u-component_of_wind_height_above_ground']
+        v_comp = link.variables['v-component_of_wind_height_above_ground']
+    
+    # If NOAA does not have data for that yet, the request value will not have these attributes in link.variables
+    except KeyError:
+        return False
     return u_comp, time, heights, lats, longs, v_comp
 
 
@@ -49,7 +57,10 @@ def pull_from_api(dat):
 
 @transaction.atomic
 def historic_wind_insert(link, dat):
-    u_comp, time, heights, lats, longs, v_comp = split_net(link)
+    split_data = split_net(link)
+    if split_data == False:
+        return False
+    u_comp, time, heights, lats, longs, v_comp = split_data
 
     for h in range(len(time)):
         insert_h = dat + relativedelta(hours=time[h])
@@ -73,7 +84,9 @@ def historic_wind_pull_insert(dat):
     if req.status_code == 200:
         data = req.content
         link = nc.Dataset('anynamehere', memory=data)
-        historic_wind_insert(link, dat)
+        status = historic_wind_insert(link, dat)
+        if status == False:
+            return 0, "Could not find the required data in the Elexon Database"
         return 1, req.status_code
     else:
         return 0, req
@@ -102,7 +115,7 @@ def NOAA_schedule_job():
 def main():
     today = datetime.datetime.now()
     end_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
-    start_time = end_time - relativedelta(years=2)        # Start getting data from 2 years ago
+    start_time = end_time - relativedelta(months = 1)        # Start getting data from 2 years ago
 
     # Retrieve data starting from 2 years ago
     NOAA_get_historic(start_time, end_time)
@@ -112,3 +125,4 @@ def main():
     # while True:
     #     schedule.run_pending()
     #     time.sleep(21300)       # sleep for 5 hours and 55 minutes before next retrieval
+main()
