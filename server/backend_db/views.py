@@ -2,7 +2,7 @@ from django.shortcuts import render
 # from django.http import HttpResponse
 # from django.urls import reverse
 # from django.contrib.auth import authenticate, login, logout
-from backend_db.models import ActualProduceElectricity, UserProfile, HistoricWind, WindFarmData, SolarFarmDetailData
+from backend_db.models import ActualProduceElectricity, UserProfile, HistoricWind, WindFarmData, SolarFarmDetailData, SolarEnergyData
 from django.http import JsonResponse
 from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
@@ -64,6 +64,17 @@ class HistoricWindViewSet(APIView):
 
         return JsonResponse(list(historic_wind_data), safe = False)
 
+class HistoricSolarViewSet(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, format = None):
+        historic_solar_data = SolarEnergyData.objects.all().values_list('id', 
+                                                               'gsp_id',
+                                                               'datetime_gmt', 
+                                                               'generation_mw',)
+
+        
+        return JsonResponse(list(historic_solar_data), safe = False)
 
 
 class UserView(APIView):
