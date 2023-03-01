@@ -1,8 +1,8 @@
 from django.shortcuts import render
 # from django.http import HttpResponse
 # from django.urls import reverse
-from django.contrib.auth import login
-from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData
+from django.contrib.auth import authenticate, login, logout
+from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.generics import GenericAPIView
@@ -111,6 +111,18 @@ class UserView(APIView):
         return Response(request.data['username'])
 
 
+def event_stream(data):
+    data_len = len(data)
+    start = 0
+    next_set = 500
+    while True:
+        if next_set > data_len:
+            next_set = data_len
+        yield{f'{data[start:next_set]}'}
+        start = next_set + 1
+        next_set = next_set + 500
+
+
 class GeolocationsView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -118,22 +130,41 @@ class GeolocationsView(APIView):
         """Finds all available wind farms
 
         Args:
-            request (_type_): None
+            request (_type_): SMALL: will return only the small set if set to 1
+                            : START: if SMALL = 0, will give Start + 1500 wind farms from detailed set 
             format (_type_, optional): _description_. Defaults to None.
 
         Returns:
-            List of the farm data and their metadata ('windfarm_data_id', 'longitude', 'latitude', 'hub_height', 'number_of_turbines', 'turbine_capacity', 'is_onshore')
-        """
-        wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
-                                                            'longitude',
-                                                            'latitude',
-                                                            'hub_height',
-                                                            'number_of_turbines',
-                                                            'turbine_capacity',
-                                                            'is_onshore',)
+            List of the farm data and their metadata ('windfarm_data_id', 'longitude', 'latitude', 'hub_height', 'number_of_turbines', 'turbine_capacity', 'is_onshore', ...)
+        """     
         
-        return JsonResponse(list(wind_farms), safe=False)
+        wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
+                                                        'longitude',
+                                                        'latitude',
+                                                        'hub_height',
+                                                        'number_of_turbines',
+                                                        'turbine_capacity',
+                                                        'is_onshore',)
+    
+            # return JsonResponse(list(wind_farms), safe=False)
 
+        
+        response = {}
+        
+        detail_wind_farms = WindFarmDetailData.objects.filter(longitude__isnull = False, 
+        latitude__isnull = False,  latitude__lte=59, operator__isnull = False ,
+        turbine_height__isnull = False, number_of_turbines__isnull = False, 
+        sitename__isnull = False).values_list('id', 'latitude', 'longitude','operator',
+        'sitename','is_onshore','turbine_height','number_of_turbines','turbine_capacity',
+        'development_status',# 'address','region','country',
+        )
+    
+        response['detail_windfarm_data'] = list(detail_wind_farms)
+        response['core_windfarm_data'] = list(wind_farms)
+        return JsonResponse(response, safe = False)
+        
+        
+        
 
 # besides calling the serializers in the login, we should also check some invalid situations and give some response messages.
 class LoginView(APIView):
@@ -191,6 +222,8 @@ class WindFarmDataByArea(APIView):
                                                 latitude__lte=max_lat,
                                                 longitude__gte=min_long,
                                                 longitude__lte=max_long)
+
+
         
         # Holds the data to be returned
         response = {}
@@ -226,7 +259,9 @@ class WindFarmDataByArea(APIView):
             response['average_hub_height'].append(hub_height)
             
             
-        response['average_hub_height'] = np.average(response['average_hub_height'])
+        # response['average_hub_height'] = np.average(response['average_hub_height'])
+        
+        
         
         return JsonResponse(response, safe = False)
 

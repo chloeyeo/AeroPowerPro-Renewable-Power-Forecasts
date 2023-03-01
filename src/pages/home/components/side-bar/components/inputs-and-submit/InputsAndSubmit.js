@@ -5,7 +5,7 @@ import { InputField } from "./components";
 const InputsAndSubmit = ({ inputFieldProps, onSubmit }) => (
   <div className="p-2">
     {inputFieldProps.map((props) => (
-      <InputField {...props} />
+      <InputField key={props.title} {...props} />
     ))}
 
     <Button
