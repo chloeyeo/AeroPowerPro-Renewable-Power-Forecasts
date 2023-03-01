@@ -24,7 +24,7 @@ ENTITY_ID = 0
 
 pvl = PVLive()
 
-solar_df = pvl.between(start=datetime(START_YEAR, START_MONTH, START_DAY, tzinfo=pytz.utc), end=datetime(END_YEAR, END_MONTH, END_DAY, tzinfo=pytz.utc), dataframe=True, entity_id = 1).sort_values(by = ['datetime_gmt'])
+solar_df = pvl.between(start=datetime(START_YEAR, START_MONTH, START_DAY, tzinfo=pytz.utc), end=datetime(END_YEAR, END_MONTH, END_DAY, tzinfo=pytz.utc), dataframe=True, entity_id = ENTITY_ID).sort_values(by = ['datetime_gmt'])
 
 solar_dict = solar_df.to_dict(orient = 'index')
 
