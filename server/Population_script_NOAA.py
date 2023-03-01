@@ -112,4 +112,3 @@ def main():
     # while True:
     #     schedule.run_pending()
     #     time.sleep(21300)       # sleep for 5 hours and 55 minutes before next retrieval
-main()
