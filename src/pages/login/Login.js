@@ -3,13 +3,9 @@ import { NavBar } from "../../components";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useCookies, Cookies } from "react-cookie";
+import { decodeToken } from "react-jwt";
 
 const Login = () => {
-  const [cookies, setCookie] = useCookies([
-    "LoggedIn",
-    "AccessToken",
-    "RefreshToken",
-  ]);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -21,7 +17,7 @@ const Login = () => {
     console.log("Attempting to post!");
     axios({
       method: "post",
-      url: "http://127.0.0.1:8000/token/",
+      url: "http://127.0.0.1:8000/login/",
       data: formData,
       headers: {
         "Content-Type": "application/json",
@@ -29,13 +25,12 @@ const Login = () => {
     })
       .then(function (response) {
         event.preventDefault();
-        window.location.replace("http://127.0.0.1:3000");
+        //window.location.replace("http://127.0.0.1:3000");
         console.log(response);
-        setCookie("LoggedIn", true, { path: "/" });
-        setCookie("AccessToken", response.data.access, { path: "/" });
-        setCookie("RefreshToken", response.data.refresh, { path: "/" });
-        const cookiees = new Cookies();
-        cookiees.set("LoggedIn", true);
+        const cookies = new Cookies();
+        cookies.set("LoggedIn", true);
+        cookies.set("access", decodeToken(response.data.access));
+        cookies.set("refresh", response.data.refresh);
       })
       .catch(function (error) {
         alert(" Invalid Credentials");

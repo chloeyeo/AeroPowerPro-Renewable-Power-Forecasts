@@ -8,8 +8,9 @@ import { Cookies } from "react-cookie";
 
 function NavBar() {
   const cookies = new Cookies();
-  const [isLoggedIn, setIsLoggedIn] = useState(cookies.get("LoggedIn"));
-  console.log(isLoggedIn);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    cookies.get("LoggedIn") === "true"
+  );
   if (!isLoggedIn) {
     return (
       <Navbar style={{ backgroundColor: "#373b44" }} expand="lg">
