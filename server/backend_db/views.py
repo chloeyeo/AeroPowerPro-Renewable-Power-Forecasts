@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.generics import GenericAPIView
 from .serializers import RegisterSerializer, MyTokenObtainPairSerializer
-# from rest_framework.decorators import api_view
 from rest_framework import permissions, status
 import pytz
 from rest_framework.views import APIView
@@ -165,7 +164,7 @@ class GeolocationsView(APIView):
         detail_wind_farms = WindFarmDetailData.objects.filter(longitude__isnull = False, 
         latitude__isnull = False,  latitude__lte=59, operator__isnull = False ,
         turbine_height__isnull = False, number_of_turbines__isnull = False, 
-        sitename__isnull = False).values_list('id', 'latitude', 'longitude','operator',
+        sitename__isnull = False).values_list('id', 'longitude', 'latitude','operator',
         'sitename','is_onshore','turbine_height','number_of_turbines','turbine_capacity',
         'development_status',# 'address','region','country',
         )
