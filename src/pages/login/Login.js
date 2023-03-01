@@ -20,30 +20,30 @@ const Login = () => {
           backgroundColor: "#373b44",
         }}
       >
-        <h1 className="pt-5 text-white text-center">Welcome</h1>
+        <h1 className="pt-5 text-white text-center">
+          <p>Welcome</p>
+        </h1>
         <form>
           <div class="p-3 form-group">
             <label className="text-white" for="exampleInputEmail1">
-              Email address
+              <p>Email address</p>
             </label>
             <input
               type="email"
-              class="form-control"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="exampleInputEmail1"
+              id="exampleInputEmail1"
               aria-describedby="emailHelp"
               placeholder="Enter email"
             />
           </div>
           <div class="p-3 form-group">
             <label className="text-white" for="exampleInputPassword1">
-              Password
+              <p>Password</p>
             </label>
             <input
               type="password"
-              class="form-control"
-              className="exampleInputPassword1"
+              id="exampleInputPassword1"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Password"
@@ -54,15 +54,15 @@ const Login = () => {
             type="submit"
             class="w-100 mt-4 btn btn-light"
           >
-            Submit
+            <p>Submit</p>
           </button>
         </form>
         <h5 className="mt-4 text-center text-white">
-          Don't have an account yet?
+          <p>Don't have an account yet?</p>
         </h5>
         <Link to="/register">
           <button type="submit" class="w-100 btn text-white">
-            Register
+            <p>Register</p>
           </button>
         </Link>
       </div>
