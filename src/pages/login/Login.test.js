@@ -17,8 +17,12 @@ describe("Login works", () => {
     </Router>
   );
 
-  const inputPasswordNode = screen.getByText(/Password/i);
-  const inputEmailNode = screen.getByText(/Email address/i);
+  // const inputPasswordNode = screen.getByText(/Password/i);
+  // const inputEmailNode = screen.getByText(/Email address/i);
+  // const submitButton = screen.getByRole("button", { name: /Submit/i });
+
+  const inputPasswordNode = document.getElementById("exampleInputPassword1");
+  const inputEmailNode = document.getElementById("exampleInputEmail1");
   const submitButton = screen.getByRole("button", { name: /Submit/i });
 
   it("renders correct text", () => {
@@ -35,18 +39,21 @@ describe("Login works", () => {
     // the input text should be blank when
     // we put the non existent credentials then click submit
 
-    // expect(inputPasswordNode).toBeTruthy();
-
-    expect(inputEmailNode).toHaveTextContent(""); // empty before
-    // expect(inputPasswordNode).toHaveValue(""); // empty before
+    expect(inputEmailNode).toHaveValue(""); // empty before
+    expect(inputPasswordNode).toHaveValue(""); // empty before
     fireEvent.change(inputEmailNode, {
       target: { value: "nonexistent235@gmail.com" },
     });
-    // fireEvent.change(inputPasswordNode, {
-    //   target: { value: "235235nonexist" },
-    // });
-    fireEvent.click(screen.getByText("Submit"));
-    expect(inputEmailNode).toHaveValue(""); // empty after
-    // expect(inputPasswordNode).toHaveValue(""); // empty after
+    fireEvent.change(inputPasswordNode, {
+      target: { value: "235235nonexist" },
+    });
+
+    expect(inputEmailNode).toHaveTextContent("nonexistent235@gmail.com"); // empty after click submit
+    expect(inputPasswordNode).toHaveValue("235235nonexist"); // empty after click submit
+
+    fireEvent.click(submitButton);
+
+    expect(inputEmailNode).toHaveTextContent(""); // empty after click submit
+    expect(inputPasswordNode).toHaveTextContent(""); // empty after click submit
   });
 });
