@@ -25,12 +25,12 @@ const Login = () => {
     })
       .then(function (response) {
         event.preventDefault();
-        //window.location.replace("http://127.0.0.1:3000");
         console.log(response);
         const cookies = new Cookies();
         cookies.set("LoggedIn", true);
         cookies.set("access", decodeToken(response.data.access));
         cookies.set("refresh", response.data.refresh);
+        window.location.replace("http://127.0.0.1:3000");
       })
       .catch(function (error) {
         alert(" Invalid Credentials");
