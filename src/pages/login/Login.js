@@ -15,7 +15,7 @@ const Login = () => {
     console.log("Attempting to post!");
     axios({
       method: "post",
-      url: "http://127.0.0.1:8000/token/",
+      url: "http://127.0.0.1:8000/login/",
       data: formData,
       headers: {
         "Content-Type": "application/json",
