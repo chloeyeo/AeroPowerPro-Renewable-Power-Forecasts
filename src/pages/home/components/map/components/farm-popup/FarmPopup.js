@@ -3,57 +3,46 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 
 const FarmPopup = ({ setIsShown, farmdetails }) => {
-  if (farmdetails.farmName === null) {
-    farmdetails.farmName = "Unnamed Windfarm";
-  }
+  const convertSnakeCase = (variable) =>
+    variable
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
 
   return (
     <div
       display="flex"
       style={{
+        padding: 10,
         position: "absolute",
         zIndex: 3,
-        backgroundColor: "rgba(255,255,255,0.75)",
-        width: "300px",
-        height: "360px",
+        background: "white",
+        opacity: 0.8,
+        width: "350px",
         left: "250px",
         borderRadius: "15px",
       }}
     >
       <Grid container justifyContent="space-between">
-        <div></div>
-        <h5 style={{ textAlign: "center", opacity: "100%" }}>
-          {farmdetails.farmName}
-        </h5>
+        <h5>Wind Farm Details</h5>
         <Button
           style={{
             position: "relative",
             top: "10px",
             right: "10px",
-            opacity: "100%",
           }}
           variant="outline-secondary"
           className="button-addon2"
-          onClick={() => {
-            setIsShown(false);
-          }}
+          onClick={() => setIsShown(false)}
         >
           X
         </Button>
       </Grid>
-      <div
-        style={{
-          width: "600px",
-          height: "140px",
-          borderRadius: "4px",
-          paddingLeft: "15px",
-          paddingBottom: "10px",
-          opacity: "100%",
-        }}
-      >
+      <div>
         {Object.entries(farmdetails).map(([key, value]) => (
           <div key={key}>
-            {key} : {value}
+            {convertSnakeCase(key)}:{" "}
+            {typeof value == "boolean" ? value.toString() : value || "____"}
           </div>
         ))}
       </div>

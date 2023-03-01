@@ -18,7 +18,7 @@ const updateWindFarmData = (
     if (windFarmClicked) {
       setPowerCurveData({
         ...powerCurveData,
-        hubHeight: windFarmClicked[large ? 6 : 3],
+        hubHeight: windFarmClicked[large ? 8 : 3],
         numOfTurbines: windFarmClicked[large ? 7 : 4],
       });
       setIsShown(true);
@@ -30,18 +30,17 @@ const updateWindFarmData = (
             operator: windFarmClicked[3],
             sitename: windFarmClicked[4],
             is_onshore: windFarmClicked[5],
-            turbine_height: windFarmClicked[6],
+            megawatt_capacity: windFarmClicked[6],
             number_of_turbines: windFarmClicked[7],
-            turbine_capcity: windFarmClicked[8],
+            turbine_height: windFarmClicked[8],
             development_status: windFarmClicked[9],
           })
         : setWindFarmData({
-            farmName: "Windfarm",
             id: windFarmClicked[0],
-            hubHeight: windFarmClicked[3],
-            numberOfTurbines: windFarmClicked[4],
-            capacity: windFarmClicked[5],
-            onshore: windFarmClicked[6],
+            hub_height: windFarmClicked[3],
+            number_of_turbines: windFarmClicked[4],
+            megawatt_capacity: windFarmClicked[5] / 1000000,
+            is_onshore: windFarmClicked[6],
           });
     }
   }

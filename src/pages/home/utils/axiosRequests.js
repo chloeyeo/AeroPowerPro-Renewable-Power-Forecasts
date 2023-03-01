@@ -2,11 +2,8 @@ import axios from "axios";
 
 const getWindFarmsReq = (setWindFarms) => {
   axios({
-    method: "post",
+    method: "get",
     url: "http://127.0.0.1:8000/geolocations/",
-    data: {
-      small: true,
-    },
     headers: {
       "Content-Type": "application/json",
     },

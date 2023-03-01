@@ -130,7 +130,7 @@ def event_stream(data):
 class GeolocationsView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request, format = None):
+    def get(self, request, format = None):
         """Finds all available wind farms
 
         Args:
@@ -163,8 +163,8 @@ class GeolocationsView(APIView):
         'development_status',# 'address','region','country',
         )
     
-        response['large_windfarm_data'] = list(detail_wind_farms)
-        response['small_windfarm_data'] = list(wind_farms)
+        response['detail_windfarm_data'] = list(detail_wind_farms)
+        response['core_windfarm_data'] = list(wind_farms)
         return JsonResponse(response, safe = False)
         
         
