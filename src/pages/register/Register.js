@@ -1,7 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
+// import axios from "axios";
+
 import { NavBar } from "../../components";
-import "./register.css";
+const { axios } = require("axios");
+// import "./register.css";
+
+const { registercss } = require("./register.css");
 
 const Register = () => {
   const validateEmail = (value) =>

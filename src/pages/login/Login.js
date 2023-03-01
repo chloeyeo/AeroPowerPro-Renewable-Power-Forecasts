@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { NavBar } from "../../components";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useCookies, Cookies } from "react-cookie";
+import { decodeToken } from "react-jwt";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -23,12 +25,15 @@ const Login = () => {
     })
       .then(function (response) {
         event.preventDefault();
-        window.location.replace("http://127.0.0.1:3000");
         console.log(response);
-        alert("Logged In!");
+        const cookies = new Cookies();
+        cookies.set("LoggedIn", true);
+        cookies.set("access", decodeToken(response.data.access));
+        cookies.set("refresh", response.data.refresh);
+        window.location.replace("http://127.0.0.1:3000");
       })
       .catch(function (error) {
-        alert(" Login Error");
+        alert(" Invalid Credentials");
         console.log(error);
       });
   };
@@ -63,7 +68,7 @@ const Login = () => {
           </div>
           <div class="p-3 form-group">
             <label className="text-white" for="exampleInputPassword1">
-              Password
+              <p>Password</p>
             </label>
             <input
               type="password"
@@ -80,15 +85,15 @@ const Login = () => {
             type="submit"
             class="w-100 mt-4 btn btn-light"
           >
-            Submit
+            <p>Submit</p>
           </button>
         </form>
         <h5 className="mt-4 text-center text-white">
-          Don't have an account yet?
+          <p>Don't have an account yet?</p>
         </h5>
         <Link to="/register">
           <button type="submit" class="w-100 btn text-white">
-            Register
+            <p>Register</p>
           </button>
         </Link>
       </div>
