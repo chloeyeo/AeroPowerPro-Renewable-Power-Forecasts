@@ -14,7 +14,7 @@ import requests
 import netCDF4 as nc
 from dateutil.relativedelta import relativedelta
 from django.db import transaction
-
+from math import sqrt
 
 #Split date into its components used by the NOAA Call
 def split_date(dat):
@@ -63,7 +63,9 @@ def historic_wind_insert(link, dat):
                                                 latitude = lats[lat], 
                                                 longitude = longs[lon], 
                                                 u_comp = insert_u, 
-                                                v_comp = insert_v)
+                                                v_comp = insert_v,
+                                                wind_speed = sqrt((insert_u ** 2) + (insert_v ** 2)),
+                                                )
 
 def historic_wind_pull_insert(dat):
     req = pull_from_api(dat)
@@ -110,3 +112,4 @@ def main():
     # while True:
     #     schedule.run_pending()
     #     time.sleep(21300)       # sleep for 5 hours and 55 minutes before next retrieval
+main()
