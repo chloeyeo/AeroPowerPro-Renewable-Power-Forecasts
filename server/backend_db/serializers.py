@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from .models import HistoricWind, WindFarmData
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserSerializer(ModelSerializer):
     class Meta:
@@ -71,10 +72,21 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'password', 'first_name', 'last_name')
 
     def create(self, validated_data):
-        print("\n\n\n\n\n")
         new_user = User.objects.create_user(**validated_data)
         new_user.first_name = validated_data['first_name']
         new_user.last_name = validated_data['last_name']
         new_user.save()
         # print(f'asd{new_user}','\n\n\n')
         return new_user
+    
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    @classmethod
+    def get_token(cls, user):
+        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
+        return token
