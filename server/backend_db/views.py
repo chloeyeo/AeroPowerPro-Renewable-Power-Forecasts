@@ -5,12 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from rest_framework.mixins import (
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-)
 from rest_framework.generics import GenericAPIView
-from rest_framework.viewsets import GenericViewSet
-from .serializers import UserSerializer, HistoricWindSerializer, WindFarmDataSerializer, LoginSerializer, RegisterSerializer
+from .serializers import RegisterSerializer
 # from rest_framework.decorators import api_view
 from rest_framework import permissions, status
 from rest_framework.views import APIView
