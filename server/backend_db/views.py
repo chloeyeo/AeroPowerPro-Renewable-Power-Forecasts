@@ -9,6 +9,7 @@ from rest_framework.generics import GenericAPIView
 from .serializers import RegisterSerializer, MyTokenObtainPairSerializer
 # from rest_framework.decorators import api_view
 from rest_framework import permissions, status
+import pytz
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
@@ -19,6 +20,8 @@ from .Wind_Turbine_Model.generic_wind_turbines_from_lib import get_all_generic_t
 import numpy as np
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
+from datetime import datetime
+from dateutil import parser
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
@@ -90,14 +93,18 @@ class GenericWindTurbineViewSet(APIView):
 
 
 
+def get_closest_coords(long, lat):
+    return np.clip(round(long*4)/4, -7, 3), np.clip(round(lat*4)/4, 50, 59)
+
 class HistoricWindViewSet(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format = None):
-        start_date = request.data['start_date']
-        end_date = request.data['end_date']
-        historic_wind_data = HistoricWind.objects.filter(start_date__gte=start_date, end_date__lte=end_date).values_list('date_val','longitude', 'latitude', 'wind_speed')
-
+    def post(self, request, format = None):
+        longitude, latitude = get_closest_coords(self.request.data['longitude'], self.request.data['latitude'])
+        date_format = '%Y-%m-%d'
+        start_date = datetime.strptime(self.request.data['start_date'], date_format).replace(tzinfo=pytz.UTC)
+        end_date = datetime.strptime(self.request.data['end_date'], date_format).replace(tzinfo=pytz.UTC)
+        historic_wind_data = HistoricWind.objects.filter(date_val__lte=end_date, date_val__gte=start_date, longitude = longitude, latitude = latitude).values_list('date_val', 'wind_speed')
         return JsonResponse(list(historic_wind_data), safe = False)
 
 

@@ -1,3 +1,7 @@
-import { geoLocReq, forecastReq } from "./axiosRequests";
+import {
+  geoLocReq,
+  forecastReq,
+  getHistoricWindSpeedsReq,
+} from "./axiosRequests";
 
-export { geoLocReq, forecastReq };
+export { geoLocReq, forecastReq, getHistoricWindSpeedsReq };

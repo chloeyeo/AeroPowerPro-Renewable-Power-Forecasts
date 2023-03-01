@@ -40,4 +40,26 @@ const forecastReq = (powerCurveData, center, setPowerForecast, setIsShown) => {
     });
 };
 
-export { geoLocReq, forecastReq };
+const getHistoricWindSpeedsReq = (setHistoricWindSpeeds, dates, center) => {
+  axios({
+    method: "post",
+    url: "http://127.0.0.1:8000/historic_wind_data/",
+    data: {
+      start_date: dates.startDate,
+      end_date: dates.endDate,
+      latitude: parseFloat(center[0]),
+      longitude: parseFloat(center[1]),
+    },
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(function (response) {
+      setHistoricWindSpeeds(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+};
+
+export { geoLocReq, forecastReq, getHistoricWindSpeedsReq };
