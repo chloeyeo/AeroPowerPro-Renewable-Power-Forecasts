@@ -14,19 +14,19 @@ const updateWindFarmData = (
       geolocation[2] + 0.05 > coords[1]
   );
   if (windFarmClicked) {
-    const large = windFarmClicked.length === 10;
+    const isDetailWindFarms = windFarmClicked.length === 10;
     if (windFarmClicked) {
       setPowerCurveData({
         ...powerCurveData,
-        hubHeight: windFarmClicked[large ? 8 : 3],
-        numOfTurbines: windFarmClicked[large ? 7 : 4],
+        hubHeight: windFarmClicked[isDetailWindFarms ? 8 : 3],
+        numOfTurbines: windFarmClicked[isDetailWindFarms ? 7 : 4],
       });
       setIsShown(true);
-      large
+      isDetailWindFarms
         ? setWindFarmData({
             id: windFarmClicked[0],
-            latitude: windFarmClicked[1].toFixed(2),
-            longitude: windFarmClicked[2].toFixed(2),
+            longitude: windFarmClicked[1].toFixed(2),
+            latitude: windFarmClicked[2].toFixed(2),
             operator: windFarmClicked[3],
             sitename: windFarmClicked[4],
             is_onshore: windFarmClicked[5],

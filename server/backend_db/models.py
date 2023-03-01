@@ -13,9 +13,10 @@ class HistoricWind(models.Model):
     date_val = models.DateTimeField(blank = False)
     longitude = models.FloatField(blank = False)
     latitude = models.FloatField(blank = False)
-    u_comp = models.FloatField(blank = False)
-    v_comp = models.FloatField(blank = False)
-
+    u_comp = models.FloatField(blank = False, null = False)
+    v_comp = models.FloatField(blank = False, null = False)
+    wind_speed = models.FloatField(blank = False)
+    
+    
     def __str__(self):
         return "{} : ({},{}) : u_comp = {}, v_comp = {}".format(self.date_val.strftime("%Y-%m-%d"), self.latitude, self.longitude, self.u_comp, self.v_comp)
-

@@ -6,9 +6,10 @@ from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmDa
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.generics import GenericAPIView
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, MyTokenObtainPairSerializer
 # from rest_framework.decorators import api_view
 from rest_framework import permissions, status
+import pytz
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
@@ -19,6 +20,10 @@ from .Wind_Turbine_Model.generic_wind_turbines_from_lib import get_all_generic_t
 import numpy as np
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
+from datetime import datetime
+from dateutil import parser
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
@@ -88,12 +93,18 @@ class GenericWindTurbineViewSet(APIView):
 
 
 
+def get_closest_coords(long, lat):
+    return np.clip(round(long*4)/4, -7, 3), np.clip(round(lat*4)/4, 50, 59)
+
 class HistoricWindViewSet(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format = None):
-        historic_wind_data = HistoricWind.objects.all().values_list('longitude', 'latitude')
-
+    def post(self, request, format = None):
+        longitude, latitude = get_closest_coords(self.request.data['longitude'], self.request.data['latitude'])
+        date_format = '%Y-%m-%d'
+        start_date = datetime.strptime(self.request.data['start_date'], date_format).replace(tzinfo=pytz.UTC)
+        end_date = datetime.strptime(self.request.data['end_date'], date_format).replace(tzinfo=pytz.UTC)
+        historic_wind_data = HistoricWind.objects.filter(date_val__lte=end_date, date_val__gte=start_date, longitude = longitude, latitude = latitude).values_list('date_val', 'wind_speed')
         return JsonResponse(list(historic_wind_data), safe = False)
 
 
@@ -171,19 +182,20 @@ class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        if request.data['username'] and request.data['password']:
+        print(request.data)
+        if request.data['email']!='' and request.data['password']!='':
             serializer = LoginSerializer(data=self.request.data, context={'request': self.request})
             serializer.is_valid(raise_exception=True)
             user = serializer.validated_data['user']
             if not user:
                 print('A user with this email and password is not found.')
-                return Response({"status": status.HTTP_404_NOT_FOUND, "Token": None})
+                return JsonResponse({'message' : 'User not found', 'Token': None }, status = 404 )
             login(request, user)
             token = Token.objects.create(user=user)
-            return Response({"status": status.HTTP_202_ACCEPTED, "Token": token})
+            return JsonResponse({'message' : 'Logged in!', 'Token': token }, status = 202 )
         else:
             print('The email or password is empty in the request data.')
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "Token": None})
+            return JsonResponse({'message' : 'The email or password is empty in the request data'}, status = 400)
 
 
 class RegisterApiView(GenericAPIView):
@@ -195,6 +207,11 @@ class RegisterApiView(GenericAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyObtainTokenPairView(TokenObtainPairView):
+    permission_classes= (permissions.AllowAny,)
+    serializer_class = MyTokenObtainPairSerializer
 
 class WindFarmDataByArea(APIView):
     permission_classes = [permissions.AllowAny]

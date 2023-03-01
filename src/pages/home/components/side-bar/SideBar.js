@@ -8,8 +8,9 @@ import {
   TurbineModelSelect,
   InputsAndSubmit,
   SidebarHeader,
+  HistoricSpeedsGraph,
 } from "./components";
-import { geoLocReq, forecastReq } from "./utils";
+import { geoLocReq, forecastReq, getHistoricWindSpeedsReq } from "./utils";
 import withInputFieldProps from "./withInputFieldProps";
 import "./styles.css";
 
@@ -22,8 +23,11 @@ const SideBar = ({
 }) => {
   const { collapseSidebar, collapsed } = useProSidebar();
   const [isShown, setIsShown] = useState(false);
+  const [showHistoric, setShowHistoric] = useState(false);
   const [turbineModels, setTurbineModels] = useState({});
   const [powerForecast, setPowerForecast] = useState([]);
+  const [dates, setDates] = useState({ startDate: "", endDate: "" });
+  const [historicWindSpeeds, setHistoricWindSpeeds] = useState([]);
 
   useEffect(() => geoLocReq(setTurbineModels), []);
 
@@ -61,8 +65,53 @@ const SideBar = ({
               }}
             />
           </SubMenu>
+          <SubMenu label="Historic Wind Speeds">
+            <div>
+              <div>Start Date</div>
+              <input
+                type="date"
+                value={dates.startDate}
+                onChange={(event) =>
+                  setDates({ ...dates, startDate: event.target.value })
+                }
+                min="2021-06-31"
+                max="2023-06-31"
+              ></input>
+              <div>End Date</div>
+              <input
+                type="date"
+                value={dates.endDate}
+                onChange={(event) =>
+                  setDates({ ...dates, endDate: event.target.value })
+                }
+                min="2021-06-31"
+                max="2023-06-31"
+              ></input>
+              <div>
+                <button
+                  onClick={() => {
+                    getHistoricWindSpeedsReq(
+                      setHistoricWindSpeeds,
+                      dates,
+                      center
+                    );
+                    setShowHistoric(true);
+                  }}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </SubMenu>
         </Menu>
       </Sidebar>
+
+      {showHistoric && (
+        <HistoricSpeedsGraph
+          setShowHistoric={setShowHistoric}
+          historicWindSpeeds={historicWindSpeeds}
+        />
+      )}
 
       {isShown && (
         <ForecastGraph setIsShown={setIsShown} powerForecast={powerForecast} />

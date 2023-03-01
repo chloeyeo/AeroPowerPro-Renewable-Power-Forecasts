@@ -2,7 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-from Population_script import schedule_func
+# from Population_script import schedule_func
 
 
 def main():

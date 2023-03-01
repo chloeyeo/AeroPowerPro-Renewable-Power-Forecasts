@@ -6,6 +6,8 @@ django.setup()
 
 import unittest
 from backend_db.views import *
+from django.urls import reverse
+from rest_framework.test import APITestCase
 
 class TestSerializers(unittest.TestCase):
 
@@ -30,6 +32,32 @@ class TestSerializers(unittest.TestCase):
             return serializer.data # assertion test here....
         return serializer.errors
     
+class MyTokenObtainPairSerializerTests(APITestCase):
+    def test_my_token_obtain_pair_serializer(self):
+        url = reverse('login')
+        u = User.objects.create_user(username='test_user', email = 'user@foo.com', password='testpass123!')
+        u.is_active = False
+        u.save()
+        
+        # user is not active, hence should not be authenticated
+        resp = self.client.post(url, {'email':'user@foo.com', 'password':'testpass123!'}, format = 'json')
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+        
+        # activate user and check that it can be authenticated
+        u.is_active = True
+        u.save()
+        
+        resp = self.client.post(url, {'username':'test_user', 'password':'testpass123!'}, format = 'json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertTrue('access' in resp.data)
+        self.assertTrue('refresh' in resp.data)
+        
+        refresh = resp.data['refresh']
+        url = reverse('login_refresh')
+        resp = self.client.post(url, {'refresh': f'{refresh}'}, format = 'json')
+        self.assertTrue('access' in resp.data)
+        self.assertFalse(refresh == resp.data['access'])        
+        
     # def test_historic_wind_serializer(self): 
     #     val_dict = {'wind_data_id': 12880, 'height_above_ground': 20, 'date_val':'2021-02-08', 'longitude': 1.0, 'latitude': 50.0, 'u_comp': -16.354726791381836, 'v_comp': -5.896159648895264} 
     #     serializer = HistoricWindSerializer(data=val_dict)
