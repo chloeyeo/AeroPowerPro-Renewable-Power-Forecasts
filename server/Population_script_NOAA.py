@@ -1,8 +1,4 @@
 import os
-import time
-
-import schedule
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
 
 import django
@@ -112,7 +108,7 @@ def NOAA_schedule_job():
     NOAA_get_historic(start_time, end_time)
 
 
-def main():
+if __name__ == "__main__":
     today = datetime.datetime.now()
     end_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
     start_time = end_time - relativedelta(months = 1)        # Start getting data from 2 years ago
@@ -125,4 +121,3 @@ def main():
     # while True:
     #     schedule.run_pending()
     #     time.sleep(21300)       # sleep for 5 hours and 55 minutes before next retrieval
-main()
