@@ -4,7 +4,6 @@ from backend_db.open_meteo_model import WeatherForecast
 from backend_db.power_forecast import PowerForecast
 from backend_db.wind_farm_data import WindFarmData, WindFarmDetailData
 from django.contrib.auth.models import User
-from math import sqrt
 # Create your models here.
 
 
