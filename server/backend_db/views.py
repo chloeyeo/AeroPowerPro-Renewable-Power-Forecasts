@@ -1,13 +1,10 @@
 from django.shortcuts import render
-# from django.http import HttpResponse
-# from django.urls import reverse
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login
 from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.generics import GenericAPIView
-from .serializers import RegisterSerializer
-# from rest_framework.decorators import api_view
+from .serializers import RegisterSerializer, MyTokenObtainPairSerializer
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,6 +16,8 @@ from .Wind_Turbine_Model.generic_wind_turbines_from_lib import get_all_generic_t
 import numpy as np
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
@@ -154,7 +153,7 @@ class GeolocationsView(APIView):
         detail_wind_farms = WindFarmDetailData.objects.filter(longitude__isnull = False, 
         latitude__isnull = False,  latitude__lte=59, operator__isnull = False ,
         turbine_height__isnull = False, number_of_turbines__isnull = False, 
-        sitename__isnull = False).values_list('id', 'latitude', 'longitude','operator',
+        sitename__isnull = False).values_list('id', 'longitude', 'latitude','operator',
         'sitename','is_onshore','turbine_height','number_of_turbines','turbine_capacity',
         'development_status',# 'address','region','country',
         )
@@ -171,19 +170,20 @@ class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        if request.data['username'] and request.data['password']:
+        print(request.data)
+        if request.data['email']!='' and request.data['password']!='':
             serializer = LoginSerializer(data=self.request.data, context={'request': self.request})
             serializer.is_valid(raise_exception=True)
             user = serializer.validated_data['user']
             if not user:
                 print('A user with this email and password is not found.')
-                return Response({"status": status.HTTP_404_NOT_FOUND, "Token": None})
+                return JsonResponse({'message' : 'User not found', 'Token': None }, status = 404 )
             login(request, user)
             token = Token.objects.create(user=user)
-            return Response({"status": status.HTTP_202_ACCEPTED, "Token": token})
+            return JsonResponse({'message' : 'Logged in!', 'Token': token }, status = 202 )
         else:
             print('The email or password is empty in the request data.')
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "Token": None})
+            return JsonResponse({'message' : 'The email or password is empty in the request data'}, status = 400)
 
 
 class RegisterApiView(GenericAPIView):
@@ -195,6 +195,11 @@ class RegisterApiView(GenericAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MyObtainTokenPairView(TokenObtainPairView):
+    permission_classes= (permissions.AllowAny,)
+    serializer_class = MyTokenObtainPairSerializer
 
 class WindFarmDataByArea(APIView):
     permission_classes = [permissions.AllowAny]
