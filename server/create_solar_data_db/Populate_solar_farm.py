@@ -21,39 +21,18 @@ def main():
     for row in solar_dict:
         data_dict = solar_dict[row]
 
-        data_dict['operator'] = data_dict['Operator (or Applicant)']
-        del data_dict['Operator (or Applicant)']
-
-        data_dict['x_coordinate'] = data_dict['X-coordinate']
-        del data_dict['X-coordinate']
-
-        data_dict['y_coordinate'] = data_dict['Y-coordinate']
-        del data_dict['Y-coordinate']
-
-        data_dict['sitename'] = data_dict['Site Name']
-        del data_dict['Site Name']
-
-        data_dict['development_status'] = data_dict['Development Status']
-        del data_dict['Development Status']
-
-        data_dict['mounting_type_for_solar'] = data_dict['Mounting Type for Solar']
-        del data_dict['Mounting Type for Solar']
-
-        data_dict['address'] = data_dict['Address']
-        del data_dict['Address']
-
-        data_dict['region'] = data_dict['Region']
-        del data_dict['Region']
-
-        data_dict['country'] = data_dict['Country']
-        del data_dict['Country']
-
-        data_dict['longitude'] = data_dict['Longitude']
-        del data_dict['Longitude']
-
-        data_dict['latitude'] = data_dict['Latitude']
-        del data_dict['Latitude']
+        # rename of the key in the dictionary to be the same as in Django
+        data_dict['operator'] = data_dict.pop('Operator (or Applicant)')
+        data_dict['x_coordinate'] = data_dict.pop('X-coordinate')
+        data_dict['y_coordinate'] = data_dict.pop('Y-coordinate')
+        data_dict['sitename'] = data_dict.pop('Site Name')
+        data_dict['development_status'] = data_dict.pop('Development Status')
+        data_dict['mounting_type_for_solar'] = data_dict.pop('Mounting Type for Solar')
+        data_dict['address'] = data_dict.pop('Address')
+        data_dict['region'] = data_dict.pop('Region')
+        data_dict['country'] = data_dict.pop('Country')
+        data_dict['longitude'] = data_dict.pop('Longitude')
+        data_dict['latitude'] = data_dict.pop('Latitude')
 
         SolarFarmDetailData.objects.create(**data_dict)
         print(f"Solar Farm Name: {data_dict['sitename']} Operator: {data_dict['operator']} inserted")
-main()

@@ -2,7 +2,7 @@ from django.shortcuts import render
 # from django.http import HttpResponse
 # from django.urls import reverse
 # from django.contrib.auth import authenticate, login, logout
-from backend_db.models import ActualProduceElectricity, UserProfile, HistoricWind, WindFarmData
+from backend_db.models import ActualProduceElectricity, UserProfile, HistoricWind, WindFarmData, SolarFarmDetailData
 from django.http import JsonResponse
 from rest_framework.mixins import (
     CreateModelMixin, ListModelMixin, RetrieveModelMixin, UpdateModelMixin
@@ -93,6 +93,22 @@ class GeolocationsView(APIView):
                                                             'is_onshore',)
         
         return JsonResponse(list(wind_farms), safe = False)
+
+class SolarFarmGeolocationView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, format = None):
+        solar_farms = SolarFarmDetailData.objects.all().values_list('operator',
+                                                            'sitename',
+                                                            'development_status',
+                                                            'mounting_type_for_solar',
+                                                            'address',
+                                                            'region',
+                                                            'country',
+                                                            'longitude',
+                                                            'latitude',)
+        
+        return JsonResponse(list(solar_farms), safe = False)
 
 class WindFarmDataByArea(APIView):
     permission_classes = [permissions.AllowAny]
