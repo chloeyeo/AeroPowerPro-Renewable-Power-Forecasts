@@ -30,7 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --transformIgnorePatterns \"/(?!@toolz/allow-react)/\" --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint src"
   },
@@ -53,9 +53,9 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/react": "^13.4.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.13",
     "enzyme": "^3.11.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "react-dom": "^18.2.0"
+    "@testing-library/react": "^14.0.0",
+    "eslint-plugin-react-hooks": "^4.6.0"
   }
 }

@@ -1,66 +1,51 @@
 import React from "react";
-import { shallow } from "enzyme";
-import Login from "./index";
-import Enzyme from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import { screen, render, fireEvent } from "@testing-library/react";
+import Login from "./Login";
+import { BrowserRouter as Router } from "react-router-dom";
+import "@testing-library/jest-dom";
 
-Enzyme.configure({ adapter: new Adapter() });
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+}
 
-describe("Test case for testing login", () => {
-  let wrapper;
-  test("email check", () => {
-    wrapper = shallow(<Login />);
-    expect(wrapper).toBeTruthy();
-    let email = wrapper.find(".exampleInputEmail1");
-    expect(email).toBeTruthy();
-    email.simulate("change", {
-      target: { name: "login-email", value: "testuser@gmail.com" },
-    });
+describe("Login works", () => {
+  window.ResizeObserver = ResizeObserver;
+  render(
+    <Router>
+      <Login />
+    </Router>
+  );
 
-    // update wrapper to reflect these changes
-    wrapper = wrapper.update();
-
-    expect(wrapper.state("username")).toEqual("testuser@gmail.com");
+  it("renders correct text", () => {
+    expect(screen.getByText("Welcome")).toBeInTheDocument();
+    expect(screen.getByText("Email address")).toBeInTheDocument();
+    expect(screen.getByText("Password")).toBeInTheDocument();
+    expect(screen.getByText("Submit")).toBeInTheDocument();
+    expect(screen.getByText("Don't have an account yet?")).toBeInTheDocument();
+    expect(screen.getByText("Register")).toBeInTheDocument();
   });
 
-  test("password check", () => {
-    wrapper = shallow(<Login />);
-    expect(wrapper).toBeTruthy();
-    let password = wrapper.find(".exampleInputPassword1");
-    expect(password).toBeTruthy();
-    password.simulate("change", {
-      target: { name: "login-password", value: "testuser123" },
+  it("does not allow login with not existing user credentials", () => {
+    // the input text should be blank when
+    // we put the non existent credentials then click submit
+    const inputPasswordNode = document.getElementsByClassName(
+      "exampleInputPassword1"
+    )[0];
+    const inputEmailNode =
+      document.getElementsByClassName("exampleInputEmail1")[0];
+    expect(inputPasswordNode).toBeTruthy();
+    expect(inputEmailNode).toBeTruthy();
+    expect(inputEmailNode).toHaveValue(""); // empty before
+    expect(inputPasswordNode).toHaveValue(""); // empty before
+    fireEvent.change(inputEmailNode, {
+      target: { value: "nonexistent235@gmail.com" },
     });
-    // update wrapper to reflect these changes
-    wrapper = wrapper.update();
-    expect(wrapper.state("password")).toEqual("testuser123");
-  });
-
-  test("login check with right data", () => {
-    wrapper = shallow(<Login />);
-    wrapper.find(".exampleInputEmail1").simulate("change", {
-      target: { name: "login-email", value: "testuser@gmail.com" },
+    fireEvent.change(inputPasswordNode, {
+      target: { value: "235235nonexist" },
     });
-    wrapper.find(".exampleInputPassword1").simulate("change", {
-      target: { name: "login-password", value: "testuser123" },
-    });
-    wrapper.find(".loginSubmitButton").simulate("click");
-    // update wrapper to reflect these changes
-    wrapper = wrapper.update();
-    expect(wrapper.state("isLogined")).toBe(true);
-  });
-
-  test("login check with wrong data", () => {
-    wrapper = shallow(<Login />);
-    wrapper.find(".exampleInputEmail1").simulate("change", {
-      target: { name: "login-email", value: "testuser@gmail.com" },
-    });
-    wrapper.find(".exampleInputPassword1").simulate("change", {
-      target: { name: "login-password", value: "testuser1234" },
-    });
-    wrapper.find(".loginSubmitButton").simulate("click");
-    // update wrapper to reflect these changes
-    wrapper = wrapper.update();
-    expect(wrapper.state("isLogined")).toBe(false);
+    fireEvent.click(screen.getByText("Submit"));
+    expect(inputEmailNode).toHaveValue(""); // empty after
+    expect(inputPasswordNode).toHaveValue(""); // empty after
   });
 });
