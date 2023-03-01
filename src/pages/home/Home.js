@@ -26,6 +26,11 @@ const Home = () => {
     getWindFarmsReq(setWindFarms);
   }, []);
 
+  const displayData =
+    view === "Core Wind Farms"
+      ? windFarms.core_windfarm_data
+      : windFarms.detail_windfarm_data;
+
   return (
     <>
       <NavBar />
@@ -61,11 +66,7 @@ const Home = () => {
 
       <div style={{ height: "910px" }}>
         <Map
-          windFarms={
-            view === "Core Wind Farms"
-              ? windFarms.core_windfarm_data
-              : windFarms.detail_windfarm_data
-          }
+          windFarms={displayData}
           areaSize={parseFloat(areaSize)}
           center={fromLonLat([parseFloat(center[0]), parseFloat(center[1])])}
           setCenter={setCenter}
@@ -76,10 +77,7 @@ const Home = () => {
         >
           <TileLayer source={osm()} zIndex={0} />
           {view !== "Area Size"
-            ? (view === "Core Wind Farms"
-                ? windFarms.core_windfarm_data
-                : windFarms.detail_windfarm_data
-              ).map((windFarm) =>
+            ? displayData.map((windFarm) =>
                 geoJsonObject(
                   [windFarm[1], windFarm[2]],
                   windFarm.length !== 10 && 0.05
