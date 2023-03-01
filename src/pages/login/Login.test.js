@@ -29,10 +29,15 @@ describe("Login works", () => {
   it("does not allow login with not existing user credentials", () => {
     // the input text should be blank when
     // we put the non existent credentials then click submit
-    const inputPasswordNode = screen.getByText("Password");
-    const inputEmailNode = screen.getByText("Email address");
-    expect(inputEmailNode.value).toBe(""); // empty before
-    expect(inputPasswordNode.value).toBe(""); // empty before
+    const inputPasswordNode = document.getElementsByClassName(
+      "exampleInputPassword1"
+    )[0];
+    const inputEmailNode =
+      document.getElementsByClassName("exampleInputEmail1")[0];
+    expect(inputPasswordNode).toBeTruthy();
+    expect(inputEmailNode).toBeTruthy();
+    expect(inputEmailNode).toHaveValue(""); // empty before
+    expect(inputPasswordNode).toHaveValue(""); // empty before
     fireEvent.change(inputEmailNode, {
       target: { value: "nonexistent235@gmail.com" },
     });
@@ -40,7 +45,7 @@ describe("Login works", () => {
       target: { value: "235235nonexist" },
     });
     fireEvent.click(screen.getByText("Submit"));
-    expect(inputEmailNode.value).toBe(""); // empty after
-    expect(inputPasswordNode.value).toBe(""); // empty after
+    expect(inputEmailNode).toHaveValue(""); // empty after
+    expect(inputPasswordNode).toHaveValue(""); // empty after
   });
 });
