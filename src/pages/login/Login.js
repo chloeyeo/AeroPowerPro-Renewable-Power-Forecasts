@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NavBar } from "../../components";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useCookies, Cookies } from "react-cookie";
+import { Cookies } from "react-cookie";
 import { decodeToken } from "react-jwt";
 
 const Login = () => {
