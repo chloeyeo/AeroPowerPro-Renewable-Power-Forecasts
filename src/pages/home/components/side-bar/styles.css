@@ -1,5 +1,7 @@
-.sidebar-wrapper {
-  max-height: 700px;
+.sidebar {
+  max-height: 800px;
+  display: flex;
+  position: absolute;
 }
 
 .table-wrapper {

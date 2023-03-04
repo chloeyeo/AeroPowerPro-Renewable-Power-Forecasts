@@ -1,23 +1,11 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import {
-  Home,
-  About,
-  Login,
-  ErrorPage,
-  Contactus /*, PostRequest */,
-  Register,
-} from "./pages";
-import { ProSidebarProvider } from "react-pro-sidebar";
+import { Home, About, Login, ErrorPage, Contactus, Register } from "./pages";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <ProSidebarProvider>
-        <Home />
-      </ProSidebarProvider>
-    ),
+    element: <Home />,
     errorElement: <ErrorPage />,
   },
   {
@@ -38,12 +26,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-function App() {
-  return (
-    <div className="App">
-      <RouterProvider router={router} />
-    </div>
-  );
-}
+const App = () => <RouterProvider router={router} />;
 
 export default App;

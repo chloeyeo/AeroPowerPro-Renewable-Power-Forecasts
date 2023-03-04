@@ -5,33 +5,38 @@ const About = () => (
   <>
     <NavBar />
     <div className="container">
-      <h1 className="mt-3">Vision</h1>
+      <h1 className="mt-3">About this website</h1>
       <p>
-        The goals and scope of this project/site is... Lorem ipsum dolor sit
-        amet, consectetur adipiscing elit. Ut ornare sapien nec aliquet
-        bibendum. Proin mattis egestas faucibus. Nunc interdum sodales lobortis.
-        Ut blandit vestibulum diam, ultrices fermentum enim rutrum ac. Proin
-        malesuada venenatis lorem non viverra. Suspendisse ultricies posuere
-        iaculis. Nulla eleifend eros lorem, vitae iaculis dolor dictum vel.
-        Phasellus lobortis imperdiet magna. Etiam quis aliquam odio. Nulla
-        congue pulvinar felis tempor commodo. Duis condimentum justo ut nibh
-        porttitor, eget faucibus ante commodo. Nunc nec interdum enim. Class
-        aptent taciti sociosqu ad litora torquent per conubia nostra, per
-        inceptos himenaeos. Ut id pharetra mi.
+        The purpose of this website is to provide users interested in renewable
+        energy production a convenient way to generate power forecasts with
+        various preset power curves as well as power curves that can be created
+        by the user. These power forecasts can either be generated for specific
+        areas of the UK or for specific windfarms. In addition, users can view
+        various details of windfarms all across the UK. This is all made
+        possible with an interactive map of the UK on the home page.
       </p>
 
-      <h1 className="mt-5">Team / Further details</h1>
+      <h1 className="mt-5">Team</h1>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ornare
-        sapien nec aliquet bibendum. Proin mattis egestas faucibus. Nunc
-        interdum sodales lobortis. Ut blandit vestibulum diam, ultrices
-        fermentum enim rutrum ac. Proin malesuada venenatis lorem non viverra.
-        Suspendisse ultricies posuere iaculis. Nulla eleifend eros lorem, vitae
-        iaculis dolor dictum vel. Phasellus lobortis imperdiet magna. Etiam quis
-        aliquam odio. Nulla congue pulvinar felis tempor commodo. Duis
-        condimentum justo ut nibh porttitor, eget faucibus ante commodo. Nunc
-        nec interdum enim. Class aptent taciti sociosqu ad litora torquent per
-        conubia nostra, per inceptos himenaeos. Ut id pharetra mi.
+        Back-end Team:
+        <br />
+        <br />
+        Christoforos Mylona
+        <br />
+        Tanatapanun Pongkemmanun
+        <br />
+        Lichao Zhang
+        <br />
+        <br />
+        Front-end Team:
+        <br />
+        <br />
+        George Ntogramatzis
+        <br />
+        Chloe Yeo
+        <br />
+        Leonidas Ioannou
+        <br />
       </p>
     </div>
   </>
