@@ -1,4 +1,4 @@
 import geoJsonObject from "./geoJsonObject";
-import { getWindFarmsReq } from "./axiosRequests";
+import { getWindFarmsReq, getSolarFarmsReq } from "./axiosRequests";
 
-export { geoJsonObject, getWindFarmsReq };
+export { geoJsonObject, getWindFarmsReq, getSolarFarmsReq };

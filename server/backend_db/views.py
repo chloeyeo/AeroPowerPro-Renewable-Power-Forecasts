@@ -227,15 +227,17 @@ class SolarFarmGeolocationView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format = None):
-        solar_farms = SolarFarmDetailData.objects.all().values_list('operator',
+        # Some have invalid longitude(infinity), remove with filter
+        solar_farms = SolarFarmDetailData.objects.filter(longitude__lte=59).values_list('operator',
                                                             'sitename',
                                                             'development_status',
                                                             'mounting_type_for_solar',
                                                             'address',
                                                             'region',
                                                             'country',
+                                                            'latitude',
                                                             'longitude',
-                                                            'latitude',)
+                                                            )
         
         return JsonResponse(list(solar_farms), safe = False)
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-const SidebarHeader = ({ showWindFarms, collapsed, collapseSidebar }) => (
+const SidebarHeader = ({ view, collapsed, collapseSidebar }) => (
   <>
     <button
       className="btn btn-secondary"
@@ -9,9 +9,7 @@ const SidebarHeader = ({ showWindFarms, collapsed, collapseSidebar }) => (
     >
       {collapsed ? "Expand" : "Collapse"}
     </button>
-    <h3 style={{ textAlign: "center", fontFamily: "fangsong" }}>
-      {showWindFarms ? "Wind Farms" : "Area Size Map"}
-    </h3>
+    <h3 style={{ textAlign: "center", fontFamily: "fangsong" }}>{view}</h3>
   </>
 );
 
