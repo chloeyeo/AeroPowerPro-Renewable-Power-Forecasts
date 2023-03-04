@@ -46,7 +46,8 @@ const SideBar = ({
               setPowerCurveData={setPowerCurveData}
               turbineModels={turbineModels}
             />
-
+            <button>Set Favourite</button>
+            <button>Use Favourite</button>
             <PowerCurveTable
               powerCurveData={powerCurveData}
               setPowerCurveData={setPowerCurveData}
@@ -64,6 +65,8 @@ const SideBar = ({
                 );
               }}
             />
+            <button>Set Favorite Coordinates</button>
+            <button>Use Favorite Coordinates</button>
           </SubMenu>
           <SubMenu label="Historic Wind Speeds">
             <div>
