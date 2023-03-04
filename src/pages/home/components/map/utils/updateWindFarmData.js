@@ -8,7 +8,6 @@ const updateWindFarmData = (
   setPowerCurveData
 ) => {
   const coordinateIndex = view === "Solar Farms" ? 7 : 1;
-  console.log("Test", farms[0]);
   const farmClicked = farms.find(
     (farm) =>
       farm[coordinateIndex] - 0.05 < coords[0] &&
@@ -32,13 +31,13 @@ const updateWindFarmData = (
         latitude: farmClicked[8],
       });
     } else {
-      const isCoreWindFarms = view === "Core Wind Farms";
+      const isDetailedWindFarms = view === "Detail Wind Farms";
       setPowerCurveData({
         ...powerCurveData,
-        hubHeight: farmClicked[isCoreWindFarms ? 3 : 8],
-        numOfTurbines: farmClicked[isCoreWindFarms ? 4 : 7],
+        hubHeight: farmClicked[isDetailedWindFarms ? 8 : 3],
+        numOfTurbines: farmClicked[isDetailedWindFarms ? 7 : 4],
       });
-      if (isCoreWindFarms) {
+      if (isDetailedWindFarms) {
         setFarmPopupData({
           id: farmClicked[0],
           longitude: farmClicked[1].toFixed(2),
