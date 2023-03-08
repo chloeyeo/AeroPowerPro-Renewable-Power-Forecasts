@@ -36,6 +36,9 @@ const forecastReq = (powerCurveData, center, setPowerForecast, setIsShown) => {
       setIsShown(true);
     })
     .catch(function (error) {
+      alert(
+        "Error occured: It's likely that database has not been populated with recent forecasts"
+      );
       console.log(error);
     });
 };
