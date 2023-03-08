@@ -118,20 +118,6 @@ class HistoricSolarViewSet(APIView):
         
         return JsonResponse(list(historic_solar_data), safe = False)
 
-class UserView(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def post(self, request, format=None):
-        user = User(username=self.request.data['username'],
-                            email=self.request.data['email'],
-                            password=self.request.data['password'],
-                            first_name=self.request.data['first_name'],
-                            last_name=self.request.data['last_name'])
-
-        user.save()
-        return Response(request.data['username'])
-
-
 def event_stream(data):
     data_len = len(data)
     start = 0

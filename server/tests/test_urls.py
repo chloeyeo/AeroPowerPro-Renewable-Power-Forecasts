@@ -5,17 +5,11 @@ import django
 django.setup()
 
 from django.urls import reverse, resolve
-from backend_db.views import UserView, GeolocationsView, HistoricWindViewSet, RegisterApiView, PowerForecastViewSet, WindFarmDataByArea, GenericWindTurbineViewSet, MyObtainTokenPairView
+from backend_db.views import GeolocationsView, HistoricWindViewSet, RegisterApiView, PowerForecastViewSet, WindFarmDataByArea, GenericWindTurbineViewSet, MyObtainTokenPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 import unittest
 
 class TestUrls(unittest.TestCase):
-    def test_user_profile(self):
-        url = reverse('userProfile')
-        self.assertEqual(url, '/userProfile/')
-
-        resolver = resolve('/userProfile/')
-        self.assertEqual(resolver.func.cls, UserView)
 
     def test_geolocations(self):
         url = reverse('geolocations')
