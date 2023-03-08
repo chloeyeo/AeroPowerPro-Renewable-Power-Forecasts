@@ -1,12 +1,10 @@
-from django.urls import path, re_path
-from django.contrib import admin
-from backend_db.views import UserView, get_elexon, get_elexon_by_date, GeolocationsView, HistoricWindViewSet, RegisterApiView, PowerForecastViewSet, WindFarmDataByArea, SolarFarmGeolocationView, HistoricSolarViewSet
+from django.urls import path
+from backend_db.views import get_elexon, get_elexon_by_date, GeolocationsView, HistoricWindViewSet, RegisterApiView, PowerForecastViewSet, WindFarmDataByArea, SolarFarmGeolocationView, HistoricSolarViewSet
 from backend_db.views import MyObtainTokenPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 from backend_db.views import GenericWindTurbineViewSet
 
 urlpatterns = [
-    path('userProfile/', UserView.as_view(), name='userProfile'),
     path('geolocations/', GeolocationsView.as_view(), name = 'geolocations'),
     path('solar_farm_geolocation_view/', SolarFarmGeolocationView.as_view(), name = 'solar_farm_geolocation_view'),
     path('historic_wind_data/', HistoricWindViewSet.as_view(), name = 'historic_wind_data'),
