@@ -34,7 +34,7 @@ const Home = () => {
     "Solar Farms": solarFarms,
   };
 
-  const currDisplay = displays[view];
+  const currDisplay = displays[view] || [];
 
   const geoObjects = (view) => {
     switch (view) {
