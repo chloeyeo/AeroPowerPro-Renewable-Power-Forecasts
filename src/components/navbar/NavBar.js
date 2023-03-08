@@ -9,7 +9,7 @@ import { Cookies } from "react-cookie";
 function NavBar() {
   const cookies = new Cookies();
   const [isLoggedIn, setIsLoggedIn] = useState(
-    cookies.get("LoggedIn") === "true"
+    cookies.get("userIn") === "true"
   );
   if (!isLoggedIn) {
     return (
@@ -148,7 +148,10 @@ function NavBar() {
                   }}
                   onClick={() => {
                     setIsLoggedIn(false);
-                    cookies.set("LoggedIn", false);
+                    cookies.set("userIn", false);
+                    cookies.get(cookies.get("LoggedInUser")).loggedIn = false;
+                    cookies.set("LoggedInUser", null);
+                    window.location.replace("http://127.0.0.1:3000");
                   }}
                 >
                   Logout
