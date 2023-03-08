@@ -17,7 +17,7 @@ it("renders correct text", () => {
     </Router>
   );
   expect(screen.getByText("Area Size Map")).toBeInTheDocument();
-  expect(screen.getByText("Jethro's Power Forecasts")).toBeInTheDocument();
+  expect(screen.getByText("AeroPowerPro")).toBeInTheDocument();
   expect(screen.getByText("Home")).toBeInTheDocument();
   expect(screen.getByText("About")).toBeInTheDocument();
   expect(screen.getByText("Contact Us")).toBeInTheDocument();
