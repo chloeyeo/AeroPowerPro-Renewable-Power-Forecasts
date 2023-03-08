@@ -11,7 +11,8 @@ const Map = ({
   areaSize,
   center,
   setCenter,
-  windFarms,
+  view,
+  farms,
   powerCurveData,
   setPowerCurveData,
   setWindFarmData,
@@ -20,6 +21,7 @@ const Map = ({
   const mapRef = useRef();
   const [map, setMap] = useState(null);
   const [isShown, setIsShown] = useState(false);
+  const [farmPopupData, setFarmPopupData] = useState({});
 
   useEffect(() => {
     let options = {
@@ -40,17 +42,18 @@ const Map = ({
     mapObject.on("click", function (evt) {
       evt.preventDefault();
       const coords = olProj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326");
-      if (windFarms) {
-        updateWindFarmData(
-          windFarms,
-          coords,
-          powerCurveData,
-          setPowerCurveData,
-          setIsShown,
-          setWindFarmData
-        );
-      } else {
+      if (view === "Area Size") {
         farmDataByAreaReq(coords, areaSize, powerCurveData, setPowerCurveData);
+      } else {
+        updateWindFarmData(
+          view,
+          farms,
+          coords,
+          setIsShown,
+          setFarmPopupData,
+          powerCurveData,
+          setPowerCurveData
+        );
       }
       setCenter(coords.map((coord) => coord.toFixed(2)));
     });
@@ -61,7 +64,7 @@ const Map = ({
   return (
     <>
       {isShown && (
-        <FarmPopup setIsShown={setIsShown} farmdetails={windFarmData} />
+        <FarmPopup setIsShown={setIsShown} farmdetails={farmPopupData} />
       )}
       <MapContext.Provider value={{ map }}>
         <div

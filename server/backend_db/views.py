@@ -2,7 +2,7 @@ from django.shortcuts import render
 # from django.http import HttpResponse
 # from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData
+from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData, SolarFarmDetailData, SolarEnergyData
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.generics import GenericAPIView
@@ -106,6 +106,17 @@ class HistoricWindViewSet(APIView):
         historic_wind_data = HistoricWind.objects.filter(date_val__lte=end_date, date_val__gte=start_date, longitude = longitude, latitude = latitude).values_list('date_val', 'wind_speed')
         return JsonResponse(list(historic_wind_data), safe = False)
 
+class HistoricSolarViewSet(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, format = None):
+        historic_solar_data = SolarEnergyData.objects.all().values_list('id', 
+                                                               'gsp_id',
+                                                               'datetime_gmt', 
+                                                               'generation_mw',)
+
+        
+        return JsonResponse(list(historic_solar_data), safe = False)
 
 class UserView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -164,7 +175,7 @@ class GeolocationsView(APIView):
         detail_wind_farms = WindFarmDetailData.objects.filter(longitude__isnull = False, 
         latitude__isnull = False,  latitude__lte=59, operator__isnull = False ,
         turbine_height__isnull = False, number_of_turbines__isnull = False, 
-        sitename__isnull = False).values_list('id', 'latitude', 'longitude','operator',
+        sitename__isnull = False).values_list('id', 'longitude', 'latitude','operator',
         'sitename','is_onshore','turbine_height','number_of_turbines','turbine_capacity',
         'development_status',# 'address','region','country',
         )
@@ -211,6 +222,24 @@ class RegisterApiView(GenericAPIView):
 class MyObtainTokenPairView(TokenObtainPairView):
     permission_classes= (permissions.AllowAny,)
     serializer_class = MyTokenObtainPairSerializer
+
+class SolarFarmGeolocationView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, format = None):
+        # Some have invalid longitude(infinity), remove with filter
+        solar_farms = SolarFarmDetailData.objects.filter(longitude__lte=59).values_list('operator',
+                                                            'sitename',
+                                                            'development_status',
+                                                            'mounting_type_for_solar',
+                                                            'address',
+                                                            'region',
+                                                            'country',
+                                                            'latitude',
+                                                            'longitude',
+                                                            )
+        
+        return JsonResponse(list(solar_farms), safe = False)
 
 class WindFarmDataByArea(APIView):
     permission_classes = [permissions.AllowAny]
