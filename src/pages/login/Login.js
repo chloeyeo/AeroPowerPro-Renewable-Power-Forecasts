@@ -14,7 +14,6 @@ const Login = () => {
   const handleOnSubmit = (event) => {
     event.preventDefault();
 
-    console.log("Attempting to post!");
     axios({
       method: "post",
       url: "http://127.0.0.1:8000/login/",
@@ -25,7 +24,6 @@ const Login = () => {
     })
       .then(function (response) {
         event.preventDefault();
-        console.log(response);
         const cookies = new Cookies();
         var user = {
           loggedIn: true,
@@ -35,7 +33,6 @@ const Login = () => {
         cookies.set(formData.username, user);
         cookies.set("LoggedInUser", formData.username);
         cookies.set("userIn", true);
-        console.log(cookies.get(cookies.get("LoggedInUser")).access);
         window.location.replace("http://127.0.0.1:3000");
       })
       .catch(function (error) {
