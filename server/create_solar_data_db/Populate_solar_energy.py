@@ -21,8 +21,6 @@ END_YEAR = 2020
 END_MONTH = 1
 END_DAY = 2
 
-df_attrs = pd.read_csv('https://data.nationalgrideso.com/backend/dataset/2810092e-d4b2-472f-b955-d8bea01f9ec0/resource/bbe2cc72-a6c6-46e6-8f4e-48b879467368/download/gsp_gnode_directconnect_region_lookup.csv', encoding= 'latin1')
-df_attrs = df_attrs[['gsp_id', 'gsp_name', 'gsp_lat', 'gsp_lon']].drop_duplicates()
 
 pvl = PVLive()
 
@@ -34,4 +32,3 @@ def main():
             data_dict = solar_dict[row]
             SolarEnergyData.objects.create(**data_dict)
             print(f"Solar Energy GSP: {data_dict['gsp_id']} Time: {data_dict['datetime_gmt']} inserted")
-main()
