@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 import { NavBar } from "../../components";
-//const { axios } = require("axios");
+// const { axios } = require("axios");
 // import "./register.css";
 
 const { registercss } = require("./register.css");
