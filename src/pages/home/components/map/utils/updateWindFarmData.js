@@ -8,7 +8,6 @@ const updateWindFarmData = (
   setPowerCurveData
 ) => {
   const coordinateIndex = view === "Solar Farms" ? 7 : 1;
-  console.log("Test", farms[0]);
   const farmClicked = farms.find(
     (farm) =>
       farm[coordinateIndex] - 0.05 < coords[0] &&

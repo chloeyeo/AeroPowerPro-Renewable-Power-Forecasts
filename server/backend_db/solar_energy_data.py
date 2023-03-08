@@ -28,3 +28,9 @@ class SolarFarmDetailData(models.Model):
     country = models.CharField(null = True, max_length=200)
     longitude = models.FloatField(null = True, blank = True)
     latitude = models.FloatField(null = True, blank = True)
+
+class GSPLocation(models.Model):
+    gsp_id = models.IntegerField(blank = False, null = True)
+    gsp_name = models.CharField(null = True, max_length=200)
+    gsp_lat = models.FloatField(null = True, blank = True)
+    gsp_lon = models.FloatField(null = True, blank = True)
