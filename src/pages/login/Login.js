@@ -27,9 +27,15 @@ const Login = () => {
         event.preventDefault();
         console.log(response);
         const cookies = new Cookies();
-        cookies.set("LoggedIn", true);
-        cookies.set("access", decodeToken(response.data.access));
-        cookies.set("refresh", response.data.refresh);
+        var user = {
+          loggedIn: true,
+          access: decodeToken(response.data.access),
+          refresh: response.data.refresh,
+        };
+        cookies.set(formData.username, user);
+        cookies.set("LoggedInUser", formData.username);
+        cookies.set("userIn", true);
+        console.log(cookies.get(cookies.get("LoggedInUser")).access);
         window.location.replace("http://127.0.0.1:3000");
       })
       .catch(function (error) {

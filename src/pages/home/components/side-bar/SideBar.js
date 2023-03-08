@@ -13,11 +13,14 @@ import {
 import { geoLocReq, forecastReq, getHistoricWindSpeedsReq } from "./utils";
 import withInputFieldProps from "./withInputFieldProps";
 import "./styles.css";
+import { Cookies } from "react-cookie";
 
 const SideBar = ({
   powerCurveData,
   setPowerCurveData,
   center,
+  setCenter,
+  showWindFarms,
   view,
   inputFieldProps,
 }) => {
@@ -28,6 +31,8 @@ const SideBar = ({
   const [powerForecast, setPowerForecast] = useState([]);
   const [dates, setDates] = useState({ startDate: "", endDate: "" });
   const [historicWindSpeeds, setHistoricWindSpeeds] = useState([]);
+  const cookies = new Cookies();
+  const isLoggedIn = cookies.get("userIn") === "true";
 
   useEffect(() => geoLocReq(setTurbineModels), []);
 
@@ -46,6 +51,40 @@ const SideBar = ({
               setPowerCurveData={setPowerCurveData}
               turbineModels={turbineModels}
             />
+            {isLoggedIn && (
+              <>
+                <button
+                  onClick={() => {
+                    const userObj = cookies.get(cookies.get("LoggedInUser"));
+                    cookies.set(cookies.get("LoggedInUser"), {
+                      ...userObj,
+                      favModel: powerCurveData.turbineModel,
+                    });
+                    setPowerCurveData({
+                      ...powerCurveData,
+                    });
+                  }}
+                >
+                  Set Favourite
+                </button>
+                <button
+                  onClick={() => {
+                    const favModel = cookies.get(
+                      cookies.get("LoggedInUser")
+                    ).favModel;
+                    setPowerCurveData({
+                      ...powerCurveData,
+                      turbineModel: favModel,
+                      tableData: turbineModels[favModel].power_curve,
+                    });
+                  }}
+                >
+                  Use Favourite
+                </button>
+                Current Favorite:
+                {cookies.get(cookies.get("LoggedInUser")).favModel}
+              </>
+            )}
 
             <PowerCurveTable
               powerCurveData={powerCurveData}
@@ -64,6 +103,42 @@ const SideBar = ({
                 );
               }}
             />
+            {isLoggedIn && (
+              <>
+                <button
+                  onClick={() => {
+                    const userObj = cookies.get(cookies.get("LoggedInUser"));
+                    cookies.set(cookies.get("LoggedInUser"), {
+                      ...userObj,
+                      favLong: center[0],
+                      favLat: center[1],
+                    });
+                    setPowerCurveData({
+                      ...powerCurveData,
+                    });
+                  }}
+                >
+                  Set Favourite
+                </button>
+                <button
+                  onClick={() => {
+                    const favLong = cookies.get(
+                      cookies.get("LoggedInUser")
+                    ).favLong;
+                    const favLat = cookies.get(
+                      cookies.get("LoggedInUser")
+                    ).favLat;
+                    console.log(favLat, favLong);
+                    setCenter([favLong, favLat]);
+                  }}
+                >
+                  Use Favourite
+                </button>
+                Current Favorite:
+                {cookies.get(cookies.get("LoggedInUser")).favLat},
+                {cookies.get(cookies.get("LoggedInUser")).favLong}
+              </>
+            )}
           </SubMenu>
           <SubMenu label="Historic Wind Speeds">
             <div>
