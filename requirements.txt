@@ -13,3 +13,5 @@ requests==2.28.1
 schedule==1.1.0
 setuptools==65.5.0
 windpowerlib==0.2.1
+pyproj==3.4.1
+git+https://github.com/SheffieldSolar/PV_Live-API@0.12

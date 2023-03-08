@@ -18,7 +18,7 @@ const SideBar = ({
   powerCurveData,
   setPowerCurveData,
   center,
-  showWindFarms,
+  view,
   inputFieldProps,
 }) => {
   const { collapseSidebar, collapsed } = useProSidebar();
@@ -35,7 +35,7 @@ const SideBar = ({
     <div style={{ zIndex: 3 }} className="sidebar">
       <Sidebar>
         <SidebarHeader
-          showWindFarms={showWindFarms}
+          view={view}
           collapsed={collapsed}
           collapseSidebar={() => collapseSidebar()}
         />
