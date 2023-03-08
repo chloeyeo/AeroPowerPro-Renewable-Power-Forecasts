@@ -10,7 +10,7 @@ const NavBar = ({ links }) => (
   <Navbar style={{ backgroundColor: "#373b44" }} expand="lg">
     <Container>
       <Navbar.Brand href="/" style={{ color: "white" }}>
-        Jethro's Power Forecasts
+        AeroPowerPro
       </Navbar.Brand>
       <div>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

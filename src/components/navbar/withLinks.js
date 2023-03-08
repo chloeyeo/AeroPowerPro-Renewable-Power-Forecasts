@@ -4,7 +4,7 @@ import { Cookies } from "react-cookie";
 const withLinks = (Component) => (props) => {
   const cookies = new Cookies();
   const [isLoggedIn, setIsLoggedIn] = useState(
-    cookies.get("LoggedIn") === "true"
+    cookies.get("userIn") === "true"
   );
 
   const links = [
@@ -27,7 +27,10 @@ const withLinks = (Component) => (props) => {
             link: "/",
             onClick: () => {
               setIsLoggedIn(false);
-              cookies.set("LoggedIn", false);
+              cookies.set("userIn", false);
+              cookies.get(cookies.get("LoggedInUser")).loggedIn = false;
+              cookies.set("LoggedInUser", null);
+              window.location.replace("http://127.0.0.1:3000");
             },
           },
         ]
