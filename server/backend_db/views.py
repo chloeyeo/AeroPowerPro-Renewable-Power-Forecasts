@@ -2,7 +2,7 @@ from django.shortcuts import render
 # from django.http import HttpResponse
 # from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData, SolarFarmDetailData, SolarEnergyData
+from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData, SolarFarmDetailData, SolarEnergyData, GSPLocation
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.generics import GenericAPIView
@@ -19,10 +19,10 @@ from .Wind_Turbine_Model.generic_wind_turbines_from_lib import get_all_generic_t
 import numpy as np
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import parser
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+import math
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
@@ -104,19 +104,25 @@ class HistoricWindViewSet(APIView):
         start_date = datetime.strptime(self.request.data['start_date'], date_format).replace(tzinfo=pytz.UTC)
         end_date = datetime.strptime(self.request.data['end_date'], date_format).replace(tzinfo=pytz.UTC)
         historic_wind_data = HistoricWind.objects.filter(date_val__lte=end_date, date_val__gte=start_date, longitude = longitude, latitude = latitude).values_list('date_val', 'wind_speed')
-        return JsonResponse(list(historic_wind_data), safe = False)
+        if (historic_wind_data.exists()):
+            return JsonResponse(list(historic_wind_data), safe = False)
+        return JsonResponse({'message' : 'Could not find any data for these items and geolocations'}, status = 500)
 
-class HistoricSolarViewSet(APIView):
+
+
+class UserView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format = None):
-        historic_solar_data = SolarEnergyData.objects.all().values_list('id', 
-                                                               'gsp_id',
-                                                               'datetime_gmt', 
-                                                               'generation_mw',)
+    def post(self, request, format=None):
+        user = User(username=self.request.data['username'],
+                            email=self.request.data['email'],
+                            password=self.request.data['password'],
+                            first_name=self.request.data['first_name'],
+                            last_name=self.request.data['last_name'])
 
-        
-        return JsonResponse(list(historic_solar_data), safe = False)
+        user.save()
+        return Response(request.data['username'])
+
 
 def event_stream(data):
     data_len = len(data)
@@ -137,12 +143,10 @@ class GeolocationsView(APIView):
         """Finds all available wind farms
 
         Args:
-            request (_type_): SMALL: will return only the small set if set to 1
-                            : START: if SMALL = 0, will give Start + 1500 wind farms from detailed set 
-            format (_type_, optional): _description_. Defaults to None.
+            None
 
         Returns:
-            List of the farm data and their metadata ('windfarm_data_id', 'longitude', 'latitude', 'hub_height', 'number_of_turbines', 'turbine_capacity', 'is_onshore', ...)
+            List of the farm data and their metadata for both smaller and larger (detail) data set
         """     
         
         wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
@@ -153,7 +157,6 @@ class GeolocationsView(APIView):
                                                         'turbine_capacity',
                                                         'is_onshore',)
     
-            # return JsonResponse(list(wind_farms), safe=False)
 
         
         response = {}
@@ -161,7 +164,7 @@ class GeolocationsView(APIView):
         detail_wind_farms = WindFarmDetailData.objects.filter(longitude__isnull = False, 
         latitude__isnull = False,  latitude__lte=59, operator__isnull = False ,
         turbine_height__isnull = False, number_of_turbines__isnull = False, 
-        sitename__isnull = False).values_list('id', 'latitude', 'longitude','operator',
+        sitename__isnull = False).values_list('id', 'longitude', 'latitude','operator',
         'sitename','is_onshore','turbine_height','number_of_turbines','turbine_capacity',
         'development_status',# 'address','region','country',
         )
@@ -296,7 +299,52 @@ class WindFarmDataByArea(APIView):
         
         return JsonResponse(response, safe = False)
 
+class SolarHistoricData(APIView):
+    permission_classes = [permissions.AllowAny]
 
+    # Return the distance between two points using pythagora's theorem
+    def __distsance_between_points(self, x1, x2, y1, y2):
+        return math.sqrt( (x1 - x2)**2 + (y1-y2)**2 )
+    
+    def post(self, request, format = None):
+        latitude = int(self.request.data['latitude'])
+        longitude = int(self.request.data['longitude'])
+        gsp_long_lat = GSPLocation.objects.all()
+        gsp_in_db = SolarEnergyData.objects.order_by().values_list('gsp_id').distinct()
+        gsp_distinct = []
+        for gsp in gsp_in_db:
+            gsp_distinct.append(gsp[0])
+
+        closest_gsp_id = None
+        closest_gsp_dist = math.inf
+
+
+        if gsp_long_lat.exists():
+            for row in gsp_long_lat:
+                if row.gsp_id in gsp_distinct:
+                    dist = self.__distsance_between_points(x1 = longitude, x2 = row.gsp_lon, y1 = latitude, y2 = row.gsp_lat)
+                    if dist < closest_gsp_dist:
+                        print(dist, closest_gsp_id, row.gsp_id)
+                        closest_gsp_id = row.gsp_id
+                        closest_gsp_dist = dist
+        else:
+            JsonResponse({'message' : 'Could not find any data' }, status = 500)
+        
+        date_format = '%Y-%m-%d'
+        start_date = datetime.strptime(self.request.data['start_date'], date_format)
+        
+        # End date will be set to 00:00:00, so increase day by one to set to end of day/ start of next day
+        end_date = datetime.strptime(self.request.data['end_date'], date_format)
+        end_date += timedelta(days = 1)
+        
+        historic_solar_data = list(SolarEnergyData.objects.filter(gsp_id = closest_gsp_id, datetime_gmt__lte=end_date, datetime_gmt__gte=start_date).values_list('datetime_gmt', 'generation_mw'))
+        if len(historic_solar_data) == 0:
+            return JsonResponse({'message' : 'Could not find any data for these dates and locations'}, status = 500)
+        return JsonResponse(historic_solar_data, safe=False)
+        
+        
+        
+        
 # from rest_framework.views import APIView
 # from rest_framework.request import Request
 # from rest_framework.response import Response

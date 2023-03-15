@@ -43,7 +43,12 @@ const forecastReq = (powerCurveData, center, setPowerForecast, setIsShown) => {
     });
 };
 
-const getHistoricWindSpeedsReq = (setHistoricWindSpeeds, dates, center) => {
+const getHistoricWindSpeedsReq = (
+  setHistoricData,
+  setShowHistoric,
+  dates,
+  center
+) => {
   axios({
     method: "post",
     url: "http://127.0.0.1:8000/historic_wind_data/",
@@ -58,11 +63,51 @@ const getHistoricWindSpeedsReq = (setHistoricWindSpeeds, dates, center) => {
     },
   })
     .then(function (response) {
-      setHistoricWindSpeeds(response.data);
+      setHistoricData({
+        data: response.data,
+        type: "wind",
+      });
+      setShowHistoric(true);
     })
     .catch(function (error) {
-      console.log(error);
+      alert(error.response.data.message);
     });
 };
 
-export { geoLocReq, forecastReq, getHistoricWindSpeedsReq };
+const getHistoricSolarReq = (
+  setHistoricData,
+  setShowHistoric,
+  dates,
+  center
+) => {
+  axios({
+    method: "post",
+    url: "http://127.0.0.1:8000/historic_solar_data/",
+    data: {
+      start_date: dates.startDate,
+      end_date: dates.endDate,
+      latitude: parseFloat(center[0]),
+      longitude: parseFloat(center[1]),
+    },
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(function (response) {
+      setHistoricData({
+        data: response.data,
+        type: "solar",
+      });
+      setShowHistoric(true);
+    })
+    .catch(function (error) {
+      alert(error.response.data.message);
+    });
+};
+
+export {
+  geoLocReq,
+  forecastReq,
+  getHistoricWindSpeedsReq,
+  getHistoricSolarReq,
+};

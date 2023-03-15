@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar, SubMenu, Menu, useProSidebar } from "react-pro-sidebar";
 import { FiWind } from "react-icons/fi";
+import { AiOutlineBarChart } from "react-icons/ai";
 import { Cookies } from "react-cookie";
 
 import {
@@ -9,12 +10,17 @@ import {
   TurbineModelSelect,
   InputsAndSubmit,
   SidebarHeader,
-  HistoricSpeedsGraph,
+  HistoricDataGraph,
   DateInputs,
   FavouriteTurbine,
   FavouriteCoordinates,
 } from "./components";
-import { geoLocReq, forecastReq, getHistoricWindSpeedsReq } from "./utils";
+import {
+  geoLocReq,
+  forecastReq,
+  getHistoricWindSpeedsReq,
+  getHistoricSolarReq,
+} from "./utils";
 
 import withInputFieldProps from "./withInputFieldProps";
 import "./styles.css";
@@ -34,7 +40,7 @@ const SideBar = ({
   const [turbineModels, setTurbineModels] = useState({});
   const [powerForecast, setPowerForecast] = useState([]);
   const [dates, setDates] = useState({ startDate: "", endDate: "" });
-  const [historicWindSpeeds, setHistoricWindSpeeds] = useState([]);
+  const [historicData, setHistoricData] = useState([]);
   const cookies = new Cookies();
   const isLoggedIn = cookies.get("userIn") === "true";
   const loggedInUser = cookies.get("LoggedInUser");
@@ -97,23 +103,24 @@ const SideBar = ({
               />
             )}
           </SubMenu>
-          <SubMenu label="Historic Wind Speeds">
+          <SubMenu label="Historic Data" icon={<AiOutlineBarChart />}>
             <DateInputs
               dates={dates}
               setDates={setDates}
-              onClick={() => {
-                getHistoricWindSpeedsReq(setHistoricWindSpeeds, dates, center);
-                setShowHistoric(true);
-              }}
+              setHistoricData={setHistoricData}
+              getHistoricSolarReq={getHistoricSolarReq}
+              getHistoricWindSpeedsReq={getHistoricWindSpeedsReq}
+              center={center}
+              setShowHistoric={setShowHistoric}
             />
           </SubMenu>
         </Menu>
       </Sidebar>
 
       {showHistoric && (
-        <HistoricSpeedsGraph
+        <HistoricDataGraph
           setShowHistoric={setShowHistoric}
-          historicWindSpeeds={historicWindSpeeds}
+          historicData={historicData}
         />
       )}
 

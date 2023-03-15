@@ -4,6 +4,7 @@ from backend_db.models import WeatherForecast
 from django.utils import timezone
 
 def get_closest_coords(long, lat):
+    # Round to the nearest .25
     return clip(round(long*4)/4, -7, 3), clip(round(lat*4)/4, 50, 59)
 
 
