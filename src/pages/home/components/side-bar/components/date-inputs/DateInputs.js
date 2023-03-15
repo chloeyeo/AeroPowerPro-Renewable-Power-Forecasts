@@ -32,8 +32,7 @@ const DateInputs = ({
       <button
         className="mt-2"
         onClick={() => {
-          getHistoricSolarReq(setHistoricData, dates, center);
-          setShowHistoric(true);
+          getHistoricSolarReq(setHistoricData, setShowHistoric, dates, center);
         }}
       >
         Historic Solar Energy
@@ -41,8 +40,12 @@ const DateInputs = ({
       <button
         className="mt-2"
         onClick={() => {
-          getHistoricWindSpeedsReq(setHistoricData, dates, center);
-          setShowHistoric(true);
+          getHistoricWindSpeedsReq(
+            setHistoricData,
+            setShowHistoric,
+            dates,
+            center
+          );
         }}
       >
         Historic Wind Speeds

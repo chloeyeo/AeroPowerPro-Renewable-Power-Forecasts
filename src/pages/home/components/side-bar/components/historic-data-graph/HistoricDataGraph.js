@@ -46,7 +46,11 @@ const HistoricDataGraph = ({ setShowHistoric, historicData }) => {
     >
       <Grid container justifyContent="space-between">
         <div></div>
-        <h5 style={{ textAlign: "center" }}>Historic Wind Speeds</h5>
+        <h5 style={{ textAlign: "center" }}>
+          {historicData.type === "solar"
+            ? "Historic Solar Energy"
+            : "Historic Wind Speeds"}
+        </h5>
         <Button
           style={{ float: "right" }}
           variant="outline-secondary"

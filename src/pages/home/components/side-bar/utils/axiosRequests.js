@@ -43,7 +43,12 @@ const forecastReq = (powerCurveData, center, setPowerForecast, setIsShown) => {
     });
 };
 
-const getHistoricWindSpeedsReq = (setHistoricData, dates, center) => {
+const getHistoricWindSpeedsReq = (
+  setHistoricData,
+  setShowHistoric,
+  dates,
+  center
+) => {
   axios({
     method: "post",
     url: "http://127.0.0.1:8000/historic_wind_data/",
@@ -62,13 +67,19 @@ const getHistoricWindSpeedsReq = (setHistoricData, dates, center) => {
         data: response.data,
         type: "wind",
       });
+      setShowHistoric(true);
     })
     .catch(function (error) {
-      console.log(error);
+      alert(error.response.data.message);
     });
 };
 
-const getHistoricSolarReq = (setHistoricData, dates, center) => {
+const getHistoricSolarReq = (
+  setHistoricData,
+  setShowHistoric,
+  dates,
+  center
+) => {
   axios({
     method: "post",
     url: "http://127.0.0.1:8000/historic_solar_data/",
@@ -87,10 +98,10 @@ const getHistoricSolarReq = (setHistoricData, dates, center) => {
         data: response.data,
         type: "solar",
       });
+      setShowHistoric(true);
     })
     .catch(function (error) {
-      console.log(error);
-      alert(error);
+      alert(error.response.data.message);
     });
 };
 

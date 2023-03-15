@@ -104,7 +104,10 @@ class HistoricWindViewSet(APIView):
         start_date = datetime.strptime(self.request.data['start_date'], date_format).replace(tzinfo=pytz.UTC)
         end_date = datetime.strptime(self.request.data['end_date'], date_format).replace(tzinfo=pytz.UTC)
         historic_wind_data = HistoricWind.objects.filter(date_val__lte=end_date, date_val__gte=start_date, longitude = longitude, latitude = latitude).values_list('date_val', 'wind_speed')
-        return JsonResponse(list(historic_wind_data), safe = False)
+        if (historic_wind_data.exists()):
+            return JsonResponse(list(historic_wind_data), safe = False)
+        return JsonResponse({'message' : 'Could not find any data for these items and geolocations'}, status = 500)
+
 
 
 class UserView(APIView):
@@ -336,7 +339,7 @@ class SolarHistoricData(APIView):
         
         historic_solar_data = list(SolarEnergyData.objects.filter(gsp_id = closest_gsp_id, datetime_gmt__lte=end_date, datetime_gmt__gte=start_date).values_list('datetime_gmt', 'generation_mw'))
         if len(historic_solar_data) == 0:
-            return JsonResponse({'message' : 'Could not find any data for these items and geolocations'}, status = 500)
+            return JsonResponse({'message' : 'Could not find any data for these dates and locations'}, status = 500)
         return JsonResponse(historic_solar_data, safe=False)
         
         
