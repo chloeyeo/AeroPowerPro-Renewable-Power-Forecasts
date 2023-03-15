@@ -2,7 +2,7 @@ from django.shortcuts import render
 # from django.http import HttpResponse
 # from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
-from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData, SolarFarmDetailData, SolarEnergyData
+from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData, SolarFarmDetailData, SolarEnergyData, GSPLocation
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.generics import GenericAPIView
@@ -22,7 +22,7 @@ from .WeatherSeries import WeatherSeries
 from datetime import datetime
 from dateutil import parser
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+import math
 
 class PowerForecastViewSet(APIView):
     permission_classes = [permissions.AllowAny]
@@ -154,7 +154,7 @@ class GeolocationsView(APIView):
             None
 
         Returns:
-            List of the farm data and their metadata ('windfarm_data_id', 'longitude', 'latitude', 'hub_height', 'number_of_turbines', 'turbine_capacity', 'is_onshore', ...)
+            List of the farm data and their metadata for both smaller and larger (detail) data set
         """     
         
         wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
@@ -307,7 +307,41 @@ class WindFarmDataByArea(APIView):
         
         return JsonResponse(response, safe = False)
 
+class SolarHistoricData(APIView):
+    permission_classes = [permissions.AllowAny]
 
+    # Return the distance between two points using pythagora's theorem
+    def __distsance_between_points(x1, x2, y1, y2):
+        return math.sqrt( (x1 - x2)**2 + (y1-y2)**2 )
+    
+    def post(self, request, format = None):
+        latitude = self.request.data['latitude']
+        longtitude = self.request.data['longitude']
+        
+        gsp_long_lat = GSPLocation.objects.all()
+
+        closest_gsp_id = None
+        closest_gsp_dist = math.inf
+        if gsp_long_lat.exists():
+            for row in gsp_long_lat:
+                dist = self.__distsance_between_points(x1 = longtitude, x2 = row.gsp_lon, y1 = latitude, y2 = row.gsp_lat)
+                if dist < closest_gsp_dist:
+                    closest_gsp_id = row.gsp_id
+                    closest_gsp_dist = dist
+        else:
+            JsonResponse({'message' : 'Could not find any data' }, status = 500)
+        
+        start_date = self.response.data['start_date']
+        end_date = self.response.data['end_date']
+        
+        historic_solar_data = SolarEnergyData.filter(gsp_id = closest_gsp_id, datetime_gmt__lte= end_date, datetime_gmt__gte= start_date).values_list('datetime_gmt',
+                                                                                                                                                       'generation_mw')
+        
+        return JsonResponse(historic_solar_data)
+        
+        
+        
+        
 # from rest_framework.views import APIView
 # from rest_framework.request import Request
 # from rest_framework.response import Response

@@ -26,7 +26,11 @@ const TurbineModelSelect = ({
           : "Choose here"}
       </option>
       {Object.keys(turbineModels).map((turbineModel) => (
-        <option key={turbineModel} value={turbineModel}>
+        <option
+          key={turbineModel}
+          selected={turbineModel === powerCurveData.turbineModel}
+          value={turbineModel}
+        >
           {turbineModel}
         </option>
       ))}

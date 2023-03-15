@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar, SubMenu, Menu, useProSidebar } from "react-pro-sidebar";
 import { FiWind } from "react-icons/fi";
+import { Cookies } from "react-cookie";
 
 import {
   ForecastGraph,
@@ -9,8 +10,12 @@ import {
   InputsAndSubmit,
   SidebarHeader,
   HistoricSpeedsGraph,
+  DateInputs,
+  FavouriteTurbine,
+  FavouriteCoordinates,
 } from "./components";
 import { geoLocReq, forecastReq, getHistoricWindSpeedsReq } from "./utils";
+
 import withInputFieldProps from "./withInputFieldProps";
 import "./styles.css";
 
@@ -18,6 +23,8 @@ const SideBar = ({
   powerCurveData,
   setPowerCurveData,
   center,
+  setCenter,
+  showWindFarms,
   view,
   inputFieldProps,
 }) => {
@@ -28,6 +35,10 @@ const SideBar = ({
   const [powerForecast, setPowerForecast] = useState([]);
   const [dates, setDates] = useState({ startDate: "", endDate: "" });
   const [historicWindSpeeds, setHistoricWindSpeeds] = useState([]);
+  const cookies = new Cookies();
+  const isLoggedIn = cookies.get("userIn") === "true";
+  const loggedInUser = cookies.get("LoggedInUser");
+  const userObj = cookies.get(loggedInUser);
 
   useEffect(() => geoLocReq(setTurbineModels), []);
 
@@ -46,6 +57,16 @@ const SideBar = ({
               setPowerCurveData={setPowerCurveData}
               turbineModels={turbineModels}
             />
+            {isLoggedIn && (
+              <FavouriteTurbine
+                cookies={cookies}
+                loggedInUser={loggedInUser}
+                userObj={userObj}
+                powerCurveData={powerCurveData}
+                setPowerCurveData={setPowerCurveData}
+                turbineModels={turbineModels}
+              />
+            )}
 
             <PowerCurveTable
               powerCurveData={powerCurveData}
@@ -64,44 +85,27 @@ const SideBar = ({
                 );
               }}
             />
+            {isLoggedIn && (
+              <FavouriteCoordinates
+                cookies={cookies}
+                loggedInUser={loggedInUser}
+                userObj={userObj}
+                powerCurveData={powerCurveData}
+                setPowerCurveData={setPowerCurveData}
+                center={center}
+                setCenter={setCenter}
+              />
+            )}
           </SubMenu>
           <SubMenu label="Historic Wind Speeds">
-            <div>
-              <div>Start Date</div>
-              <input
-                type="date"
-                value={dates.startDate}
-                onChange={(event) =>
-                  setDates({ ...dates, startDate: event.target.value })
-                }
-                min="2021-06-31"
-                max="2023-06-31"
-              ></input>
-              <div>End Date</div>
-              <input
-                type="date"
-                value={dates.endDate}
-                onChange={(event) =>
-                  setDates({ ...dates, endDate: event.target.value })
-                }
-                min="2021-06-31"
-                max="2023-06-31"
-              ></input>
-              <div>
-                <button
-                  onClick={() => {
-                    getHistoricWindSpeedsReq(
-                      setHistoricWindSpeeds,
-                      dates,
-                      center
-                    );
-                    setShowHistoric(true);
-                  }}
-                >
-                  Submit
-                </button>
-              </div>
-            </div>
+            <DateInputs
+              dates={dates}
+              setDates={setDates}
+              onClick={() => {
+                getHistoricWindSpeedsReq(setHistoricWindSpeeds, dates, center);
+                setShowHistoric(true);
+              }}
+            />
           </SubMenu>
         </Menu>
       </Sidebar>
