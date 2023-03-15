@@ -30,5 +30,8 @@ def main():
         solar_dict = solar_df.to_dict(orient = 'index')
         for row in solar_dict:
             data_dict = solar_dict[row]
-            SolarEnergyData.objects.create(**data_dict)
-            print(f"Solar Energy GSP: {data_dict['gsp_id']} Time: {data_dict['datetime_gmt']} inserted")
+            try:
+                SolarEnergyData.objects.create(**data_dict)
+                print(f"Solar Energy GSP: {data_dict['gsp_id']} Time: {data_dict['datetime_gmt']} inserted")
+            except django.db.utils.IntegrityError as e:
+                print(f"Could not insert{data_dict['gsp_id']} Time: {data_dict['datetime_gmt']}. Error: {e}")
