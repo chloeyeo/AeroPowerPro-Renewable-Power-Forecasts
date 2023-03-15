@@ -1,9 +1,5 @@
 from django.urls import path
-<<<<<<< HEAD
-from backend_db.views import get_elexon, get_elexon_by_date, GeolocationsView, HistoricWindViewSet, RegisterApiView, PowerForecastViewSet, WindFarmDataByArea, SolarFarmGeolocationView, HistoricSolarViewSet
-=======
 from backend_db.views import get_elexon, get_elexon_by_date, GeolocationsView, HistoricWindViewSet, RegisterApiView, PowerForecastViewSet, WindFarmDataByArea, SolarFarmGeolocationView, HistoricSolarViewSet, SolarHistoricData
->>>>>>> Historic_Solar_Backend
 from backend_db.views import MyObtainTokenPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 from backend_db.views import GenericWindTurbineViewSet
