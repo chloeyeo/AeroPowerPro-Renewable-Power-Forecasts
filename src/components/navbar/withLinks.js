@@ -6,7 +6,6 @@ const withLinks = (Component) => (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(
     cookies.get("userIn") === "true"
   );
-
   const links = [
     {
       text: "Home",
@@ -30,7 +29,7 @@ const withLinks = (Component) => (props) => {
               cookies.set("userIn", false);
               cookies.get(cookies.get("LoggedInUser")).loggedIn = false;
               cookies.set("LoggedInUser", null);
-              window.location.replace("http://127.0.0.1:3000");
+              window.location.replace("/");
             },
           },
         ]
