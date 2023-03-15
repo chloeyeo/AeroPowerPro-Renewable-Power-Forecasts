@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-// import axios from "axios";
+import axios from "axios";
 
 import { NavBar } from "../../components";
-const { axios } = require("axios");
+// const { axios } = require("axios");
 // import "./register.css";
 
 const { registercss } = require("./register.css");
@@ -27,7 +27,6 @@ const Register = () => {
       validateEmail(formData.email) &&
       formData.password === confirmPassword
     ) {
-      console.log("will try posting now!");
       axios({
         method: "post",
         url: "http://127.0.0.1:8000/register/",
@@ -46,7 +45,6 @@ const Register = () => {
           console.log(error);
         });
     } else {
-      console.log("invalid!");
       if (!validateEmail(formData.email)) {
         alert("Wrong email format");
       } else {

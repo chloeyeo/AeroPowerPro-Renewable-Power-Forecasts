@@ -14,7 +14,6 @@ const Login = () => {
   const handleOnSubmit = (event) => {
     event.preventDefault();
 
-    console.log("Attempting to post!");
     axios({
       method: "post",
       url: "http://127.0.0.1:8000/login/",
@@ -25,11 +24,15 @@ const Login = () => {
     })
       .then(function (response) {
         event.preventDefault();
-        console.log(response);
         const cookies = new Cookies();
-        cookies.set("LoggedIn", true);
-        cookies.set("access", decodeToken(response.data.access));
-        cookies.set("refresh", response.data.refresh);
+        var user = {
+          loggedIn: true,
+          access: decodeToken(response.data.access),
+          refresh: response.data.refresh,
+        };
+        cookies.set(formData.username, user);
+        cookies.set("LoggedInUser", formData.username);
+        cookies.set("userIn", true);
         window.location.replace("http://127.0.0.1:3000");
       })
       .catch(function (error) {

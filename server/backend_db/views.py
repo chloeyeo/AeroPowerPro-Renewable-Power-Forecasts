@@ -154,7 +154,7 @@ class GeolocationsView(APIView):
             None
 
         Returns:
-            List of the farm data and their metadata ('windfarm_data_id', 'longitude', 'latitude', 'hub_height', 'number_of_turbines', 'turbine_capacity', 'is_onshore', ...)
+            List of the farm data and their metadata for both smaller and larger (detail) data set
         """     
         
         wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',

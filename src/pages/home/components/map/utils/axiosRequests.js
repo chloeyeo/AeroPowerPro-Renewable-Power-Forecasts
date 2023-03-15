@@ -20,7 +20,6 @@ const farmDataByAreaReq = (
     },
   })
     .then(function (response) {
-      console.log("farmed data by area!", response.data);
       const newHubHeight = response.data.average_hub_height;
       const averageHubHeight = Array.isArray(newHubHeight)
         ? (

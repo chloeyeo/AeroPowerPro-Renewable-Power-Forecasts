@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Grid } from "@material-ui/core";
 import { fromLonLat } from "ol/proj";
+import { ProSidebarProvider } from "react-pro-sidebar";
 
 import { NavBar } from "../../components";
 
 import { geoJsonObject, getWindFarmsReq, getSolarFarmsReq } from "./utils";
 import { SideBar, TileLayer, Map, osm } from "./components";
-
-import { ProSidebarProvider } from "react-pro-sidebar";
 
 const Home = () => {
   const [view, setView] = useState("Area Size");
@@ -34,7 +33,7 @@ const Home = () => {
     "Solar Farms": solarFarms,
   };
 
-  const currDisplay = displays[view];
+  const currDisplay = displays[view] || [];
 
   const geoObjects = (view) => {
     switch (view) {
