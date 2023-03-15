@@ -4,8 +4,8 @@ class WindFarmData(models.Model):
     windfarm_data_id = models.IntegerField(primary_key = True, unique = True, auto_created = True)
     longitude = models.FloatField(blank = False)
     latitude = models.FloatField(blank = False)
-    hub_height = models.IntegerField(default=100, blank = False)
-    number_of_turbines = models.IntegerField(blank = True, default = 50)
+    hub_height = models.IntegerField(default=0, blank = False)
+    number_of_turbines = models.IntegerField(blank = True, default = 0)
     turbine_capacity = models.FloatField(blank = True)
     is_onshore = models.BooleanField(default = True, blank = False) # turbine type, onshore/offshore
 
@@ -20,5 +20,8 @@ class WindFarmDetailData(models.Model):
     development_status = models.CharField(null = True, max_length=200)
     x_coordinate = models.FloatField(null = True, blank = True)
     y_coordinate = models.FloatField(null = True, blank = True)
+    address = models.CharField(null = True, max_length=200)
+    region = models.CharField(null = True, max_length=200)
+    country = models.CharField(null = True, max_length=200)
     longitude = models.FloatField(null = True, blank = True)
     latitude = models.FloatField(null = True, blank = True)

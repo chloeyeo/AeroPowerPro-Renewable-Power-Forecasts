@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+
 import { NavBar } from "../../components";
-import "./register.css";
+// const { axios } = require("axios");
+// import "./register.css";
+
+const { registercss } = require("./register.css");
 
 const Register = () => {
   const validateEmail = (value) =>
@@ -23,7 +27,6 @@ const Register = () => {
       validateEmail(formData.email) &&
       formData.password === confirmPassword
     ) {
-      console.log("will try posting now!");
       axios({
         method: "post",
         url: "http://127.0.0.1:8000/register/",
@@ -34,7 +37,7 @@ const Register = () => {
       })
         .then(function (response) {
           event.preventDefault();
-          window.location.replace("http://127.0.0.1:3000");
+          window.location.replace("/");
           console.log(response);
         })
         .catch(function (error) {
@@ -42,7 +45,6 @@ const Register = () => {
           console.log(error);
         });
     } else {
-      console.log("invalid!");
       if (!validateEmail(formData.email)) {
         alert("Wrong email format");
       } else {
@@ -162,6 +164,7 @@ const Register = () => {
           <input
             className="register"
             type="submit"
+            id="register-button"
             value="Register"
             style={{ backgroundColor: "#d9d9d9", color: "#373B44" }}
           />

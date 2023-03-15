@@ -11,6 +11,7 @@ const TileLayer = ({ source, zIndex = 0 }) => {
     let tileLayer = new OLTileLayer({
       source,
       zIndex,
+      preload: Infinity,
     });
 
     map.addLayer(tileLayer);

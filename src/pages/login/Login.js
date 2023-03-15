@@ -1,10 +1,45 @@
 import React, { useState } from "react";
 import { NavBar } from "../../components";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { Cookies } from "react-cookie";
+import { decodeToken } from "react-jwt";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
+
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:8000/login/",
+      data: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(function (response) {
+        event.preventDefault();
+        const cookies = new Cookies();
+        var user = {
+          loggedIn: true,
+          access: decodeToken(response.data.access),
+          refresh: response.data.refresh,
+        };
+        cookies.set(formData.username, user);
+        cookies.set("LoggedInUser", formData.username);
+        cookies.set("userIn", "true");
+        window.location.replace("/");
+      })
+      .catch(function (error) {
+        alert(" Invalid Credentials");
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -21,31 +56,30 @@ const Login = () => {
         }}
       >
         <h1 className="pt-5 text-white text-center">Welcome</h1>
-        <form>
+        <form onSubmit={handleOnSubmit}>
           <div class="p-3 form-group">
-            <label className="text-white" for="exampleInputEmail1">
-              Email address
-            </label>
+            <label className="text-white">Username</label>
             <input
-              type="email"
+              type="text"
               class="form-control"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="exampleInputEmail1"
-              aria-describedby="emailHelp"
-              placeholder="Enter email"
+              value={formData.username}
+              placeholder="Enter username"
+              onChange={(event) =>
+                setFormData({ ...formData, username: event.target.value })
+              }
             />
           </div>
           <div class="p-3 form-group">
             <label className="text-white" for="exampleInputPassword1">
-              Password
+              <p>Password</p>
             </label>
             <input
               type="password"
               class="form-control"
-              className="exampleInputPassword1"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              value={formData.password}
+              onChange={(event) =>
+                setFormData({ ...formData, password: event.target.value })
+              }
               placeholder="Password"
             />
           </div>
@@ -54,15 +88,15 @@ const Login = () => {
             type="submit"
             class="w-100 mt-4 btn btn-light"
           >
-            Submit
+            <p>Submit</p>
           </button>
         </form>
         <h5 className="mt-4 text-center text-white">
-          Don't have an account yet?
+          <p>Don't have an account yet?</p>
         </h5>
         <Link to="/register">
           <button type="submit" class="w-100 btn text-white">
-            Register
+            <p>Register</p>
           </button>
         </Link>
       </div>

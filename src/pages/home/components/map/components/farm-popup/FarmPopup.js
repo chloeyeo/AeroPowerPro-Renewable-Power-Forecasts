@@ -3,51 +3,48 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 
 const FarmPopup = ({ setIsShown, farmdetails }) => {
-  if (farmdetails.farmName == null) {
-    farmdetails.farmName = "Unnamed Windfarm";
-  }
-  let shr = "Offshore";
-  if (farmdetails.onshore == true) {
-    shr = "Onshore";
-  }
+  const convertSnakeCase = (variable) =>
+    variable
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
   return (
     <div
       display="flex"
       style={{
+        padding: 10,
         position: "absolute",
-        zIndex: 2,
-        backgroundColor: "white",
-        width: "300px",
-        height: "160px",
+        zIndex: 3,
+        background: "white",
+        opacity: 0.8,
+        width: "350px",
         left: "250px",
+        borderRadius: "15px",
       }}
     >
       <Grid container justifyContent="space-between">
-        <div></div>
-        <h5 style={{ textAlign: "center" }}>{farmdetails.farmName}</h5>
+        <h5>Wind Farm Details</h5>
         <Button
-          style={{ float: "right" }}
+          style={{
+            position: "relative",
+            top: "10px",
+            right: "10px",
+          }}
           variant="outline-secondary"
           className="button-addon2"
-          onClick={() => {
-            setIsShown(false);
-          }}
+          onClick={() => setIsShown(false)}
         >
           X
         </Button>
       </Grid>
-      <div
-        style={{
-          width: "625px",
-          height: "410px",
-          borderRadius: "4px",
-        }}
-      >
-        Windfarm ID: {farmdetails.id} <br />
-        Hub height: {farmdetails.hubHeight} <br />
-        Number of Turbines: {farmdetails.numberOfTurbines} <br />
-        Turbine Capacity: {farmdetails.capacity / 1000000}MW <br />
-        {shr}
+      <div>
+        {Object.entries(farmdetails).map(([key, value]) => (
+          <div key={key}>
+            {convertSnakeCase(key)}:{" "}
+            {typeof value == "boolean" ? value.toString() : value || "____"}
+          </div>
+        ))}
       </div>
     </div>
   );
