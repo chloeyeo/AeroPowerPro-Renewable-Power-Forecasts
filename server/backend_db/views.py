@@ -331,6 +331,7 @@ class SolarHistoricData(APIView):
         else:
             JsonResponse({'message' : 'Could not find any data' }, status = 500)
         
+        
         start_date = self.response.data['start_date']
         end_date = self.response.data['end_date']
         
