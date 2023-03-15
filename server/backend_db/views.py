@@ -334,9 +334,10 @@ class SolarHistoricData(APIView):
         end_date = datetime.strptime(self.request.data['end_date'], date_format)
         end_date += timedelta(days = 1)
         
-        historic_solar_data = SolarEnergyData.objects.filter(gsp_id = closest_gsp_id, datetime_gmt__lte=end_date, datetime_gmt__gte=start_date).values_list('datetime_gmt', 'generation_mw')
- 
-        return JsonResponse(list(historic_solar_data), safe=False)
+        historic_solar_data = list(SolarEnergyData.objects.filter(gsp_id = closest_gsp_id, datetime_gmt__lte=end_date, datetime_gmt__gte=start_date).values_list('datetime_gmt', 'generation_mw'))
+        if len(historic_solar_data) == 0:
+            return JsonResponse({'message' : 'Could not find any data for these items and geolocations'}, status = 500)
+        return JsonResponse(historic_solar_data, safe=False)
         
         
         

@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import Button from "react-bootstrap/Button";
 
-const HistoricSpeedsGraph = ({ setShowHistoric, historicWindSpeeds }) => {
+const HistoricDataGraph = ({ setShowHistoric, historicData }) => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -25,7 +25,9 @@ const HistoricSpeedsGraph = ({ setShowHistoric, historicWindSpeeds }) => {
         >
           <p className="label">{`${
             payload[0].payload.date
-          } - ${payload[0].value.toFixed(2)} m/s`}</p>
+          } - ${payload[0].value.toFixed(2)} ${
+            historicData.type === "solar" ? "MW" : "m/s"
+          }`}</p>
         </div>
       );
     }
@@ -70,15 +72,22 @@ const HistoricSpeedsGraph = ({ setShowHistoric, historicWindSpeeds }) => {
           style={{
             float: "right",
           }}
-          data={historicWindSpeeds.map((pair) => ({
-            date: moment(pair[0]).format("MMMM Do YYYY, h a"),
-            speed: pair[1],
-          }))}
+          data={
+            historicData.data &&
+            historicData.data.map((pair) => ({
+              date: moment(pair[0]).format("MMMM Do YYYY, h:mm a"),
+              value: pair[1],
+            }))
+          }
           background="#fff"
         >
-          <Line dot={false} type="monotone" dataKey="speed" stroke="#8884d8" />
+          <Line dot={false} type="monotone" dataKey="value" stroke="#8884d8" />
 
-          <CartesianGrid stroke="#ccc" unit="m/s" strokeDasharray="5 5" />
+          <CartesianGrid
+            stroke="#ccc"
+            unit={historicData.type === "solar" ? "MW" : "m/s"}
+            strokeDasharray="5 5"
+          />
           <XAxis
             label={{ value: "Date", position: "insideBottom" }}
             dataKey="date"
@@ -99,4 +108,4 @@ const HistoricSpeedsGraph = ({ setShowHistoric, historicWindSpeeds }) => {
   );
 };
 
-export default HistoricSpeedsGraph;
+export default HistoricDataGraph;

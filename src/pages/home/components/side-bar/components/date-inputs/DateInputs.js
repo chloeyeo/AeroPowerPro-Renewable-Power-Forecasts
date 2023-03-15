@@ -1,7 +1,15 @@
 import React from "react";
 
-const DateInputs = ({ dates, setDates, onClick }) => (
-  <>
+const DateInputs = ({
+  dates,
+  setDates,
+  getHistoricSolarReq,
+  setHistoricData,
+  getHistoricWindSpeedsReq,
+  center,
+  setShowHistoric,
+}) => (
+  <div className="m-2">
     <div>Start Date</div>
     <input
       type="date"
@@ -21,9 +29,26 @@ const DateInputs = ({ dates, setDates, onClick }) => (
       max="2023-06-31"
     ></input>
     <div>
-      <button onClick={onClick}>Submit</button>
+      <button
+        className="mt-2"
+        onClick={() => {
+          getHistoricSolarReq(setHistoricData, dates, center);
+          setShowHistoric(true);
+        }}
+      >
+        Historic Solar Energy
+      </button>
+      <button
+        className="mt-2"
+        onClick={() => {
+          getHistoricWindSpeedsReq(setHistoricData, dates, center);
+          setShowHistoric(true);
+        }}
+      >
+        Historic Wind Speeds
+      </button>
     </div>
-  </>
+  </div>
 );
 
 export default DateInputs;
