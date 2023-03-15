@@ -118,6 +118,20 @@ class HistoricSolarViewSet(APIView):
         
         return JsonResponse(list(historic_solar_data), safe = False)
 
+class UserView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, format=None):
+        user = User(username=self.request.data['username'],
+                            email=self.request.data['email'],
+                            password=self.request.data['password'],
+                            first_name=self.request.data['first_name'],
+                            last_name=self.request.data['last_name'])
+
+        user.save()
+        return Response(request.data['username'])
+
+
 def event_stream(data):
     data_len = len(data)
     start = 0
@@ -137,12 +151,10 @@ class GeolocationsView(APIView):
         """Finds all available wind farms
 
         Args:
-            request (_type_): SMALL: will return only the small set if set to 1
-                            : START: if SMALL = 0, will give Start + 1500 wind farms from detailed set 
-            format (_type_, optional): _description_. Defaults to None.
+            None
 
         Returns:
-            List of the farm data and their metadata ('windfarm_data_id', 'longitude', 'latitude', 'hub_height', 'number_of_turbines', 'turbine_capacity', 'is_onshore', ...)
+            List of the farm data and their metadata for both smaller and larger (detail) data set
         """     
         
         wind_farms = WindFarmData.objects.all().values_list('windfarm_data_id',
@@ -153,7 +165,6 @@ class GeolocationsView(APIView):
                                                         'turbine_capacity',
                                                         'is_onshore',)
     
-            # return JsonResponse(list(wind_farms), safe=False)
 
         
         response = {}
@@ -161,7 +172,7 @@ class GeolocationsView(APIView):
         detail_wind_farms = WindFarmDetailData.objects.filter(longitude__isnull = False, 
         latitude__isnull = False,  latitude__lte=59, operator__isnull = False ,
         turbine_height__isnull = False, number_of_turbines__isnull = False, 
-        sitename__isnull = False).values_list('id', 'latitude', 'longitude','operator',
+        sitename__isnull = False).values_list('id', 'longitude', 'latitude','operator',
         'sitename','is_onshore','turbine_height','number_of_turbines','turbine_capacity',
         'development_status',# 'address','region','country',
         )
