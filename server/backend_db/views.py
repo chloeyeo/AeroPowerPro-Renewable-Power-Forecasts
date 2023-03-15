@@ -151,9 +151,7 @@ class GeolocationsView(APIView):
         """Finds all available wind farms
 
         Args:
-            request (_type_): SMALL: will return only the small set if set to 1
-                            : START: if SMALL = 0, will give Start + 1500 wind farms from detailed set 
-            format (_type_, optional): _description_. Defaults to None.
+            None
 
         Returns:
             List of the farm data and their metadata ('windfarm_data_id', 'longitude', 'latitude', 'hub_height', 'number_of_turbines', 'turbine_capacity', 'is_onshore', ...)
@@ -167,7 +165,6 @@ class GeolocationsView(APIView):
                                                         'turbine_capacity',
                                                         'is_onshore',)
     
-            # return JsonResponse(list(wind_farms), safe=False)
 
         
         response = {}
