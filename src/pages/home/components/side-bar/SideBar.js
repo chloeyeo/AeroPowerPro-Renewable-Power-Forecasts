@@ -14,7 +14,12 @@ import {
   FavouriteTurbine,
   FavouriteCoordinates,
 } from "./components";
-import { geoLocReq, forecastReq, getHistoricWindSpeedsReq } from "./utils";
+import {
+  geoLocReq,
+  forecastReq,
+  getHistoricWindSpeedsReq,
+  getHistoricSolarReq,
+} from "./utils";
 
 import withInputFieldProps from "./withInputFieldProps";
 import "./styles.css";
@@ -34,7 +39,9 @@ const SideBar = ({
   const [turbineModels, setTurbineModels] = useState({});
   const [powerForecast, setPowerForecast] = useState([]);
   const [dates, setDates] = useState({ startDate: "", endDate: "" });
+  const [solarDates, setSolarDates] = useState({ startDate: "", endDate: "" });
   const [historicWindSpeeds, setHistoricWindSpeeds] = useState([]);
+  const [historicSolarEnergies, setHistoricSolarEnergies] = useState([]);
   const cookies = new Cookies();
   const isLoggedIn = cookies.get("userIn") === "true";
   const loggedInUser = cookies.get("LoggedInUser");
@@ -103,6 +110,16 @@ const SideBar = ({
               setDates={setDates}
               onClick={() => {
                 getHistoricWindSpeedsReq(setHistoricWindSpeeds, dates, center);
+                setShowHistoric(true);
+              }}
+            />
+          </SubMenu>
+          <SubMenu label="Historic Solar energy">
+            <DateInputs
+              dates={solarDates}
+              setDates={setSolarDates}
+              onClick={() => {
+                getHistoricSolarReq(setHistoricSolarEnergies, dates, center);
                 setShowHistoric(true);
               }}
             />
