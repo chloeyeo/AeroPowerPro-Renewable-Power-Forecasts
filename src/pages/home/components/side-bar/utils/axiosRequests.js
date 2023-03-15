@@ -46,7 +46,7 @@ const forecastReq = (powerCurveData, center, setPowerForecast, setIsShown) => {
 const getHistoricWindSpeedsReq = (setHistoricWindSpeeds, dates, center) => {
   axios({
     method: "post",
-    url: "http://127.0.0.1:8000/historic_solar_data/",
+    url: "http://127.0.0.1:8000/historic_wind_data/",
     data: {
       start_date: dates.startDate,
       end_date: dates.endDate,
@@ -58,6 +58,7 @@ const getHistoricWindSpeedsReq = (setHistoricWindSpeeds, dates, center) => {
     },
   })
     .then(function (response) {
+      console.log(response.data);
       setHistoricWindSpeeds(response.data);
     })
     .catch(function (error) {

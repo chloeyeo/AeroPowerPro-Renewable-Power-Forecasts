@@ -19,7 +19,7 @@ from .Wind_Turbine_Model.generic_wind_turbines_from_lib import get_all_generic_t
 import numpy as np
 from .Turbine import Turbine
 from .WeatherSeries import WeatherSeries
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import parser
 from rest_framework_simplejwt.views import TokenObtainPairView
 import math
@@ -106,17 +106,6 @@ class HistoricWindViewSet(APIView):
         historic_wind_data = HistoricWind.objects.filter(date_val__lte=end_date, date_val__gte=start_date, longitude = longitude, latitude = latitude).values_list('date_val', 'wind_speed')
         return JsonResponse(list(historic_wind_data), safe = False)
 
-class HistoricSolarViewSet(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def get(self, request, format = None):
-        historic_solar_data = SolarEnergyData.objects.all().values_list('id', 
-                                                               'gsp_id',
-                                                               'datetime_gmt', 
-                                                               'generation_mw',)
-
-        
-        return JsonResponse(list(historic_solar_data), safe = False)
 
 class UserView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -311,34 +300,43 @@ class SolarHistoricData(APIView):
     permission_classes = [permissions.AllowAny]
 
     # Return the distance between two points using pythagora's theorem
-    def __distsance_between_points(x1, x2, y1, y2):
+    def __distsance_between_points(self, x1, x2, y1, y2):
         return math.sqrt( (x1 - x2)**2 + (y1-y2)**2 )
     
     def post(self, request, format = None):
-        latitude = self.request.data['latitude']
-        longtitude = self.request.data['longitude']
-        
+        latitude = int(self.request.data['latitude'])
+        longitude = int(self.request.data['longitude'])
         gsp_long_lat = GSPLocation.objects.all()
+        gsp_in_db = SolarEnergyData.objects.order_by().values_list('gsp_id').distinct()
+        gsp_distinct = []
+        for gsp in gsp_in_db:
+            gsp_distinct.append(gsp[0])
 
         closest_gsp_id = None
         closest_gsp_dist = math.inf
+
+
         if gsp_long_lat.exists():
             for row in gsp_long_lat:
-                dist = self.__distsance_between_points(x1 = longtitude, x2 = row.gsp_lon, y1 = latitude, y2 = row.gsp_lat)
-                if dist < closest_gsp_dist:
-                    closest_gsp_id = row.gsp_id
-                    closest_gsp_dist = dist
+                if row.gsp_id in gsp_distinct:
+                    dist = self.__distsance_between_points(x1 = longitude, x2 = row.gsp_lon, y1 = latitude, y2 = row.gsp_lat)
+                    if dist < closest_gsp_dist:
+                        print(dist, closest_gsp_id, row.gsp_id)
+                        closest_gsp_id = row.gsp_id
+                        closest_gsp_dist = dist
         else:
             JsonResponse({'message' : 'Could not find any data' }, status = 500)
         
+        date_format = '%Y-%m-%d'
+        start_date = datetime.strptime(self.request.data['start_date'], date_format)
         
-        start_date = self.response.data['start_date']
-        end_date = self.response.data['end_date']
+        # End date will be set to 00:00:00, so increase day by one to set to end of day/ start of next day
+        end_date = datetime.strptime(self.request.data['end_date'], date_format)
+        end_date += timedelta(days = 1)
         
-        historic_solar_data = SolarEnergyData.filter(gsp_id = closest_gsp_id, datetime_gmt__lte= end_date, datetime_gmt__gte= start_date).values_list('datetime_gmt',
-                                                                                                                                                       'generation_mw')
-        
-        return JsonResponse(historic_solar_data)
+        historic_solar_data = SolarEnergyData.objects.filter(gsp_id = closest_gsp_id, datetime_gmt__lte=end_date, datetime_gmt__gte=start_date).values_list('datetime_gmt', 'generation_mw')
+ 
+        return JsonResponse(list(historic_solar_data), safe=False)
         
         
         
