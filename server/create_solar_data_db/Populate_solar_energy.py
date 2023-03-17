@@ -12,21 +12,11 @@ from datetime import datetime
 import pytz
 from pvlive_api import PVLive
 from get_latest_date import get_latest_date
-# import pandas as pd
-
-# START_YEAR = 2020
-# START_MONTH = 1
-# START_DAY = 1
-
-# END_YEAR = 2020
-# END_MONTH = 1
-# END_DAY = 2
 
 
 pvl = PVLive()
 
 def get_solar_energy(start_date, end_date):
-    # start_date = start_date.date()
     START_YEAR = start_date.year
     START_MONTH = start_date.month
     START_DAY = start_date.day
