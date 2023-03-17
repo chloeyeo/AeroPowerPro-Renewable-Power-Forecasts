@@ -1,7 +1,7 @@
 import pandas as pd
 from windpowerlib import ModelChain, WindTurbine
 from typing import Sequence
-
+import numpy as np
 class Turbine():    
     
     def __init__(self, hub_height: int, wind_speeds: Sequence[float], power_curve: Sequence[float], number_of_turbines: int, model_on_create : bool = False):
@@ -35,7 +35,7 @@ class Turbine():
         
         
     def check_is_numeric(self, value : float) -> bool:
-        return isinstance(value, (int, float))
+        return isinstance(value, (int, float, np.int32))
 
     @property
     def hub_height(self) -> float:
