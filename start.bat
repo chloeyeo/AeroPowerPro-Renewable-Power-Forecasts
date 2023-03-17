@@ -3,7 +3,7 @@ SETLOCAL EnableDelayedExpansion
 SET CONDA_ENV=Power
 
 CALL :activate_conda_env
-netCDF4 will not properly install with pip
+@REM netCDF4 will not properly install with pip
 IF "%RUN_BEOFRE%"=="" CALL conda install netcdf4
 IF "%RUN_BEFORE%"=="" CALL pip install -r requirements.txt
 IF "%RUN_BEFORE%"=="" CALL npm install --legacy-peer-deps
