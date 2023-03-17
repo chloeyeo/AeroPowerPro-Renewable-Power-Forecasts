@@ -1,6 +1,6 @@
 @echo OFF
 SETLOCAL EnableDelayedExpansion
-SET CONDA_ENV=Power2
+SET CONDA_ENV=Power
 
 CALL :activate_conda_env
 SETX RUN_BEFORE ""
