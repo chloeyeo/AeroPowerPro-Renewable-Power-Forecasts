@@ -51,6 +51,7 @@ if __name__ == "__main__":
         Include -s as a command line arguement to also run the scripts that only need to be run once (e.g. Wind Farm Data)
     """    
     args = sys.argv[1:]
+
     if '-s' in args:
         run_scripts_once()
         
