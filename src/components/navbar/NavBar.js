@@ -4,20 +4,23 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import "react-bootstrap";
 import { Link } from "react-router-dom";
+import withLinks from "./withLinks";
 
-function NavBar() {
-  return (
-    <Navbar style={{ backgroundColor: "#373b44" }} expand="lg">
-      <Container>
-        <Navbar.Brand href="/" style={{ color: "white" }}>
-          Jethro's Power Forecasts
-        </Navbar.Brand>
-        <div>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse className="basic-navbar-nav">
-            <Nav className="me-auto">
+const NavBar = ({ links }) => (
+  <Navbar style={{ backgroundColor: "#373b44" }} expand="lg">
+    <Container>
+      <Navbar.Brand href="/" style={{ color: "white" }}>
+        AeroPowerPro
+      </Navbar.Brand>
+      <div>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse className="basic-navbar-nav">
+          <Nav className="me-auto">
+            {links.map(({ text, link, onClick }) => (
               <Link
-                to="/"
+                key={link}
+                to={link}
+                onClick={onClick}
                 style={{
                   color: "white",
                   textDecoration: "none",
@@ -25,58 +28,14 @@ function NavBar() {
                   paddingRight: 15,
                 }}
               >
-                Home
+                {text}
               </Link>
-              <Link
-                to="/about"
-                style={{
-                  color: "white",
-                  textDecoration: "none",
-                  fontSize: 20,
-                  paddingRight: 15,
-                }}
-              >
-                About
-              </Link>
-              <Link
-                to="/contactus"
-                style={{
-                  color: "white",
-                  textDecoration: "none",
-                  fontSize: 20,
-                  paddingRight: 15,
-                }}
-              >
-                Contact Us
-              </Link>
-              <Link
-                to="/login"
-                style={{
-                  color: "white",
-                  textDecoration: "none",
-                  fontSize: 20,
-                  paddingRight: 15,
-                }}
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                style={{
-                  color: "white",
-                  textDecoration: "none",
-                  fontSize: 20,
-                  paddingRight: 15,
-                }}
-              >
-                Register
-              </Link>
-            </Nav>
-          </Navbar.Collapse>
-        </div>
-      </Container>
-    </Navbar>
-  );
-}
+            ))}
+          </Nav>
+        </Navbar.Collapse>
+      </div>
+    </Container>
+  </Navbar>
+);
 
-export default NavBar;
+export default withLinks(NavBar);

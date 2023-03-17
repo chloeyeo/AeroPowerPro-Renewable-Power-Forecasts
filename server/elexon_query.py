@@ -14,9 +14,10 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import httplib2
 import pandas as pd
-import schedule
 from backend_db.models import ActualProduceElectricity
 from django.db import transaction
+from get_latest_date import get_latest_date
+
 
 
 def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us8nfodbrypm', serviceType='csv'):
@@ -37,34 +38,6 @@ def get_data_by_restful(settlementDate, period, API_version='v2', API_key='ly8us
 
     post_elexon(url=url,)
 
-
-def elexon_schedule_job():
-    '''
-    This is job will be done once every 6 hours
-    :return:
-    '''
-    # 12 periods
-
-    # if all the 12 periods in two different days
-    if time.gmtime().tm_hour - 6 < 0:
-        start_period = 48 - abs(time.gmtime().tm_hour - 6) * 2 + 1      # the restful api updates twice every hour
-
-        # get the data for the yesterday
-        yesterday = datetime.date.today() - datetime.timedelta(-1)
-        yes_year, yes_cur_month, yes_cur_day = str(yesterday).split("-")
-        for cur_period in range(start_period, 49):
-            get_data_by_restful(settlementDate=yes_year + '-' + yes_cur_month.zfill(2) + '-' + yes_cur_day.zfill(2), period=str("*"))
-
-        end_period = 12 - time.gmtime().tm_hour * 2 + 1
-        # get the data for the current day
-        for cur_period in range(1, end_period):
-            get_data_by_restful(settlementDate=str(time.gmtime().tm_year) + '-' + str(time.gmtime().tm_mon).zfill(2) + '-' + str(time.gmtime().tm_mday).zfill(2), period=str(cur_period))
-    # if all the 12 periods in the same day
-    else:
-        start_period = abs(time.gmtime().tm_hour - 6) * 2
-        end_period = abs(time.gmtime().tm_hour - 6) * 2 + 12 + 1
-        for cur_period in range(start_period, end_period):
-            get_data_by_restful(settlementDate=str(time.gmtime().tm_year) + '-' + str(time.gmtime().tm_mon).zfill(2) + '-' + str(time.gmtime().tm_mday).zfill(2), period=str(cur_period))
 
 
 @transaction.atomic
@@ -96,12 +69,15 @@ def post_elexon(url):
                                                 quantity=float(value_str_list_new[10]))
 
 
-def main():
+def elexon_schedule_job():
     today = datetime.datetime.now()
     start_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
-    end_time = start_time - relativedelta(days=60)        # Start getting data from 2 years ago
-
-    frame = pd.date_range(end=str(start_time.date()), start=str(end_time.date()))
+    end_time = get_latest_date(ActualProduceElectricity, start_time, 'settlement_date')
+    if type(end_time) != type(start_time):
+        end_time = end_time.settlement_date
+    else:
+        end_time = datetime.datetime.combine(end_time, datetime.datetime.min.time())
+    frame = pd.date_range(end=str(start_time.date()), start=str(end_time))
 
     for i in range(len(frame)):
         date = str(frame[i]).split(" ")[0]
@@ -109,8 +85,7 @@ def main():
         print(f"Inserting Data to Database for Current Date: {str(year) + '-' + str(month).zfill(2) + '-' + str(day).zfill(2)}")
         get_data_by_restful(settlementDate=year + '-' + month.zfill(2) + '-' + day.zfill(2), period="*")
 
-    # create periodic task and do it every 6 hours starting from this script started running
-    # schedule.every(6).hours.do(elexon_schedule_job)
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(21300)           sleep for 5 hours and 55 minutes before next retrieval
+    
+    
+if __name__ == '__main()__':
+    elexon_schedule_job()

@@ -4,8 +4,7 @@ import { TileLayer, VectorLayer } from "./layers";
 import { FullScreenControl } from "./controls";
 import { Styles } from "./features";
 import { osm, vector, xyz } from "./source";
-import { AreaSizeMap } from "./areasize-map";
-import { WindFarmsMap } from "./windfarms-map";
+import { Switch } from "./switch";
 
 export {
   SideBar,
@@ -18,6 +17,5 @@ export {
   osm,
   vector,
   xyz,
-  AreaSizeMap,
-  WindFarmsMap,
+  Switch,
 };
