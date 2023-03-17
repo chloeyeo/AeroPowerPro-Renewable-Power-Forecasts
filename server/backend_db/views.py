@@ -164,7 +164,7 @@ class GeolocationsView(APIView):
         detail_wind_farms = WindFarmDetailData.objects.filter(longitude__isnull = False, 
         latitude__isnull = False,  latitude__lte=59, operator__isnull = False ,
         turbine_height__isnull = False, number_of_turbines__isnull = False, 
-        sitename__isnull = False).values_list('id', 'longitude', 'latitude','operator',
+        sitename__isnull = False).values_list('id', 'latitude', 'longitude','operator',
         'sitename','is_onshore','turbine_height','number_of_turbines','turbine_capacity',
         'development_status',# 'address','region','country',
         )
@@ -293,7 +293,6 @@ class WindFarmDataByArea(APIView):
             response['average_hub_height'].append(hub_height)
             
             
-        # response['average_hub_height'] = np.average(response['average_hub_height'])
         
         
         
@@ -345,46 +344,6 @@ class SolarHistoricData(APIView):
         
         
         
-# from rest_framework.views import APIView
-# from rest_framework.request import Request
-# from rest_framework.response import Response
-# import {Login} from '../../src/pages/login'
-#
-# @csrf_exempt
-# def register_view(request):
-#     if request.method == "POST":
-#         username = request.data['username']
-#         email = request.data.get("email")
-#         password = request.data.get("password")
-#         first_name = request.data['first_name']
-#         last_name = request.data['last_name']
-#         user = authenticate(email=username, password=password)
-#         if user:
-#             user = UserProfile(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
-#             user.save()
-#             return JsonResponse({'status': 0})
-#         else:
-#             print(f"Invalid email or password: email: {email}, password: {password}")
-#             return JsonResponse({'status': -1})
-#     else:
-#         return render(request, 'login/')
-#
-#
-# @csrf_exempt
-# def login_view(request):
-#     if request.method == "POST":
-#         email = request.data.get("email")
-#         password = request.data.get("password")
-#         user = authenticate(email=email, password=password)
-#         if user:
-#             login(request, user)
-#             return {'status': 0}
-#         else:
-#             print(f"Invalid email or password: email: {email}, password: {password}")
-#             return JsonResponse({'status': -1})
-#     else:
-#         return render(request, 'login/')
-
 
 @csrf_exempt
 @login_required
@@ -410,48 +369,3 @@ def get_elexon_by_date(request, date):
     except ActualProduceElectricity.DoesNotExist:
         print(f"The ActualProduceElectricity is not exist")
         return render(request, 'get_elexon/', context=context_dic)
-
-# validate password and email
-# import urllib library
-# from urllib.request import urlopen
-  
-# # import json
-# import json
-
-# # store the URL in url as 
-# # parameter for urlopen
-# url = "http://localhost:8000/postrequest"
-  
-# # store the response of URL
-# response = urlopen(url)
-  
-# # storing the JSON response 
-# # from url in data
-# data_json = json.loads(response.read())
-# # Create your views here.
-# def register_user(request):
-#     try:
-#         registered = False
-#         # store the URL in url as 
-#         # parameter for urlopen
-#         url = "http://localhost:8000/postrequest"
-
-#         # store the response of URL
-#         response = urlopen(url)
-    
-#         # storing the JSON response 
-#         # from url in data
-#         data_json = json.loads(response.read())
-#         return data_json
-    
-#     # try:
-#     #     # tells whether registration was successful
-#     #     registered = False
-#     #     # get data = request from login.js using fetch post
-#     #     # password = request.GET.get("password")
-#     #     # request is json object
-
-#     #     return JsonResponse(data)
-#     except:
-#         data = {'registered': False, 'password':'', 'email': ''}
-#         return JsonResponse(data)
