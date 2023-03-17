@@ -11,6 +11,7 @@ import netCDF4 as nc
 from dateutil.relativedelta import relativedelta
 from django.db import transaction
 from math import sqrt
+from get_latest_date import get_latest_date
 
 #Split date into its components used by the NOAA Call
 def split_date(dat):
@@ -104,20 +105,12 @@ def NOAA_get_historic(start, end):
 def NOAA_schedule_job():
     today = datetime.datetime.now()
     end_time = today.replace(tzinfo=pytz.UTC)  # set datetime format to non-ambiguous, standard UTC
-    start_time = end_time - relativedelta(hours=6)  # Start getting data from 2 years ago
+    start_time = get_latest_date(HistoricWind, end_time, 'date_val')
+    if type(start_time) != type(end_time):
+        start_time = start_time.date_val
     NOAA_get_historic(start_time, end_time)
+
 
 
 if __name__ == "__main__":
-    today = datetime.datetime.now()
-    end_time = today.replace(tzinfo=pytz.UTC)      # set datetime format to non-ambiguous, standard UTC
-    start_time = end_time - relativedelta(months = 1)        # Start getting data from 2 years ago
-
-    # Retrieve data starting from 2 years ago
-    NOAA_get_historic(start_time, end_time)
-
-    # iterate and pull data every 6 hours with schedule job
-    # schedule.every(6).hours.do(NOAA_schedule_job)
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(21300)       # sleep for 5 hours and 55 minutes before next retrieval
+    NOAA_schedule_job()
