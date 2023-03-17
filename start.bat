@@ -1,17 +1,21 @@
-@echo off
+@echo OFF
 SETLOCAL EnableDelayedExpansion
-SET CONDA_ENV=Power
+SET CONDA_ENV=Power2
 
 CALL :activate_conda_env
-
-start powershell.exe pip install -r requirements.txt
-call npm install --legacy-peer-deps
+SETX RUN_BEFORE ""
+IF "%RUN_BEFORE%"=="" CALL conda install -c anaconda git
+@REM netCDF4 will not properly instal with pip
+IF "%RUN_BEOFRE%"=="" CALL conda install netcdf4
+IF "%RUN_BEFORE%"=="" CALL pip install -r requirements.txt
+IF "%RUN_BEFORE%"=="" CALL npm install --legacy-peer-deps
 start powershell.exe npm start
 cd server/
-IF "%RUN_BEFORE%"=="" python Population_script.py
-SETX RUN_BEFORE TRUE
-python manage.py runserver
-
+IF "%RUN_BEFORE%"=="" CALL python manage.py makemigrations backend_db
+IF "%RUN_BEFORE%"=="" CALL python manage.py migrate
+IF "%RUN_BEFORE%"=="" CALL python Population_script.py -r ELSE python Population_script.py
+@REM SETX RUN_BEFORE TRUE
+CALL python manage.py runserver
 
 cmd /k
 :activate_conda_env
