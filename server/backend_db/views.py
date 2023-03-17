@@ -1,7 +1,4 @@
 from django.shortcuts import render
-# from django.http import HttpResponse
-# from django.urls import reverse
-from django.contrib.auth import authenticate, login, logout
 from backend_db.models import ActualProduceElectricity, HistoricWind, WindFarmData, WindFarmDetailData, SolarFarmDetailData, SolarEnergyData, GSPLocation
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -172,29 +169,6 @@ class GeolocationsView(APIView):
         response['detail_windfarm_data'] = list(detail_wind_farms)
         response['core_windfarm_data'] = list(wind_farms)
         return JsonResponse(response, safe = False)
-        
-        
-        
-
-# besides calling the serializers in the login, we should also check some invalid situations and give some response messages.
-class LoginView(APIView):
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format=None):
-        print(request.data)
-        if request.data['email']!='' and request.data['password']!='':
-            serializer = LoginSerializer(data=self.request.data, context={'request': self.request})
-            serializer.is_valid(raise_exception=True)
-            user = serializer.validated_data['user']
-            if not user:
-                print('A user with this email and password is not found.')
-                return JsonResponse({'message' : 'User not found', 'Token': None }, status = 404 )
-            login(request, user)
-            token = Token.objects.create(user=user)
-            return JsonResponse({'message' : 'Logged in!', 'Token': token }, status = 202 )
-        else:
-            print('The email or password is empty in the request data.')
-            return JsonResponse({'message' : 'The email or password is empty in the request data'}, status = 400)
 
 
 class RegisterApiView(GenericAPIView):
