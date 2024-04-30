@@ -1,4 +1,4 @@
-# School of Maths & Stats - Renewable power forecasts
+# Renewable power forecasts (for school of maths and stats)
 
 ## Full Title
 
